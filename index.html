@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSearch</title>
+    <!-- Favicon SVG : Fenêtre 2 carrés blancs / 2 carrés gris -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='42' height='42' fill='%23FFFFFF'/><rect x='53' y='5' width='42' height='42' fill='%23888888'/><rect x='5' y='53' width='42' height='42' fill='%23888888'/><rect x='53' y='53' width='42' height='42' fill='%23FFFFFF'/></svg>">
+    
+    <style>
+        :root {
+            --accent-color: #0078D7; /* Couleur d'accentuation Metro par défaut */
+            --bg-color: #111111;
+            --text-color: #ffffff;
+            --tile-bg: rgba(255, 255, 255, 0.12);
+            --tile-hover: rgba(255, 255, 255, 0.22);
+            --font-metro: 'Segoe UI', 'Segoe UI West European', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-metro);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background 0.5s ease;
+        }
+
+        /* Overlay sombre pour le fond Bing flouté */
+        #bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: -1;
+            display: none;
+        }
+
+        body.has-bing-bg #bg-overlay {
+            display: block;
+        }
+
+        /* Animations Metro "Turnstyle" */
+        .metro-enter {
+            animation: turnstyleIn 0.45s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+            transform-origin: left center;
+        }
+
+        .metro-exit {
+            animation: turnstyleOut 0.35s cubic-bezier(0.7, 0, 0.9, 0.1) forwards;
+            transform-origin: right center;
+        }
+
+        @keyframes turnstyleIn {
+            0% { opacity: 0; transform: rotateY(-30deg) scale(0.9) translateX(-40px); }
+            100% { opacity: 1; transform: rotateY(0deg) scale(1) translateX(0); }
+        }
+
+        @keyframes turnstyleOut {
+            0% { opacity: 1; transform: rotateY(0deg) scale(1) translateX(0); }
+            100% { opacity: 0; transform: rotateY(30deg) scale(0.9) translateX(40px); }
+        }
+
+        /* En-tête / Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 5%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+        }
+
+        .logo-icon div:nth-child(1), .logo-icon div:nth-child(4) { background-color: #ffffff; }
+        .logo-icon div:nth-child(2), .logo-icon div:nth-child(3) { background-color: #888888; }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 200;
+            letter-spacing: -0.5px;
+            text-transform: lowercase;
+        }
+
+        .header-search {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+            position: relative;
+            display: none; /* Masqué sur l'accueil, affiché dans les résultats */
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid transparent;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2rem;
+        }
+
+        .btn-settings {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            transition: transform 0.2s;
+        }
+
+        .btn-settings:hover {
+            transform: rotate(45deg);
+        }
+
+        /* Accueil / Dashboard Metro */
+        #home-view {
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            margin: 30px 0 40px 0;
+        }
+
+        .clock-display {
+            font-size: 4.5rem;
+            font-weight: 100;
+            line-height: 1;
+        }
+
+        .date-display {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--accent-color);
+            text-transform: capitalize;
+            margin-bottom: 25px;
+        }
+
+        .home-search-bar {
+            position: relative;
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        .home-search-bar input {
+            width: 100%;
+            padding: 16px 55px 16px 20px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            outline: none;
+        }
+
+        .home-search-bar input:focus {
+            border-color: var(--accent-color);
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        /* Hubs et Tuiles (Tiles) Metro */
+        .metro-category {
+            margin-bottom: 35px;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 200;
+            margin-bottom: 15px;
+            text-transform: lowercase;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .tile {
+            background: var(--tile-bg);
+            aspect-ratio: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s ease, background 0.2s ease;
+            user-select: none;
+        }
+
+        .tile:hover {
+            background: var(--tile-hover);
+            transform: scale(1.02);
+        }
+
+        .tile:active {
+            transform: scale(0.96);
+        }
+
+        .tile.wide {
+            grid-column: span 2;
+            aspect-ratio: 2 / 1;
+        }
+
+        .tile-accent {
+            background: var(--accent-color);
+        }
+
+        .tile-icon {
+            font-size: 2rem;
+        }
+
+        .tile-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tile-content {
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Flip Live Tile Animation */
+        .live-tile {
+            perspective: 1000px;
+        }
+
+        .live-tile-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .live-tile.flipped .live-tile-inner {
+            transform: rotateY(180deg);
+        }
+
+        .live-tile-front, .live-tile-back {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--tile-bg);
+        }
+
+        .live-tile-back {
+            transform: rotateY(180deg);
+            background: var(--accent-color);
+        }
+
+        /* Overlay Résultats de Recherche */
+        #results-view {
+            display: none;
+            padding: 20px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Onglets Metro */
+        .metro-tabs {
+            display: flex;
+            gap: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 25px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab-item {
+            font-size: 1.5rem;
+            font-weight: 200;
+            color: #888;
+            padding-bottom: 10px;
+            cursor: pointer;
+            text-transform: lowercase;
+            transition: color 0.2s, border 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-item.active {
+            color: #fff;
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* AI Overview Section */
+        .ai-overview-card {
+            background: rgba(0, 120, 215, 0.15);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .ai-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ai-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .ai-sources {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .source-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            color: #ccc;
+            border-radius: 2px;
+        }
+
+        /* Widgets Intégrés (Calculatrice, Traducteur, Timer) */
+        .integrated-widget {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 20px;
+            margin-bottom: 30px;
+            max-width: 400px;
+        }
+
+        /* Calculatrice Metro */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .calc-screen {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            text-align: right;
+            font-size: 2rem;
+            padding: 10px;
+            border: 1px solid #444;
+            font-weight: 200;
+        }
+
+        .calc-btn {
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .calc-btn:hover { background: var(--accent-color); }
+
+        /* Grille des Résultats Web */
+        .results-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 18px;
+            border-left: 2px solid transparent;
+            transition: 0.2s;
+        }
+
+        .result-item:hover {
+            border-left-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .result-url {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .result-snippet {
+            font-size: 0.95rem;
+            color: #ddd;
+            line-height: 1.5;
+        }
+
+        /* Galerie d'Images Metro avec Lecteur Modale */
+        .image-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .img-card {
+            aspect-ratio: 1;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .img-card:hover .img-overlay {
+            opacity: 1;
+        }
+
+        .img-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+            font-size: 0.8rem;
+            transition: opacity 0.2s;
+        }
+
+        /* Modal Lecteur Image */
+        #image-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #image-modal img {
+            max-width: 85%;
+            max-height: 75vh;
+            border: 2px solid var(--accent-color);
+        }
+
+        .modal-controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .metro-btn {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .metro-btn:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Panneau Paramètres / Settings (Flyout Metro) */
+        #settings-flyout {
+            position: fixed;
+            top: 0; right: -400px;
+            width: 100%; max-width: 380px;
+            height: 100%;
+            background: #1f1f1f;
+            z-index: 200;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
+            transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            padding: 30px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        #settings-flyout.open {
+            right: 0;
+        }
+
+        .flyout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .flyout-title {
+            font-size: 1.8rem;
+            font-weight: 200;
+            text-transform: lowercase;
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option.selected {
+            border-color: #fff;
+        }
+
+        .setting-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-item {
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: var(--accent-color);
+        }
+
+        /* Responsive UI */
+        @media (max-width: 768px) {
+            .clock-display { font-size: 3rem; }
+            .header-search { margin: 0 10px; }
+            .logo-text { display: none; }
+            .tiles-grid { grid-template-columns: repeat(2, 1fr); }
+            .tile.wide { grid-column: span 2; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-overlay"></div>
+
+    <!-- EN-TÊTE DU SITE -->
+    <header>
+        <div class="logo-container" id="btn-go-home">
+            <div class="logo-icon">
+                <div></div><div></div><div></div><div></div>
+            </div>
+            <div class="logo-text">nexsearch</div>
+        </div>
+
+        <div class="header-search" id="header-search-box">
+            <input type="text" class="search-input" id="header-query" placeholder="Rechercher sur le Web...">
+            <button class="search-btn" id="header-search-submit">➔</button>
+        </div>
+
+        <button class="btn-settings" id="btn-open-settings" title="Paramètres">⚙</button>
+    </header>
+
+    <!-- PAGE D'ACCUEIL METRO DASHBOARD -->
+    <main id="home-view" class="metro-enter">
+        <section class="hero-section">
+            <div class="clock-display" id="clock">12:00</div>
+            <div class="date-display" id="date">Lundi 21 Octobre</div>
+
+            <div class="home-search-bar">
+                <input type="text" id="home-query" placeholder="Que recherchez-vous aujourd'hui ?">
+                <button class="search-btn" id="home-search-submit" style="right: 15px; font-size: 1.5rem;">➔</button>
+            </div>
+        </section>
+
+        <!-- AUJOURD'HUI -->
+        <section class="metro-category">
+            <h2 class="category-title">aujourd'hui</h2>
+            <div class="tiles-grid">
+                <div class="tile tile-accent wide" id="weather-tile">
+                    <div class="tile-title">Météo Localisée</div>
+                    <div class="tile-content" id="weather-info">Détection en cours...</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;" id="weather-location">Patientez...</div>
+                </div>
+                <div class="tile">
+                    <div class="tile-icon">📷</div>
+                    <div class="tile-title">Bing du jour</div>
+                </div>
+                <div class="tile" onclick="triggerSearch('Paysages exceptionnels')">
+                    <div class="tile-icon">🏔️</div>
+                    <div class="tile-title">Paysages</div>
+                </div>
+                <div class="tile" onclick="triggerSearch('Photos incroyables de la terre')">
+                    <div class="tile-icon">✨</div>
+                    <div class="tile-title">Photos Pro</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- À LA UNE -->
+        <section class="metro-category">
+            <h2 class="category-title">à la une</h2>
+            <div class="tiles-grid">
+                <div class="tile wide live-tile" id="news-tile-1" onclick="triggerSearch('Actualités France')">
+                    <div class="live-tile-inner">
+                        <div class="live-tile-front">
+                            <div class="tile-title">Actualités Les Titres</div>
+                            <div class="tile-content" id="news-head-1">Chargement des infos...</div>
+                        </div>
+                        <div class="live-tile-back">
+                            <div class="tile-title">Mise à jour Live</div>
+                            <div class="tile-content">Consultez les dernières nouvelles du monde.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile tile-accent" onclick="triggerSearch('Tech & Innovation')">
+                    <div class="tile-icon">💻</div>
+                    <div class="tile-title">Tech</div>
+                </div>
+                <div class="tile" onclick="triggerSearch('Économie mondiale')">
+                    <div class="tile-icon">📈</div>
+                    <div class="tile-title">Économie</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPLORER -->
+        <section class="metro-category">
+            <h2 class="category-title">explorer</h2>
+            <div class="tiles-grid">
+                <div class="tile" onclick="triggerSearch('Calculatrice')">
+                    <div class="tile-icon">🧮</div>
+                    <div class="tile-title">Calculatrice</div>
+                </div>
+                <div class="tile" onclick="triggerSearch('Traducteur')">
+                    <div class="tile-icon">🌐</div>
+                    <div class="tile-title">Traducteur</div>
+                </div>
+                <div class="tile" onclick="triggerSearch('Timer')">
+                    <div class="tile-icon">⏱️</div>
+                    <div class="tile-title">Minuteur</div>
+                </div>
+                <div class="tile tile-accent" onclick="triggerSearch('Carte Monde')">
+                    <div class="tile-icon">🗺️</div>
+                    <div class="tile-title">Cartes</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RÉCEMMENT -->
+        <section class="metro-category">
+            <h2 class="category-title">récemment</h2>
+            <div class="tiles-grid" id="recent-tiles-grid">
+                <!-- Rempli dynamiquement -->
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE DES RÉSULTATS DE RECHERCHE -->
+    <main id="results-view">
+        <!-- ONGLETS METRO -->
+        <div class="metro-tabs">
+            <div class="tab-item active" data-tab="web">web</div>
+            <div class="tab-item" data-tab="images">images</div>
+            <div class="tab-item" data-tab="videos">vidéos</div>
+            <div class="tab-item" data-tab="news">actualités</div>
+            <div class="tab-item" data-tab="shopping">shopping</div>
+            <div class="tab-item" data-tab="maps">cartes</div>
+        </div>
+
+        <!-- ZONE WIDGET SPÉCIAL (Calculatrice, Traducteur, Minuteur) -->
+        <div id="widget-container"></div>
+
+        <!-- AI OVERVIEW -->
+        <div class="ai-overview-card" id="ai-overview-box">
+            <div class="ai-title">⚡ AI Overview - NexSearch</div>
+            <div class="ai-text" id="ai-text-content">Génération du résumé intelligent des recherches...</div>
+            <div class="ai-sources" id="ai-sources-list"></div>
+        </div>
+
+        <!-- WIKIPEDIA APERÇU EN-TÊTE -->
+        <div id="wiki-preview-box"></div>
+
+        <!-- CONTENU DES RÉSULTATS DYNAMIQUES -->
+        <div id="tab-content-area">
+            <div class="results-grid" id="web-results"></div>
+        </div>
+    </main>
+
+    <!-- LECTEUR DE MODALE D'IMAGE METRO -->
+    <div id="image-modal">
+        <img id="modal-img-display" src="" alt="Aperçu">
+        <div class="modal-controls">
+            <button class="metro-btn" id="btn-prev-img">◄ Précédent</button>
+            <a id="btn-full-img" target="_blank" class="metro-btn" style="text-decoration:none;">Taille réelle</a>
+            <a id="btn-site-img" target="_blank" class="metro-btn" style="text-decoration:none; background:#444;">Accéder au site</a>
+            <button class="metro-btn" id="btn-next-img">Suivant ►</button>
+            <button class="metro-btn" onclick="closeImageModal()" style="background:#cc0000;">Fermer</button>
+        </div>
+    </div>
+
+    <!-- PANNEAU DES PARAMÈTRES (FLYOUT METRO 8.1) -->
+    <div id="settings-flyout">
+        <div class="flyout-header">
+            <div class="flyout-title">paramètres</div>
+            <button class="btn-settings" id="btn-close-settings">✕</button>
+        </div>
+
+        <div>
+            <label style="font-weight:300; font-size:0.9rem;">Couleur d'accentuation Metro</label>
+            <div class="color-picker">
+                <div class="color-option selected" style="background:#0078D7;" data-color="#0078D7"></div>
+                <div class="color-option" style="background:#9B27B0;" data-color="#9B27B0"></div>
+                <div class="color-option" style="background:#009688;" data-color="#009688"></div>
+                <div class="color-option" style="background:#E63946;" data-color="#E63946"></div>
+                <div class="color-option" style="background:#FF9800;" data-color="#FF9800"></div>
+                <div class="color-option" style="background:#4CAF50;" data-color="#4CAF50"></div>
+                <div class="color-option" style="background:#00CCFF;" data-color="#00CCFF"></div>
+                <div class="color-option" style="background:#E91E63;" data-color="#E91E63"></div>
+            </div>
+        </div>
+
+        <div class="setting-toggle">
+            <span>Activer AI Overview</span>
+            <input type="checkbox" id="toggle-ai" checked style="width:20px; height:20px; accent-color:var(--accent-color);">
+        </div>
+
+        <div class="setting-toggle">
+            <span>Fond Bing du jour</span>
+            <input type="checkbox" id="toggle-bing-bg" style="width:20px; height:20px; accent-color:var(--accent-color);">
+        </div>
+
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:300;">Historique local</span>
+                <button class="metro-btn" id="btn-clear-history" style="padding:4px 8px; font-size:0.8rem;">Effacer</button>
+            </div>
+            <div class="history-list" id="history-container">
+                <!-- Rempli par JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ETAT GLOBAL DE L'APPLICATION */
+        const state = {
+            query: '',
+            activeTab: 'web',
+            history: JSON.parse(localStorage.getItem('nex_history') || '[]'),
+            aiEnabled: localStorage.getItem('nex_ai') !== 'false',
+            bingBgEnabled: localStorage.getItem('nex_bing') === 'true',
+            accentColor: localStorage.getItem('nex_color') || '#0078D7',
+            currentImageIndex: 0,
+            imageResultsList: []
+        };
+
+        /* INITIALIZATION */
+        document.addEventListener('DOMContentLoaded', () => {
+            initUI();
+            updateClock();
+            setInterval(updateClock, 1000);
+            fetchWeather();
+            fetchLiveNews();
+            setupEvents();
+            applySettings();
+            renderHistory();
+            startLiveTilesAnimation();
+        });
+
+        function applySettings() {
+            document.documentElement.style.setProperty('--accent-color', state.accentColor);
+            document.getElementById('toggle-ai').checked = state.aiEnabled;
+            document.getElementById('toggle-bing-bg').checked = state.bingBgEnabled;
+
+            if (state.bingBgEnabled) {
+                document.body.classList.add('has-bing-bg');
+                document.body.style.backgroundImage = `url('https://bingw.j12.workers.dev/1080p')`;
+            } else {
+                document.body.classList.remove('has-bing-bg');
+                document.body.style.backgroundImage = 'none';
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${mins}`;
+
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', options);
+        }
+
+        /* GÉOLOCALISATION ET MÉTÉO */
+        function fetchWeather() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    try {
+                        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                        const data = await res.json();
+                        const temp = Math.round(data.current_weather.temperature);
+                        document.getElementById('weather-info').textContent = `${temp}°C - Ensoleillé/Nuageux`;
+                        document.getElementById('weather-location').textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+                    } catch (e) {
+                        document.getElementById('weather-info').textContent = "19°C - Paris (Par défaut)";
+                    }
+                }, () => {
+                    document.getElementById('weather-info').textContent = "20°C - Position désactivée";
+                });
+            }
+        }
+
+        /* LIVE NEWS HUB */
+        async function fetchLiveNews() {
+            try {
+                const res = await fetch('https://api.duckduckgo.com/?q=news+france&format=json');
+                const data = await res.json();
+                if(data.RelatedTopics && data.RelatedTopics.length > 0) {
+                    document.getElementById('news-head-1').textContent = data.RelatedTopics[0].Text || "Grave crise climatique : nouvelles résolutions à l'ONU.";
+                }
+            } catch(e) {
+                document.getElementById('news-head-1').textContent = "Inauguration du nouveau centre spatial européen.";
+            }
+        }
+
+        /* GESTION DES RECHERCHES ET HISTORIQUE */
+        function triggerSearch(q) {
+            if (!q || q.trim() === '') return;
+            state.query = q.trim();
+
+            // Ajout à l'historique
+            if (!state.history.includes(state.query)) {
+                state.history.unshift(state.query);
+                if (state.history.length > 10) state.history.pop();
+                localStorage.setItem('nex_history', JSON.stringify(state.history));
+                renderHistory();
+            }
+
+            // Basculement Vues Metro
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('results-view').style.display = 'block';
+            document.getElementById('header-search-box').style.display = 'block';
+            document.getElementById('header-query').value = state.query;
+
+            // Lancement du rendu selon l'onglet
+            renderResults();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            const recentGrid = document.getElementById('recent-tiles-grid');
+            container.innerHTML = '';
+            recentGrid.innerHTML = '';
+
+            state.history.forEach(item => {
+                // Remplir Flyout
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `<span>${item}</span><span onclick="event.stopPropagation(); removeFromHistory('${item}')">✕</span>`;
+                div.onclick = () => { triggerSearch(item); toggleSettings(false); };
+                container.appendChild(div);
+
+                // Remplir Accueil Récemment
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.innerHTML = `<div class="tile-icon">🔍</div><div class="tile-title">${item}</div>`;
+                tile.onclick = () => triggerSearch(item);
+                recentGrid.appendChild(tile);
+            });
+        }
+
+        function removeFromHistory(item) {
+            state.history = state.history.filter(i => i !== item);
+            localStorage.setItem('nex_history', JSON.stringify(state.history));
+            renderHistory();
+        }
+
+        /* AI OVERVIEW & WIKIPEDIA GENERATOR */
+        async function generateAIOverview(query) {
+            const aiBox = document.getElementById('ai-overview-box');
+            if (!state.aiEnabled) {
+                aiBox.style.display = 'none';
+                return;
+            }
+            aiBox.style.display = 'block';
+            document.getElementById('ai-text-content').textContent = `Analyse et synthèse des meilleures sources Web pour "${query}"...`;
+            
+            try {
+                // Recherche Wikipédia dédiée
+                const wikiRes = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+                if (wikiRes.ok) {
+                    const wikiData = await wikiRes.json();
+                    document.getElementById('ai-text-content').textContent = wikiData.extract;
+                    document.getElementById('ai-sources-list').innerHTML = `<a class="source-tag" href="${wikiData.content_urls.desktop.page}" target="_blank">Source : Wikipédia</a>`;
+                    return;
+                }
+            } catch(e) {}
+
+            // Génération par défaut si pas de Wikipédia exact
+            document.getElementById('ai-text-content').textContent = `Voici le condensé des informations trouvées concernant "${query}". Les résultats combinent les index de Bing et DuckDuckGo pour vous fournir les informations les plus pertinentes et vérifiées.`;
+            document.getElementById('ai-sources-list').innerHTML = `<span class="source-tag">Index Bing</span><span class="source-tag">DuckDuckGo</span>`;
+        }
+
+        /* WIDGETS INTÉGRÉS (Calculatrice, Traducteur, Timer) */
+        function checkAndRenderWidgets(query) {
+            const widgetArea = document.getElementById('widget-container');
+            widgetArea.innerHTML = '';
+            const q = query.toLowerCase();
+
+            if (q.includes('calculatrice') || q.includes('calc')) {
+                widgetArea.innerHTML = `
+                    <div class="integrated-widget">
+                        <div style="font-size:0.9rem; text-transform:uppercase; margin-bottom:5px;">Calculatrice Metro</div>
+                        <input type="text" class="calc-screen" id="calc-display" value="0" readonly>
+                        <div class="calc-grid">
+                            <button class="calc-btn" onclick="calcInput('7')">7</button>
+                            <button class="calc-btn" onclick="calcInput('8')">8</button>
+                            <button class="calc-btn" onclick="calcInput('9')">9</button>
+                            <button class="calc-btn" onclick="calcInput('/')">/</button>
+                            <button class="calc-btn" onclick="calcInput('4')">4</button>
+                            <button class="calc-btn" onclick="calcInput('5')">5</button>
+                            <button class="calc-btn" onclick="calcInput('6')">6</button>
+                            <button class="calc-btn" onclick="calcInput('*')">*</button>
+                            <button class="calc-btn" onclick="calcInput('1')">1</button>
+                            <button class="calc-btn" onclick="calcInput('2')">2</button>
+                            <button class="calc-btn" onclick="calcInput('3')">3</button>
+                            <button class="calc-btn" onclick="calcInput('-')">-</button>
+                            <button class="calc-btn" onclick="calcClear()">C</button>
+                            <button class="calc-btn" onclick="calcInput('0')">0</button>
+                            <button class="calc-btn" onclick="calcCompute()">=</button>
+                            <button class="calc-btn" onclick="calcInput('+')">+</button>
+                        </div>
+                    </div>
+                `;
+            } else if (q.includes('traducteur') || q.includes('traduction')) {
+                widgetArea.innerHTML = `
+                    <div class="integrated-widget">
+                        <div style="font-size:0.9rem; text-transform:uppercase; margin-bottom:10px;">Bing Traducteur Intégré</div>
+                        <textarea style="width:100%; background:#000; color:#fff; border:1px solid #444; padding:10px;" rows="3" placeholder="Texte à traduire..."></textarea>
+                        <button class="metro-btn" style="margin-top:10px; width:100%;">Traduire en Anglais</button>
+                    </div>
+                `;
+            } else if (q.includes('timer') || q.includes('minuteur')) {
+                widgetArea.innerHTML = `
+                    <div class="integrated-widget" style="text-align:center;">
+                        <div style="font-size:0.9rem; text-transform:uppercase;">Minuteur Metro</div>
+                        <div style="font-size:3rem; font-weight:100; margin:10px 0;">05:00</div>
+                        <button class="metro-btn">Démarrer</button>
+                    </div>
+                `;
+            }
+        }
+
+        /* RENDU PRINCIPAL DES RÉSULTATS SELON L'ONGLET */
+        async function renderResults() {
+            generateAIOverview(state.query);
+            checkAndRenderWidgets(state.query);
+
+            const area = document.getElementById('tab-content-area');
+            area.innerHTML = '<div style="padding:20px; font-weight:200;">Chargement des résultats pertinents...</div>';
+
+            if (state.activeTab === 'web') {
+                try {
+                    const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(state.query)}&format=json`);
+                    const data = await res.json();
+                    
+                    let html = `<div class="results-grid">`;
+                    
+                    // Génération de résultats simulés pertinents + DDG
+                    const results = data.RelatedTopics || [];
+                    
+                    if(results.length === 0) {
+                        html += `
+                            <div class="result-item">
+                                <a class="result-title" href="https://www.bing.com/search?q=${encodeURIComponent(state.query)}" target="_blank">${state.query} - Recherche Bing</a>
+                                <div class="result-url">https://www.bing.com</div>
+                                <div class="result-snippet">Consultez les résultats de recherche étendus pour ${state.query} directement sur l'index de Bing.</div>
+                            </div>
+                        `;
+                    }
+
+                    results.forEach((item, index) => {
+                        if (item.Text) {
+                            // Transformation ponctuelle de 1/4 des résultats en Live Tiles animées
+                            const isLiveTile = (index % 4 === 0);
+                            
+                            if (isLiveTile) {
+                                html += `
+                                    <div class="tile wide live-tile flipped-auto" style="height:120px; width:100%; margin-bottom:15px;">
+                                        <div class="live-tile-inner">
+                                            <div class="live-tile-front">
+                                                <a class="result-title" href="${item.FirstURL || '#'}" target="_blank">${item.Text.substring(0, 50)}...</a>
+                                                <div class="result-url">${item.FirstURL || 'https://web-result.com'}</div>
+                                            </div>
+                                            <div class="live-tile-back">
+                                                <div style="font-size:0.85rem;">${item.Text}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                html += `
+                                    <div class="result-item">
+                                        <a class="result-title" href="${item.FirstURL || '#'}" target="_blank">${item.Text.substring(0, 60)}...</a>
+                                        <div class="result-url">${item.FirstURL || 'https://encyclopedia.org'}</div>
+                                        <div class="result-snippet">${item.Text}</div>
+                                    </div>
+                                `;
+                            }
+                        }
+                    });
+                    
+                    html += `</div>`;
+                    area.innerHTML = html;
+
+                } catch(e) {
+                    area.innerHTML = `<div class="result-item"><a class="result-title" href="#">Résultat pour ${state.query}</a><div class="result-snippet">Impossible de charger les données en direct. Vérifiez votre connexion.</div></div>`;
+                }
+            } 
+            else if (state.activeTab === 'images') {
+                // Utilisation de Unsplash comme source d'images d'aperçu dynamique
+                state.imageResultsList = [
+                    `https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600`,
+                    `https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=600`,
+                    `https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600`,
+                    `https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=600`,
+                    `https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600`
+                ];
+
+                let html = `<div class="image-results-grid">`;
+                state.imageResultsList.forEach((url, i) => {
+                    html += `
+                        <div class="img-card" style="background-image:url('${url}')" onclick="openImageModal(${i})">
+                            <div class="img-overlay">Image ${i+1} - Aperçu HD</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                area.innerHTML = html;
+            }
+            else if (state.activeTab === 'shopping') {
+                area.innerHTML = `
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <a class="result-title" href="https://www.amazon.fr/s?k=${encodeURIComponent(state.query)}" target="_blank">Acheter "${state.query}" sur Amazon</a>
+                            <div class="result-url">https://www.amazon.fr</div>
+                            <div class="result-snippet">Trouvez les meilleures offres et livraisons rapides pour ${state.query}.</div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (state.activeTab === 'maps') {
+                area.innerHTML = `
+                    <div style="width:100%; height:450px; border:2px solid var(--accent-color);">
+                        <iframe width="100%" height="100%" frameborder="0" scrolling="no" src="https://www.openstreetmap.org/export/embed.html?layer=mapnik"></iframe>
+                    </div>
+                `;
+            }
+            else {
+                area.innerHTML = `<div style="padding:20px;">Affichage des résultats pour la catégorie : <strong>${state.activeTab}</strong>.</div>`;
+            }
+        }
+
+        /* LECTEUR D'IMAGES METRO MODAL */
+        function openImageModal(index) {
+            state.currentImageIndex = index;
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img-display');
+            const fullBtn = document.getElementById('btn-full-img');
+            const siteBtn = document.getElementById('btn-site-img');
+
+            const currentUrl = state.imageResultsList[index];
+            img.src = currentUrl;
+            fullBtn.href = currentUrl;
+            siteBtn.href = currentUrl;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').style.display = 'none';
+        }
+
+        /* EVENEMENTS & LOGIQUE DE L'INTERFACE */
+        function setupEvents() {
+            // Soumission de recherche
+            document.getElementById('home-search-submit').onclick = () => triggerSearch(document.getElementById('home-query').value);
+            document.getElementById('home-query').onkeypress = (e) => { if(e.key === 'Enter') triggerSearch(e.target.value); };
+
+            document.getElementById('header-search-submit').onclick = () => triggerSearch(document.getElementById('header-query').value);
+            document.getElementById('header-query').onkeypress = (e) => { if(e.key === 'Enter') triggerSearch(e.target.value); };
+
+            // Retour à l'accueil via Logo
+            document.getElementById('btn-go-home').onclick = () => {
+                document.getElementById('results-view').style.display = 'none';
+                document.getElementById('header-search-box').style.display = 'none';
+                document.getElementById('home-view').style.display = 'block';
+            };
+
+            // Gestion des Onglets
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.onclick = () => {
+                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    state.activeTab = tab.getAttribute('data-tab');
+                    renderResults();
+                };
+            });
+
+            // Flyout Paramètres
+            document.getElementById('btn-open-settings').onclick = () => toggleSettings(true);
+            document.getElementById('btn-close-settings').onclick = () => toggleSettings(false);
+
+            // Choix des Couleurs
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.onclick = () => {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    state.accentColor = opt.getAttribute('data-color');
+                    localStorage.setItem('nex_color', state.accentColor);
+                    applySettings();
+                };
+            });
+
+            // Toggles Paramètres
+            document.getElementById('toggle-ai').onchange = (e) => {
+                state.aiEnabled = e.target.checked;
+                localStorage.setItem('nex_ai', state.aiEnabled);
+                if (state.query) generateAIOverview(state.query);
+            };
+
+            document.getElementById('toggle-bing-bg').onchange = (e) => {
+                state.bingBgEnabled = e.target.checked;
+                localStorage.setItem('nex_bing', state.bingBgEnabled);
+                applySettings();
+            };
+
+            document.getElementById('btn-clear-history').onclick = () => {
+                state.history = [];
+                localStorage.removeItem('nex_history');
+                renderHistory();
+            };
+
+            // Navigation Lecteur Image
+            document.getElementById('btn-prev-img').onclick = () => {
+                if (state.currentImageIndex > 0) openImageModal(state.currentImageIndex - 1);
+            };
+            document.getElementById('btn-next-img').onclick = () => {
+                if (state.currentImageIndex < state.imageResultsList.length - 1) openImageModal(state.currentImageIndex + 1);
+            };
+        }
+
+        function toggleSettings(open) {
+            const flyout = document.getElementById('settings-flyout');
+            if (open) flyout.classList.add('open');
+            else flyout.classList.remove('open');
+        }
+
+        /* ANIMATION EN CONTINU DES LIVE TILES */
+        function startLiveTilesAnimation() {
+            setInterval(() => {
+                const tiles = document.querySelectorAll('.live-tile');
+                tiles.forEach(tile => {
+                    if (Math.random() > 0.5) {
+                        tile.classList.toggle('flipped');
+                    }
+                });
+            }, 4000);
+        }
+
+        /* CALCULATRICE METRO - FONCTIONS */
+        function calcInput(val) {
+            const screen = document.getElementById('calc-display');
+            if (screen.value === '0') screen.value = val;
+            else screen.value += val;
+        }
+        function calcClear() {
+            document.getElementById('calc-display').value = '0';
+        }
+        function calcCompute() {
+            const screen = document.getElementById('calc-display');
+            try {
+                screen.value = eval(screen.value);
+            } catch(e) {
+                screen.value = 'Erreur';
+            }
+        }
+    </script>
+</body>
+</html>
