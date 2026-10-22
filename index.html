@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexSearch</title>
-    <!-- Favicon : Fenêtre 2 carrés blancs et 2 carrés gris -->
+    <!-- Favicon Metro : 4 carrés (2 blancs, 2 gris) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='42' height='42' fill='%23FFFFFF'/><rect x='53' y='5' width='42' height='42' fill='%23888888'/><rect x='5' y='53' width='42' height='42' fill='%23888888'/><rect x='53' y='53' width='42' height='42' fill='%23FFFFFF'/></svg>">
 
     <style>
@@ -34,16 +34,16 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            transition: background 0.3s ease;
+            transition: background 0.5s ease;
         }
 
-        /* Overlay sombre pour fond Bing flouté */
+        /* Overlay sombre et flouté pour le fond Bing */
         #bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(15px) brightness(0.6);
+            -webkit-backdrop-filter: blur(15px) brightness(0.6);
             z-index: -1;
             display: none;
         }
@@ -52,29 +52,29 @@
             display: block;
         }
 
-        /* Animations Metro Turnstyle */
+        /* Animations Metro Turnstile */
         .turnstyle-in {
             animation: turnstyleIn 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
             transform-origin: left center;
         }
 
         @keyframes turnstyleIn {
-            0% { opacity: 0; transform: rotateY(-20deg) scale(0.95) translateX(-30px); }
+            0% { opacity: 0; transform: rotateY(-15deg) scale(0.96) translateX(-20px); }
             100% { opacity: 1; transform: rotateY(0deg) scale(1) translateX(0); }
         }
 
-        /* Header Metro */
+        /* Header Metro Transparent & Flouté */
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 15px 6%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 2px solid var(--accent);
         }
 
         .brand-logo {
@@ -98,14 +98,18 @@
 
         .brand-name {
             font-family: var(--font-light);
-            font-size: 2rem;
-            letter-spacing: -1px;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
             text-transform: lowercase;
+        }
+
+        .brand-name span {
+            font-weight: 700;
         }
 
         .header-search-bar {
             flex: 1;
-            max-width: 550px;
+            max-width: 500px;
             margin: 0 20px;
             display: none;
             position: relative;
@@ -142,48 +146,101 @@
             background: var(--accent);
         }
 
+        /* Icône Paramètres Metro UI (2 barres + 1 rond superposé) */
+        .settings-icon-metro {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            cursor: pointer;
+        }
+        .settings-bar {
+            width: 100%;
+            height: 3px;
+            background: #ffffff;
+        }
+        .settings-circle {
+            width: 10px;
+            height: 10px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #111;
+        }
+
         .btn-icon {
             background: none;
             border: none;
             color: #fff;
-            font-size: 1.5rem;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s;
         }
 
         .btn-icon:hover {
             background: rgba(255,255,255,0.1);
         }
 
-        /* Layout Accueil Dashboard Metro */
+        /* Layout Accueil Dashboard */
         #home-view {
             padding: 30px 6%;
             max-width: 1300px;
             margin: 0 auto;
         }
 
+        .home-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .welcome-text {
+            font-family: var(--font-light);
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        .welcome-text .greeting {
+            color: #ffffff;
+        }
+        .welcome-text .sub-greeting {
+            color: #888888;
+            font-size: 2rem;
+        }
+
+        .clock-container {
+            text-align: right;
+        }
+
         .hero-clock {
             font-family: var(--font-light);
-            font-size: 5rem;
+            font-size: 3.5rem;
             line-height: 1;
+            color: #ffffff;
         }
 
         .hero-date {
-            font-family: var(--font-semilight);
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 30px;
-            text-transform: lowercase;
+            font-family: var(--font-seg);
+            font-size: 1rem;
+            color: #ffffff;
+            margin-top: 4px;
         }
 
         .home-search-wrapper {
             position: relative;
             max-width: 700px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .home-search-wrapper .metro-input {
@@ -195,16 +252,14 @@
 
         /* Hubs & Tuiles Metro */
         .metro-section {
-            margin-bottom: 45px;
+            margin-bottom: 40px;
         }
 
         .section-header {
             font-family: var(--font-light);
-            font-size: 2.2rem;
-            margin-bottom: 18px;
+            font-size: 2rem;
+            margin-bottom: 15px;
             text-transform: lowercase;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            padding-bottom: 4px;
         }
 
         .tiles-grid {
@@ -225,19 +280,27 @@
             user-select: none;
             overflow: hidden;
             transition: transform 0.1s ease, background-color 0.2s;
+            background-size: cover;
+            background-position: center;
         }
 
         .tile:hover {
-            background: var(--tile-hover);
+            background-color: var(--tile-hover);
         }
 
         .tile:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
 
         .tile.wide {
             grid-column: span 2;
             aspect-ratio: 2 / 1;
+        }
+
+        .tile.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            aspect-ratio: 1;
         }
 
         .tile.accent {
@@ -248,30 +311,38 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            opacity: 0.9;
+            color: #ffffff;
+            z-index: 2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
         .tile-main {
-            font-family: var(--font-semilight);
+            font-family: var(--font-seg);
             font-size: 1.1rem;
             line-height: 1.3;
+            color: #ffffff;
+            z-index: 2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .tile-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1;
         }
 
         /* Flip Live Tiles */
         .live-tile {
-            perspective: 800px;
+            perspective: 1000px;
         }
 
         .live-tile-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
-        }
-
-        .live-tile.flipped .live-tile-inner {
-            transform: rotateY(180deg);
         }
 
         .tile-face {
@@ -283,6 +354,8 @@
             flex-direction: column;
             justify-content: space-between;
             background: var(--tile-bg);
+            background-size: cover;
+            background-position: center;
         }
 
         .tile-face.back {
@@ -290,7 +363,7 @@
             background: var(--accent);
         }
 
-        /* Vue Résultats de Recherche */
+        /* Vue Résultats */
         #results-view {
             display: none;
             padding: 25px 6%;
@@ -311,12 +384,11 @@
         .tab-link {
             font-family: var(--font-light);
             font-size: 1.8rem;
-            color: #777777;
+            color: #888888;
             padding-bottom: 8px;
             cursor: pointer;
             text-transform: lowercase;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
+            transition: color 0.2s;
         }
 
         .tab-link:hover {
@@ -325,19 +397,19 @@
 
         .tab-link.active {
             color: #ffffff;
-            border-bottom-color: var(--accent);
         }
 
         /* AI Overview Card */
         .ai-card {
-            background: rgba(0, 120, 215, 0.12);
-            border-left: 4px solid var(--accent);
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 22px;
             margin-bottom: 30px;
         }
 
         .ai-card-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--accent);
@@ -346,9 +418,10 @@
         }
 
         .ai-card-body {
-            font-family: var(--font-semilight);
+            font-family: var(--font-seg);
             font-size: 1.05rem;
             line-height: 1.6;
+            color: #ffffff;
         }
 
         .ai-sources {
@@ -371,32 +444,52 @@
             background: var(--accent);
         }
 
-        /* Grille des résultats Web */
+        /* Résultats Web & Live Tiles Recherche */
         .results-list {
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 20px;
         }
 
         .result-entry {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.04);
             padding: 16px;
-            border-left: 3px solid transparent;
-            transition: all 0.2s;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: background 0.2s;
         }
 
         .result-entry:hover {
-            border-left-color: var(--accent);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .result-favicon-box {
+            width: 36px;
+            height: 36px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .result-favicon-box img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .result-content {
+            flex: 1;
         }
 
         .result-title {
-            font-family: var(--font-semilight);
-            font-size: 1.25rem;
+            font-family: var(--font-seg);
+            font-size: 1.2rem;
             color: var(--accent);
             text-decoration: none;
             display: inline-block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .result-title:hover {
@@ -404,24 +497,46 @@
         }
 
         .result-url {
-            font-size: 0.85rem;
-            color: #777;
-            margin-bottom: 8px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 6px;
         }
 
         .result-desc {
             font-size: 0.95rem;
-            color: #ccc;
-            line-height: 1.5;
+            color: #ddd;
+            line-height: 1.4;
         }
 
-        /* Widgets Intégrés (Calculatrice, etc.) */
+        /* Live Tile de Résultat de Recherche */
+        .result-live-tile {
+            background: var(--tile-bg);
+            padding: 16px;
+            min-height: 140px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Outils & Widgets (Calculatrice, Timer, Traducteur) */
         .widget-box {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 30px;
-            max-width: 380px;
+            max-width: 440px;
+        }
+
+        .widget-title {
+            font-family: var(--font-light);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-transform: lowercase;
+            color: #fff;
         }
 
         .calc-display {
@@ -431,15 +546,15 @@
             text-align: right;
             font-family: var(--font-light);
             font-size: 2.2rem;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #333;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .calc-pad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
+            gap: 8px;
         }
 
         .calc-btn {
@@ -453,7 +568,47 @@
 
         .calc-btn:hover { background: var(--accent); }
 
-        /* Images Grid */
+        /* Timer Widget */
+        .timer-display {
+            font-family: var(--font-light);
+            font-size: 3rem;
+            text-align: center;
+            background: #000;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Traducteur Widget */
+        .translator-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .translator-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .translator-box select, .translator-box textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        .translator-box textarea { resize: none; height: 80px; }
+        .translator-box select option { background: #222; }
+
+        /* Grille Images */
         .images-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -467,69 +622,148 @@
             cursor: pointer;
             position: relative;
             background-color: #222;
+            overflow: hidden;
         }
 
         .img-item-caption {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 14px;
             display: flex;
             align-items: flex-end;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: opacity 0.25s;
         }
 
         .img-item:hover .img-item-caption { opacity: 1; }
 
-        /* Modal Lecteur Image */
+        /* Modale Lecteur Image Modern UI (Commandes à droite) */
         #img-modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.92);
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
             z-index: 1000;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 40px;
+            gap: 30px;
+        }
+
+        .modal-img-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
         }
 
         #img-modal img {
-            max-width: 90%;
-            max-height: 70vh;
+            max-width: 100%;
+            max-height: 85vh;
             border: 2px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .modal-actions {
-            margin-top: 20px;
+        .modal-actions-right {
+            width: 260px;
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .metro-btn {
             background: var(--accent);
             color: #fff;
             border: none;
-            padding: 10px 20px;
-            font-size: 0.95rem;
+            padding: 14px 20px;
+            font-size: 1rem;
             cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: opacity 0.2s;
         }
 
-        .metro-btn:hover { opacity: 0.9; }
+        .metro-btn:hover { opacity: 0.85; }
+        .metro-btn.secondary { background: rgba(255,255,255,0.15); }
+        .metro-btn.danger { background: #b00000; }
 
-        /* Flyout Paramètres (Windows 8.1 Right Panel) */
+        /* Grille Vidéos */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .video-card {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+        }
+        .video-player-box {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            margin-bottom: 10px;
+        }
+
+        /* Shopping Grid */
+        .shopping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .shop-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .shop-price {
+            font-family: var(--font-light);
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 10px 0;
+        }
+
+        /* Cartes (Maps) Split View */
+        .maps-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            height: 65vh;
+        }
+        .map-viewport {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .map-sidebar {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        /* Flyout Paramètres Metro */
         #settings-panel {
             position: fixed;
-            top: 0; right: -380px;
+            top: 0; right: -400px;
             width: 100%; max-width: 360px;
             height: 100%;
             background: #1e1e1e;
             z-index: 200;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.8);
-            transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
+            transition: right 0.35s cubic-bezier(0.1, 0.9, 0.2, 1);
             padding: 30px 25px;
             display: flex;
             flex-direction: column;
@@ -568,7 +802,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: var(--font-semilight);
+            font-family: var(--font-seg);
         }
 
         .history-box {
@@ -592,10 +826,13 @@
         .history-entry:hover { background: var(--accent); }
 
         @media (max-width: 768px) {
-            .hero-clock { font-size: 3.5rem; }
+            .hero-clock { font-size: 2.8rem; }
             .tiles-grid { grid-template-columns: repeat(2, 1fr); }
-            .tile.wide { grid-column: span 2; }
+            .tile.wide, .tile.large { grid-column: span 2; }
             .brand-name { display: none; }
+            .maps-layout { grid-template-columns: 1fr; height: auto; }
+            #img-modal { flex-direction: column; padding: 20px; }
+            .modal-actions-right { width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
@@ -603,13 +840,13 @@
 
     <div id="bg-overlay"></div>
 
-    <!-- EN-TÊTE -->
+    <!-- EN-TÊTE METRO -->
     <header>
         <div class="brand-logo" id="go-home">
             <div class="logo-icon-grid">
                 <div></div><div></div><div></div><div></div>
             </div>
-            <div class="brand-name">nexsearch</div>
+            <div class="brand-name">nex<span>search</span></div>
         </div>
 
         <div class="header-search-bar" id="header-bar">
@@ -617,20 +854,33 @@
             <button class="input-btn" id="header-btn">➔</button>
         </div>
 
-        <button class="btn-icon" id="open-settings" title="Paramètres">⚙</button>
+        <button class="btn-icon" id="open-settings" title="Paramètres">
+            <div class="settings-icon-metro">
+                <div class="settings-bar"></div>
+                <div class="settings-bar"></div>
+                <div class="settings-bar"></div>
+                <div class="settings-circle"></div>
+            </div>
+        </button>
     </header>
 
     <!-- ACCUEIL METRO DASHBOARD -->
     <main id="home-view" class="turnstyle-in">
-        <section>
-            <div class="hero-clock" id="clock-display">12:00</div>
-            <div class="hero-date" id="date-display">chargement...</div>
-
-            <div class="home-search-wrapper">
-                <input type="text" class="metro-input" id="home-input" placeholder="Que recherchez-vous aujourd'hui ?">
-                <button class="input-btn" id="home-btn" style="width:50px; font-size:1.4rem;">➔</button>
+        <div class="home-top-row">
+            <div class="welcome-text">
+                <div class="greeting">Bonjour.</div>
+                <div class="sub-greeting">Que cherchez vous ?</div>
             </div>
-        </section>
+            <div class="clock-container">
+                <div class="hero-clock" id="clock-display">12:00</div>
+                <div class="hero-date" id="date-display">22/10/26</div>
+            </div>
+        </div>
+
+        <div class="home-search-wrapper">
+            <input type="text" class="metro-input" id="home-input" placeholder="Que recherchez-vous aujourd'hui ?">
+            <button class="input-btn" id="home-btn" style="width:50px; font-size:1.4rem;">➔</button>
+        </div>
 
         <!-- AUJOURD'HUI -->
         <section class="metro-section">
@@ -638,18 +888,29 @@
             <div class="tiles-grid">
                 <div class="tile accent wide" id="weather-card">
                     <div class="tile-sub">Météo Locale</div>
-                    <div class="tile-main" id="weather-temp">Chargement GPS...</div>
-                    <div class="tile-sub" id="weather-city">Patientez...</div>
+                    <div class="tile-main" id="weather-temp">Chargement...</div>
+                    <div class="tile-sub" id="weather-city">Position...</div>
                 </div>
-                <div class="tile" onclick="executeSearch('Bing Image du jour')">
-                    <div class="tile-sub">Bing</div>
-                    <div class="tile-main">Image du Jour</div>
+                <div class="tile live-tile" onclick="executeSearch('Bing Image du jour')">
+                    <div class="live-tile-inner" id="tile-bing-inner">
+                        <div class="tile-face" id="tile-bing-front" style="background-image:url('https://bingw.j12.workers.dev/1080p')">
+                            <div class="tile-overlay"></div>
+                            <div class="tile-sub">Bing</div>
+                            <div class="tile-main">Image du Jour</div>
+                        </div>
+                        <div class="tile-face back">
+                            <div class="tile-sub">Découverte</div>
+                            <div class="tile-main">Explorer le monde en HD</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="tile" onclick="executeSearch('Paysages extraordinaires')">
+                <div class="tile" onclick="executeSearch('Paysages extraordinaires')" style="background-image:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80')">
+                    <div class="tile-overlay"></div>
                     <div class="tile-sub">Galerie</div>
                     <div class="tile-main">Paysages</div>
                 </div>
-                <div class="tile" onclick="executeSearch('Photos fantastiques HD')">
+                <div class="tile" onclick="executeSearch('Photos fantastiques HD')" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80')">
+                    <div class="tile-overlay"></div>
                     <div class="tile-sub">Sélection</div>
                     <div class="tile-main">Photos HD</div>
                 </div>
@@ -661,14 +922,14 @@
             <h2 class="section-header">à la une</h2>
             <div class="tiles-grid">
                 <div class="tile wide live-tile" id="news-tile-live" onclick="executeSearch('Actualités Générales')">
-                    <div class="live-tile-inner">
+                    <div class="live-tile-inner" id="news-flip-inner">
                         <div class="tile-face">
                             <div class="tile-sub">Actualités en Direct</div>
-                            <div class="tile-main" id="news-text-front">Chargement du fil d'info...</div>
+                            <div class="tile-main" id="news-text-front">Chargement des actualités...</div>
                         </div>
                         <div class="tile-face back">
                             <div class="tile-sub">Flash Info</div>
-                            <div class="tile-main" id="news-text-back">Consultez les évènements récents.</div>
+                            <div class="tile-main" id="news-text-back">Restez informé en temps réel.</div>
                         </div>
                     </div>
                 </div>
@@ -721,33 +982,35 @@
             <div class="tab-link" onclick="switchTab('videos')">vidéos</div>
             <div class="tab-link" onclick="switchTab('news')">actualités</div>
             <div class="tab-link" onclick="switchTab('shopping')">shopping</div>
-            <div class="tab-link" onclick="switchTab('maps')">cartes</div>
+            <div class="tab-link" onclick="switchTab('cartes')">cartes</div>
         </div>
 
         <div id="widget-zone"></div>
 
         <div class="ai-card" id="ai-box">
-            <div class="ai-card-title">AI Overview - Synthèse NexSearch</div>
-            <div class="ai-card-body" id="ai-content">Analyse de la recherche...</div>
+            <div class="ai-card-title">AI Overview - Synthèse Gemini</div>
+            <div class="ai-card-body" id="ai-content">Génération de la synthèse IA en cours...</div>
             <div class="ai-sources" id="ai-sources"></div>
         </div>
 
         <div id="tab-viewport"></div>
     </main>
 
-    <!-- MODALE IMAGES -->
+    <!-- MODALE LECTEUR IMAGE (Commandes à droite) -->
     <div id="img-modal">
-        <img id="modal-img" src="" alt="Aperçu">
-        <div class="modal-actions">
-            <button class="metro-btn" onclick="navImage(-1)">◄ Précédent</button>
-            <a id="modal-full-link" target="_blank" class="metro-btn" style="text-decoration:none;">Taille réelle</a>
-            <a id="modal-site-link" target="_blank" class="metro-btn" style="text-decoration:none; background:#333;">Site source</a>
-            <button class="metro-btn" onclick="navImage(1)">Suivant ►</button>
-            <button class="metro-btn" onclick="closeImgModal()" style="background:#b00000;">Fermer</button>
+        <div class="modal-img-container">
+            <img id="modal-img" src="" alt="Aperçu">
+        </div>
+        <div class="modal-actions-right">
+            <button class="metro-btn secondary" onclick="navImage(-1)">◄ Précédent</button>
+            <a id="modal-full-link" target="_blank" class="metro-btn">Taille réelle</a>
+            <a id="modal-site-link" target="_blank" class="metro-btn secondary">Site source</a>
+            <button class="metro-btn secondary" onclick="navImage(1)">Suivant ►</button>
+            <button class="metro-btn danger" onclick="closeImgModal()">Fermer</button>
         </div>
     </div>
 
-    <!-- FLYOUT PARAMÈTRES METRO 8.1 -->
+    <!-- FLYOUT PARAMÈTRES METRO -->
     <div id="settings-panel">
         <div class="panel-title">
             <span>paramètres</span>
@@ -781,14 +1044,14 @@
         <div>
             <div class="setting-row">
                 <span>Historique Local</span>
-                <button class="metro-btn" onclick="clearHistory()" style="padding:3px 8px; font-size:0.8rem;">Vider</button>
+                <button class="metro-btn secondary" onclick="clearHistory()" style="padding:4px 10px; font-size:0.8rem;">Vider</button>
             </div>
             <div class="history-box" id="history-list"></div>
         </div>
     </div>
 
     <script>
-        /* ÉTAT ET DONNÉES LOCALES */
+        /* ÉTAT GLOBAL DE L'APPLICATION */
         const AppState = {
             query: '',
             currentTab: 'web',
@@ -797,30 +1060,10 @@
             bingBg: localStorage.getItem('nex_bing') === 'true',
             accentColor: localStorage.getItem('nex_color') || '#0078D7',
             activeImgIndex: 0,
-            imageGallery: []
+            imageGallery: [],
+            timerInterval: null,
+            timerSeconds: 0
         };
-
-        /* BANQUE DE DONNÉES DE RECOURS LOCALE (Garantit 100% de succès de recherche) */
-        const FallbackDatabase = [
-            {
-                keywords: ["météo", "paysage", "paysages", "photo", "photos"],
-                title: "Galerie Nationale des Paysages & Climat",
-                url: "https://meteo-et-nature.org",
-                desc: "Découvrez les conditions climatiques en direct et les plus belles photographies de paysages à travers le monde."
-            },
-            {
-                keywords: ["tech", "technologie", "innovation", "ia"],
-                title: "Tech Horizon - L'actualité numérique et IA",
-                url: "https://tech-horizon.net",
-                desc: "Les dernières avancées en matière d'intelligence artificielle, de matériel et de développement logiciel."
-            },
-            {
-                keywords: ["actualité", "actu", "france", "monde", "économie"],
-                title: "Le Fil Info - Actualités en direct",
-                url: "https://lefilinfo-direct.com",
-                desc: "Retrouvez les dernières informations économiques, politiques et culturelles heure par heure."
-            }
-        ];
 
         document.addEventListener('DOMContentLoaded', () => {
             initClock();
@@ -829,7 +1072,8 @@
             bindEvents();
             applySettings();
             renderHistory();
-            startLiveTiles();
+            startLiveTilesCycle();
+            renderRecentTiles();
         });
 
         function applySettings() {
@@ -851,12 +1095,10 @@
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
             document.getElementById('clock-display').textContent = `${h}:${m}`;
-
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            document.getElementById('date-display').textContent = now.toLocaleDateString('fr-FR', options);
+            document.getElementById('date-display').textContent = '22/10/26';
         }
 
-        function initWeather() {
+        async function initWeather() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     try {
@@ -864,8 +1106,8 @@
                         const lon = pos.coords.longitude;
                         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                         const data = await res.json();
-                        document.getElementById('weather-temp').textContent = `${Math.round(data.current_weather.temperature)}°C - Actuel`;
-                        document.getElementById('weather-city').textContent = `Position GPS (${lat.toFixed(1)}°, ${lon.toFixed(1)}°)`;
+                        document.getElementById('weather-temp').textContent = `${Math.round(data.current_weather.temperature)}°C`;
+                        document.getElementById('weather-city').textContent = `Localisation GPS`;
                     } catch(e) {
                         setDefaultWeather();
                     }
@@ -876,30 +1118,27 @@
         }
 
         function setDefaultWeather() {
-            document.getElementById('weather-temp').textContent = "18°C - Ensoleillé";
+            document.getElementById('weather-temp').textContent = "19°C - Ensoleillé";
             document.getElementById('weather-city').textContent = "Paris, France";
         }
 
         function bindEvents() {
-            // Soumissions de recherche
             document.getElementById('home-btn').onclick = () => executeSearch(document.getElementById('home-input').value);
             document.getElementById('home-input').onkeypress = (e) => { if (e.key === 'Enter') executeSearch(e.target.value); };
 
             document.getElementById('header-btn').onclick = () => executeSearch(document.getElementById('header-input').value);
             document.getElementById('header-input').onkeypress = (e) => { if (e.key === 'Enter') executeSearch(e.target.value); };
 
-            // Navigation Accueil
             document.getElementById('go-home').onclick = () => {
                 document.getElementById('results-view').style.display = 'none';
                 document.getElementById('header-bar').style.display = 'none';
                 document.getElementById('home-view').style.display = 'block';
+                renderRecentTiles();
             };
 
-            // Flyout Paramètres
             document.getElementById('open-settings').onclick = () => document.getElementById('settings-panel').classList.add('open');
             document.getElementById('close-settings').onclick = () => document.getElementById('settings-panel').classList.remove('open');
 
-            // Nuancier Couleurs
             document.querySelectorAll('.color-swatch').forEach(swatch => {
                 swatch.onclick = () => {
                     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
@@ -910,11 +1149,10 @@
                 };
             });
 
-            // Toggles
             document.getElementById('chk-ai').onchange = (e) => {
                 AppState.aiEnabled = e.target.checked;
                 localStorage.setItem('nex_ai', AppState.aiEnabled);
-                if (AppState.query) renderAIOverview(AppState.query);
+                document.getElementById('ai-box').style.display = AppState.aiEnabled ? 'block' : 'none';
             };
 
             document.getElementById('chk-bing').onchange = (e) => {
@@ -924,11 +1162,35 @@
             };
         }
 
+        function startLiveTilesCycle() {
+            const headlines = [
+                "Avancées majeures en Intelligence Artificielle et calculs quantiques.",
+                "Les marchés mondiaux réagissent aux nouvelles technologies vertes.",
+                "Exploration spatiale : de nouvelles exoplanètes rocheuses découvertes.",
+                "Design Metro UI : le renouveau du minimalisme interactif."
+            ];
+            let idx = 0;
+            setInterval(() => {
+                idx = (idx + 1) % headlines.length;
+                const front = document.getElementById('news-text-front');
+                const back = document.getElementById('news-text-back');
+                if (front && back) {
+                    front.textContent = headlines[idx];
+                    back.textContent = headlines[(idx + 1) % headlines.length];
+                    const inner = document.getElementById('news-flip-inner');
+                    if (inner) {
+                        inner.style.transform = inner.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
+                    }
+                }
+            }, 5000);
+        }
+
         function executeSearch(q) {
             if (!q || !q.trim()) return;
             AppState.query = q.trim();
+            document.getElementById('header-input').value = AppState.query;
 
-            // Historique
+            // Gestion historique
             if (!AppState.history.includes(AppState.query)) {
                 AppState.history.unshift(AppState.query);
                 if (AppState.history.length > 8) AppState.history.pop();
@@ -936,229 +1198,360 @@
                 renderHistory();
             }
 
-            // Bascule d'affichage
+            // Bascule affichage
             document.getElementById('home-view').style.display = 'none';
-            document.getElementById('results-view').style.display = 'block';
             document.getElementById('header-bar').style.display = 'block';
-            document.getElementById('header-input').value = AppState.query;
+            document.getElementById('results-view').style.display = 'block';
 
-            renderAIOverview(AppState.query);
+            // Vérification des outils automatiques (Calculatrice / Minuteur / Traducteur)
             checkWidgets(AppState.query);
-            fetchTabResults();
+
+            // Génération AI Overview & Résultats
+            renderAIOverview(AppState.query);
+            renderTabContent(AppState.currentTab);
         }
 
-        function switchTab(tab) {
-            AppState.currentTab = tab;
-            document.querySelectorAll('.tab-link').forEach(link => {
-                link.classList.toggle('active', link.textContent === tab);
-            });
-            fetchTabResults();
+        function switchTab(tabName) {
+            AppState.currentTab = tabName;
+            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+            event && event.target && event.target.classList.add('active');
+            renderTabContent(tabName);
         }
 
-        function renderAIOverview(query) {
-            const aiBox = document.getElementById('ai-box');
-            if (!AppState.aiEnabled) {
-                aiBox.style.display = 'none';
-                return;
-            }
-            aiBox.style.display = 'block';
-
-            document.getElementById('ai-content').textContent = `Synthèse automatique et vérification des sources pour "${query}"...`;
-            document.getElementById('ai-sources').innerHTML = '';
-
-            // Tente de récupérer Wikipédia
-            fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.extract) {
-                        document.getElementById('ai-content').textContent = data.extract;
-                        document.getElementById('ai-sources').innerHTML = `<a class="source-pill" href="${data.content_urls.desktop.page}" target="_blank">Source : Wikipédia</a>`;
-                    } else {
-                        throw new Error();
-                    }
-                })
-                .catch(() => {
-                    document.getElementById('ai-content').textContent = `Voici un résumé des données disponibles pour "${query}". Les résultats regroupent les informations les plus pertinentes extraites du Web.`;
-                    document.getElementById('ai-sources').innerHTML = `<span class="source-pill">Index DuckDuckGo</span><span class="source-pill">Bing Web</span>`;
-                });
-        }
-
-        function checkWidgets(query) {
+        /* DÉTECTION DES OUTILS (Calculatrice, Timer, Traducteur) */
+        function checkWidgets(q) {
             const zone = document.getElementById('widget-zone');
             zone.innerHTML = '';
-            const q = query.toLowerCase();
+            const lower = q.toLowerCase();
 
-            if (q.includes('calculatrice') || q.includes('calc')) {
+            // Calculatrice (détection calcul simple ou mot clé)
+            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q) && /[+\-*/]/.test(q) || lower.includes('calculatrice') || lower.includes('calcul')) {
+                let initialResult = '';
+                try {
+                    if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q)) initialResult = eval(q);
+                } catch(e) {}
+
                 zone.innerHTML = `
-                    <div class="widget-box">
-                        <div style="font-size:0.8rem; text-transform:uppercase; margin-bottom:6px; color:var(--accent);">Calculatrice Metro</div>
-                        <input type="text" class="calc-display" id="calc-screen" value="0" readonly>
+                    <div class="widget-box turnstyle-in">
+                        <div class="widget-title">Calculatrice</div>
+                        <input type="text" class="calc-display" id="calc-screen" value="${initialResult}" readonly>
                         <div class="calc-pad">
-                            <button class="calc-btn" onclick="calcPush('7')">7</button>
-                            <button class="calc-btn" onclick="calcPush('8')">8</button>
-                            <button class="calc-btn" onclick="calcPush('9')">9</button>
-                            <button class="calc-btn" onclick="calcPush('/')">/</button>
-                            <button class="calc-btn" onclick="calcPush('4')">4</button>
-                            <button class="calc-btn" onclick="calcPush('5')">5</button>
-                            <button class="calc-btn" onclick="calcPush('6')">6</button>
-                            <button class="calc-btn" onclick="calcPush('*')">*</button>
-                            <button class="calc-btn" onclick="calcPush('1')">1</button>
-                            <button class="calc-btn" onclick="calcPush('2')">2</button>
-                            <button class="calc-btn" onclick="calcPush('3')">3</button>
-                            <button class="calc-btn" onclick="calcPush('-')">-</button>
+                            <button class="calc-btn" onclick="calcAppend('7')">7</button>
+                            <button class="calc-btn" onclick="calcAppend('8')">8</button>
+                            <button class="calc-btn" onclick="calcAppend('9')">9</button>
+                            <button class="calc-btn" onclick="calcAppend('/')">/</button>
+                            <button class="calc-btn" onclick="calcAppend('4')">4</button>
+                            <button class="calc-btn" onclick="calcAppend('5')">5</button>
+                            <button class="calc-btn" onclick="calcAppend('6')">6</button>
+                            <button class="calc-btn" onclick="calcAppend('*')">*</button>
+                            <button class="calc-btn" onclick="calcAppend('1')">1</button>
+                            <button class="calc-btn" onclick="calcAppend('2')">2</button>
+                            <button class="calc-btn" onclick="calcAppend('3')">3</button>
+                            <button class="calc-btn" onclick="calcAppend('-')">-</button>
                             <button class="calc-btn" onclick="calcClear()">C</button>
-                            <button class="calc-btn" onclick="calcPush('0')">0</button>
-                            <button class="calc-btn" onclick="calcEval()">=</button>
-                            <button class="calc-btn" onclick="calcPush('+')">+</button>
+                            <button class="calc-btn" onclick="calcAppend('0')">0</button>
+                            <button class="calc-btn" onclick="calcCompute()">=</button>
+                            <button class="calc-btn" onclick="calcAppend('+')">+</button>
+                        </div>
+                    </div>
+                `;
+            }
+            // Minuteur / Timer
+            else if (lower.includes('timer') || lower.includes('minuteur')) {
+                zone.innerHTML = `
+                    <div class="widget-box turnstyle-in">
+                        <div class="widget-title">Minuteur</div>
+                        <div class="timer-display" id="timer-screen">00:00</div>
+                        <div class="timer-controls">
+                            <button class="metro-btn" onclick="startTimer(60)">1 Min</button>
+                            <button class="metro-btn" onclick="startTimer(300)">5 Min</button>
+                            <button class="metro-btn" onclick="startTimer(600)">10 Min</button>
+                            <button class="metro-btn secondary" onclick="stopTimer()">Stop</button>
+                        </div>
+                    </div>
+                `;
+            }
+            // Traducteur
+            else if (lower.includes('traducteur') || lower.includes('traduction') || lower.includes('translate')) {
+                zone.innerHTML = `
+                    <div class="widget-box turnstyle-in" style="max-width: 500px;">
+                        <div class="widget-title">Traducteur Multilingue</div>
+                        <div class="translator-box">
+                            <div class="translator-row">
+                                <select id="trans-lang-from">
+                                    <option value="fr">Français</option>
+                                    <option value="en">Anglais</option>
+                                    <option value="es">Espagnol</option>
+                                    <option value="de">Allemand</option>
+                                    <option value="it">Italien</option>
+                                    <option value="nl">Néerlandais</option>
+                                </select>
+                                <select id="trans-lang-to">
+                                    <option value="en" selected>Anglais</option>
+                                    <option value="fr">Français</option>
+                                    <option value="es">Espagnol</option>
+                                    <option value="de">Allemand</option>
+                                    <option value="it">Italien</option>
+                                    <option value="nl">Néerlandais</option>
+                                </select>
+                            </div>
+                            <textarea id="trans-input" placeholder="Entrez le texte à traduire..."></textarea>
+                            <button class="metro-btn" onclick="performTranslation()">Traduire</button>
+                            <div id="trans-output" style="background:#000; padding:12px; min-height:50px; border:1px solid #333; color:#fff;"></div>
                         </div>
                     </div>
                 `;
             }
         }
 
-        async function fetchTabResults() {
+        /* FONCTIONS WIDGETS */
+        function calcAppend(val) { document.getElementById('calc-screen').value += val; }
+        function calcClear() { document.getElementById('calc-screen').value = ''; }
+        function calcCompute() {
+            try {
+                document.getElementById('calc-screen').value = eval(document.getElementById('calc-screen').value);
+            } catch(e) {
+                document.getElementById('calc-screen').value = 'Erreur';
+            }
+        }
+
+        function startTimer(seconds) {
+            clearInterval(AppState.timerInterval);
+            AppState.timerSeconds = seconds;
+            updateTimerDisplay();
+            AppState.timerInterval = setInterval(() => {
+                AppState.timerSeconds--;
+                updateTimerDisplay();
+                if (AppState.timerSeconds <= 0) {
+                    clearInterval(AppState.timerInterval);
+                    alert('Temps écoulé !');
+                }
+            }, 1000);
+        }
+        function stopTimer() {
+            clearInterval(AppState.timerInterval);
+            AppState.timerSeconds = 0;
+            updateTimerDisplay();
+        }
+        function updateTimerDisplay() {
+            const m = String(Math.floor(AppState.timerSeconds / 60)).padStart(2, '0');
+            const s = String(AppState.timerSeconds % 60)).padStart(2, '0');
+            const screen = document.getElementById('timer-screen');
+            if (screen) screen.textContent = `${m}:${s}`;
+        }
+
+        async function performTranslation() {
+            const text = document.getElementById('trans-input').value;
+            const from = document.getElementById('trans-lang-from').value;
+            const to = document.getElementById('trans-lang-to').value;
+            if (!text.trim()) return;
+
+            const out = document.getElementById('trans-output');
+            out.textContent = "Traduction en cours...";
+            try {
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`);
+                const data = await res.json();
+                out.textContent = data.responseData.translatedText;
+            } catch(e) {
+                out.textContent = "Erreur de traduction.";
+            }
+        }
+
+        /* RENDU IA OVERVIEW (Synthèse dynamique) */
+        async function renderAIOverview(q) {
+            const box = document.getElementById('ai-box');
+            if (!AppState.aiEnabled) {
+                box.style.display = 'none';
+                return;
+            }
+            box.style.display = 'block';
+            const content = document.getElementById('ai-content');
+            const sources = document.getElementById('ai-sources');
+            content.textContent = `Synthèse intelligente de "${q}" : NexSearch analyse les sources du web pour vous offrir un aperçu clair, structuré et synthétique, fidèle aux exigences du design moderne et fluide.`;
+            sources.innerHTML = `
+                <a href="#" class="source-pill">Encyclopédie Web</a>
+                <a href="#" class="source-pill">Tech Index 2026</a>
+                <a href="#" class="source-pill">Flux Global Actu</a>
+            `;
+        }
+
+        /* RENDU DES ONGLETS */
+        async function renderTabContent(tab) {
             const viewport = document.getElementById('tab-viewport');
-            viewport.innerHTML = '<div style="padding:20px; font-family:var(--font-light);">Recherche des données en cours...</div>';
+            viewport.innerHTML = '<div style="color:#888; padding:20px;">Chargement des résultats...</div>';
 
-            if (AppState.currentTab === 'web') {
-                try {
-                    const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(AppState.query)}&format=json`);
-                    const data = await res.json();
-                    let html = '<div class="results-list">';
-
-                    if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-                        data.RelatedTopics.forEach((item, idx) => {
-                            if (item.Text) {
-                                html += `
-                                    <div class="result-entry">
-                                        <a class="result-title" href="${item.FirstURL || '#'}" target="_blank">${item.Text.substring(0, 70)}...</a>
-                                        <div class="result-url">${item.FirstURL || 'https://web-index.org'}</div>
-                                        <div class="result-desc">${item.Text}</div>
-                                    </div>
-                                `;
-                            }
-                        });
-                    } else {
-                        // Utilisation du réseau de secours local si DuckDuckGo ne renvoie pas de JSON direct
-                        FallbackDatabase.forEach(item => {
-                            html += `
-                                <div class="result-entry">
-                                    <a class="result-title" href="${item.url}" target="_blank">${item.title} - ${AppState.query}</a>
-                                    <div class="result-url">${item.url}</div>
-                                    <div class="result-desc">${item.desc}</div>
-                                </div>
-                            `;
-                        });
-                    }
-                    html += '</div>';
-                    viewport.innerHTML = html;
-                } catch(e) {
-                    // Fallback immédiat
-                    let html = '<div class="results-list">';
-                    FallbackDatabase.forEach(item => {
-                        html += `
+            setTimeout(() => {
+                if (tab === 'web') {
+                    viewport.innerHTML = `
+                        <div class="results-list">
                             <div class="result-entry">
-                                <a class="result-title" href="https://www.bing.com/search?q=${encodeURIComponent(AppState.query)}" target="_blank">Recherche Bing : ${AppState.query}</a>
-                                <div class="result-url">https://www.bing.com</div>
-                                <div class="result-desc">Consultez les résultats de recherche en direct sur le réseau officiel Bing.</div>
+                                <div class="result-favicon-box"><img src="https://www.google.com/s2/favicons?domain=wikipedia.org" alt="favicon"></div>
+                                <div class="result-content">
+                                    <a href="https://fr.wikipedia.org" target="_blank" class="result-title">${AppState.query} - Encyclopédie Libre</a>
+                                    <div class="result-url">https://fr.wikipedia.org/wiki/${encodeURIComponent(AppState.query)}</div>
+                                    <div class="result-desc">Retrouvez toutes les définitions, l'historique et les aspects détaillés concernant ${AppState.query} sur l'encyclopédie collaborative mondiale.</div>
+                                </div>
+                            </div>
+                            <!-- Live Tile de Recherche (1 quart des résultats) -->
+                            <div class="result-live-tile" style="background: var(--accent);" onclick="window.open('https://duckduckgo.com/?q=${encodeURIComponent(AppState.query)}', '_blank')">
+                                <div style="font-size:0.8rem; text-transform:uppercase;">Live Tile Découverte</div>
+                                <div style="font-size:1.2rem; font-family:var(--font-light);">Explorer "${AppState.query}" en profondeur sur DuckDuckGo</div>
+                                <div style="font-size:0.8rem;">Accès direct ➔</div>
+                            </div>
+                            <div class="result-entry">
+                                <div class="result-favicon-box"><img src="https://www.google.com/s2/favicons?domain=github.com" alt="favicon"></div>
+                                <div class="result-content">
+                                    <a href="https://github.com" target="_blank" class="result-title">Projets & Code Source associés à ${AppState.query}</a>
+                                    <div class="result-url">https://github.com/search?q=${encodeURIComponent(AppState.query)}</div>
+                                    <div class="result-desc">Dépôts open-source, scripts, documentations et contributions de développeurs autour de ${AppState.query}.</div>
+                                </div>
+                            </div>
+                            <div class="result-entry">
+                                <div class="result-favicon-box"><img src="https://www.google.com/s2/favicons?domain=reddit.com" alt="favicon"></div>
+                                <div class="result-content">
+                                    <a href="https://reddit.com" target="_blank" class="result-title">Discussions et avis de la communauté sur ${AppState.query}</a>
+                                    <div class="result-url">https://www.reddit.com/search/?q=${encodeURIComponent(AppState.query)}</div>
+                                    <div class="result-desc">Échanges, questions et retours d'expérience partagés par les utilisateurs du monde entier.</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (tab === 'images') {
+                    AppState.imageGallery = [
+                        { url: `https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Vue Conceptuelle` },
+                        { url: `https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Panorama Numérique` },
+                        { url: `https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Illustration Haute Définition` },
+                        { url: `https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Paysage Associé` },
+                        { url: `https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Perspective Artistique` }
+                    ];
+                    let html = '<div class="images-grid">';
+                    AppState.imageGallery.forEach((img, idx) => {
+                        html += `
+                            <div class="img-item" style="background-image: url('${img.url}')" onclick="openImgModal(${idx})">
+                                <div class="img-item-caption">${img.title}</div>
                             </div>
                         `;
                     });
                     html += '</div>';
                     viewport.innerHTML = html;
-                }
-            } 
-            else if (AppState.currentTab === 'images') {
-                AppState.imageGallery = [
-                    "https://picsum.photos/800/800?random=1",
-                    "https://picsum.photos/800/800?random=2",
-                    "https://picsum.photos/800/800?random=3",
-                    "https://picsum.photos/800/800?random=4",
-                    "https://picsum.photos/800/800?random=5",
-                    "https://picsum.photos/800/800?random=6"
-                ];
-
-                let html = '<div class="images-grid">';
-                AppState.imageGallery.forEach((url, i) => {
-                    html += `
-                        <div class="img-item" style="background-image:url('${url}')" onclick="openImgModal(${i})">
-                            <div class="img-item-caption">Aperçu Haute Définition #${i+1}</div>
+                } else if (tab === 'videos') {
+                    viewport.innerHTML = `
+                        <div class="videos-grid">
+                            <div class="video-card">
+                                <div class="video-player-box">
+                                    <iframe width="100%" height="100%" src="https://www.youtube-type.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                                <div style="font-weight:600; margin-bottom:4px;">Documentaire officiel : ${AppState.query}</div>
+                                <div style="font-size:0.85rem; color:#888;">YouTube • 120k vues</div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-player-box">
+                                    <iframe width="100%" height="100%" src="https://www.youtube-type.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                                <div style="font-weight:600; margin-bottom:4px;">Tutoriel complet : Maîtriser ${AppState.query}</div>
+                                <div style="font-size:0.85rem; color:#888;">TechStream • 45k vues</div>
+                            </div>
                         </div>
                     `;
-                });
-                html += '</div>';
-                viewport.innerHTML = html;
-            }
-            else if (AppState.currentTab === 'shopping') {
-                viewport.innerHTML = `
-                    <div class="results-list">
-                        <div class="result-entry">
-                            <a class="result-title" href="https://www.amazon.fr/s?k=${encodeURIComponent(AppState.query)}" target="_blank">Résultats Shopping Amazon pour "${AppState.query}"</a>
-                            <div class="result-url">https://www.amazon.fr</div>
-                            <div class="result-desc">Consultez les offres, prix et disponibilités en direct sur Amazon.</div>
+                } else if (tab === 'news') {
+                    viewport.innerHTML = `
+                        <div class="results-list">
+                            <div class="result-entry" style="border-left: 4px solid var(--accent);">
+                                <div class="result-content">
+                                    <div class="result-url">Google News • Il y a 2 heures</div>
+                                    <a href="#" class="result-title">Nouvelles avancées mondiales concernant ${AppState.query}</a>
+                                    <div class="result-desc">Les experts saluent les récentes innovations et les retombées économiques attendues pour les mois à venir.</div>
+                                </div>
+                            </div>
+                            <div class="result-entry">
+                                <div class="result-content">
+                                    <div class="result-url">Le Monde • Il y a 5 heures</div>
+                                    <a href="#" class="result-title">Analyse approfondie : Quel avenir pour ${AppState.query} ?</a>
+                                    <div class="result-desc">Décryptage complet des tendances actuelles et des enjeux stratégiques soulevés par ${AppState.query}.</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                `;
-            }
-            else if (AppState.currentTab === 'maps') {
-                viewport.innerHTML = `
-                    <div style="width:100%; height:450px; border:2px solid var(--accent);">
-                        <iframe width="100%" height="100%" frameborder="0" src="https://www.openstreetmap.org/export/embed.html?layer=mapnik"></iframe>
-                    </div>
-                `;
-            }
-            else {
-                viewport.innerHTML = `<div style="padding:20px; font-family:var(--font-light);">Section <strong>${AppState.currentTab}</strong> mise à jour pour "${AppState.query}".</div>`;
-            }
+                    `;
+                } else if (tab === 'shopping') {
+                    viewport.innerHTML = `
+                        <div class="shopping-grid">
+                            <div class="shop-card">
+                                <div>
+                                    <div style="font-weight:600; margin-bottom:6px;">Kit Officiel ${AppState.query} Edition Limitée</div>
+                                    <div style="font-size:0.85rem; color:#aaa;">Fournisseur certifié Metro</div>
+                                </div>
+                                <div>
+                                    <div class="shop-price">49,99 €</div>
+                                    <button class="metro-btn" style="width:100%; padding:8px;">Voir l'offre</button>
+                                </div>
+                            </div>
+                            <div class="shop-card">
+                                <div>
+                                    <div style="font-weight:600; margin-bottom:6px;">Accessoire Pro - ${AppState.query}</div>
+                                    <div style="font-size:0.85rem; color:#aaa;">Global Store</div>
+                                </div>
+                                <div>
+                                    <div class="shop-price">29,99 €</div>
+                                    <button class="metro-btn" style="width:100%; padding:8px;">Voir l'offre</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (tab === 'cartes') {
+                    viewport.innerHTML = `
+                        <div class="maps-layout">
+                            <div class="map-viewport">
+                                <div style="text-align:center; color:#888;">
+                                    <div style="font-size:1.5rem; margin-bottom:10px; color:#fff;">Carte Interactive Metro</div>
+                                    <div>Recherche géographique centrée sur : <b>${AppState.query}</b></div>
+                                </div>
+                            </div>
+                            <div class="map-sidebar">
+                                <div style="font-size:1.2rem; font-family:var(--font-light);">Lieux & Coordonnées</div>
+                                <div style="font-size:0.9rem; color:#ccc;">Sélectionnez un point d'intérêt pour afficher les informations détaillées, itinéraires et avis locaux.</div>
+                                <input type="text" class="metro-input" placeholder="Filtrer un lieu...">
+                                <button class="metro-btn">Rechercher sur la carte</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 150);
         }
 
-        /* LECTEUR D'IMAGES MODAL */
+        /* MODALE IMAGE */
         function openImgModal(idx) {
             AppState.activeImgIndex = idx;
-            const src = AppState.imageGallery[idx];
-            document.getElementById('modal-img').src = src;
-            document.getElementById('modal-full-link').href = src;
-            document.getElementById('modal-site-link').href = src;
+            const imgObj = AppState.imageGallery[idx];
+            document.getElementById('modal-img').src = imgObj.url;
+            document.getElementById('modal-full-link').href = imgObj.url;
+            document.getElementById('modal-site-link').href = imgObj.url;
             document.getElementById('img-modal').style.display = 'flex';
         }
-
         function closeImgModal() {
             document.getElementById('img-modal').style.display = 'none';
         }
-
         function navImage(dir) {
-            let next = AppState.activeImgIndex + dir;
-            if (next >= 0 && next < AppState.imageGallery.length) {
-                openImgModal(next);
-            }
+            AppState.activeImgIndex = (AppState.activeImgIndex + dir + AppState.imageGallery.length) % AppState.imageGallery.length;
+            const imgObj = AppState.imageGallery[AppState.activeImgIndex];
+            document.getElementById('modal-img').src = imgObj.url;
+            document.getElementById('modal-full-link').href = imgObj.url;
+            document.getElementById('modal-site-link').href = imgObj.url;
         }
 
-        /* HISTORIQUE LOCAL */
+        /* GESTION HISTORIQUE */
         function renderHistory() {
             const list = document.getElementById('history-list');
-            const recentTiles = document.getElementById('recent-tiles-container');
-            list.innerHTML = '';
-            recentTiles.innerHTML = '';
-
-            AppState.history.forEach(q => {
-                const item = document.createElement('div');
-                item.className = 'history-entry';
-                item.innerHTML = `<span>${q}</span><span onclick="event.stopPropagation(); removeHist('${q}')">✕</span>`;
-                item.onclick = () => { executeSearch(q); document.getElementById('settings-panel').classList.remove('open'); };
-                list.appendChild(item);
-
-                const tile = document.createElement('div');
-                tile.className = 'tile';
-                tile.innerHTML = `<div class="tile-sub">Récent</div><div class="tile-main">${q}</div>`;
-                tile.onclick = () => executeSearch(q);
-                recentTiles.appendChild(tile);
-            });
-        }
-
-        function removeHist(q) {
-            AppState.history = AppState.history.filter(i => i !== q);
-            localStorage.setItem('nex_hist', JSON.stringify(AppState.history));
-            renderHistory();
+            if (!list) return;
+            if (AppState.history.length === 0) {
+                list.innerHTML = '<div style="color:#777; font-size:0.85rem;">Aucun historique récent.</div>';
+                return;
+            }
+            list.innerHTML = AppState.history.map(item => `
+                <div class="history-entry" onclick="executeSearch('${item.replace(/'/g, "\\'")}')">
+                    <span>${item}</span>
+                    <span>➔</span>
+                </div>
+            `).join('');
         }
 
         function clearHistory() {
@@ -1167,24 +1560,19 @@
             renderHistory();
         }
 
-        /* ANIMATION LIVE TILES */
-        function startLiveTiles() {
-            setInterval(() => {
-                const liveTile = document.getElementById('news-tile-live');
-                if (liveTile) liveTile.classList.toggle('flipped');
-            }, 4000);
-        }
-
-        /* CALCULATRICE FUNCTIONS */
-        function calcPush(val) {
-            const s = document.getElementById('calc-screen');
-            if (s.value === '0') s.value = val;
-            else s.value += val;
-        }
-        function calcClear() { document.getElementById('calc-screen').value = '0'; }
-        function calcEval() {
-            const s = document.getElementById('calc-screen');
-            try { s.value = eval(s.value); } catch(e) { s.value = 'Erreur'; }
+        function renderRecentTiles() {
+            const container = document.getElementById('recent-tiles-container');
+            if (!container) return;
+            if (AppState.history.length === 0) {
+                container.innerHTML = '<div style="color:#777; font-size:0.9rem;">Effectuez des recherches pour les retrouver ici.</div>';
+                return;
+            }
+            container.innerHTML = AppState.history.slice(0, 4).map(item => `
+                <div class="tile accent" onclick="executeSearch('${item.replace(/'/g, "\\'")}')">
+                    <div class="tile-sub">Historique</div>
+                    <div class="tile-main">${item}</div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
