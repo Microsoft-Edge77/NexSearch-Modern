@@ -30,7 +30,7 @@
             color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: url('https://picsum.photos/id/1015/1920/1080');
+            background-image: none;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -42,14 +42,14 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(18px) brightness(0.6);
-            -webkit-backdrop-filter: blur(18px) brightness(0.6);
+            backdrop-filter: blur(var(--blur, 10px)) brightness(0.6);
+            -webkit-backdrop-filter: blur(var(--blur, 10px)) brightness(0.6);
             z-index: 0;
         }
 
         /* Animation Metro Turnstile */
         .turnstyle-tile {
-            animation: turnstyleIn 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+            animation: turnstyleIn 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) both;
             transform-origin: left center;
             perspective: 1000px;
         }
@@ -440,9 +440,28 @@
 
         @media (max-width: 768px) {
             .tiles-grid { grid-template-columns: repeat(2, 1fr); }
-            .tile.wide, .tile.large { grid-column: span 2; }
+            .tile.wide, .tile.large, .tile.xwide { grid-column: span 2; }
             .brand-name { display: none; }
         }
+        .tile.live { padding: 0; perspective: 800px; cursor: pointer; }
+        .live-tile-inner.flipped { transform: rotateY(180deg); }
+        .tile.xwide { grid-column: span 4; }
+        .tile.accent .tile-face { background: var(--accent); }
+        .tile .tile-face.back, .tile.accent .tile-face.back { background: color-mix(in srgb, var(--accent) 55%, #000); }
+        .fav { width: 20px; height: 20px; flex: none; }
+        .res-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); grid-auto-rows: 140px; gap: 8px; margin-bottom: 16px; }
+        .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+        .img-grid img { width: 100%; height: 140px; object-fit: cover; display: block; }
+        .map { width: 100%; height: 420px; border: 0; margin-bottom: 12px; }
+        .ai-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-left: 4px solid var(--accent); padding: 16px; margin-bottom: 20px; max-width: 900px; }
+        .ai-title { font-family: var(--font-light); font-size: 1.4rem; margin-bottom: 6px; }
+        .w-title { font-size: 1.2rem; margin-bottom: 6px; }
+        .metro-sel { flex: 1; background: rgba(255,255,255,0.15); color: #fff; border: 0; padding: 8px; }
+        .metro-sel option { color: #000; }
+        .result-url { word-break: break-all; }
+        .result-url a, .result-url a:visited { color: var(--accent); text-decoration: none; }
+        .no-anim .turnstyle-tile { animation: none; }
+        .no-anim .live-tile-inner { transition: none; }
     </style>
 </head>
 <body>
@@ -468,7 +487,7 @@
         </div>
 
         <button class="settings-btn" id="open-settings" title="Paramètres">
-            <svg class="settings-icon-svg" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            <svg class="settings-icon-svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2"><path d="M2 8h11M12 17h10"/><circle cx="18" cy="8" r="3.5"/><circle cx="6.5" cy="17" r="3.5"/></g></svg>
         </button>
     </header>
 
@@ -498,101 +517,48 @@
         <section class="metro-section">
             <h2 class="section-header">aujourd'hui</h2>
             <div class="tiles-grid">
-                <!-- Tuile Météo Large -->
-                <div class="tile accent wide turnstyle-tile" id="weather-tile">
-                    <div class="tile-sub">Météo Locale</div>
-                    <div class="tile-main" id="weather-temp">19°C - Ensoleillé</div>
-                    <div class="tile-sub" id="weather-city">Paris, France</div>
-                </div>
-
-                <!-- Tuile Bing Image du Jour (Grand Format) -->
-                <div class="tile large turnstyle-tile" onclick="triggerSearch('Bing Image du jour')" style="background-image:url('https://picsum.photos/id/1018/600/600')">
-                    <div class="tile-overlay"></div>
-                    <div class="tile-sub">Bing</div>
-                    <div class="tile-main">Image du Jour HD</div>
-                </div>
-
-                <!-- Tuile Galerie Paysages -->
-                <div class="tile turnstyle-tile" onclick="triggerSearch('Paysages extraordinaires')" style="background-image:url('https://picsum.photos/id/1015/300/300')">
-                    <div class="tile-overlay"></div>
-                    <div class="tile-sub">Galerie</div>
-                    <div class="tile-main">Paysages</div>
-                </div>
-
-                <!-- Tuile Photos HD -->
-                <div class="tile dark turnstyle-tile" onclick="triggerSearch('Photos HD')">
-                    <div class="tile-sub">Sélection</div>
-                    <div class="tile-main">Photos HD</div>
-                </div>
+                <div class="tile live accent wide turnstyle-tile" id="weather-tile" data-q="météo"><div class="live-tile-inner">
+                    <div class="tile-face"><div class="tile-sub">Météo</div><div class="tile-main" id="w-temp" style="font-size:2.2rem;font-weight:300">…</div><div class="tile-sub" id="w-city">Localisation…</div></div>
+                    <div class="tile-face back"><div class="tile-sub">Maintenant</div><div class="tile-main" id="w-desc">…</div><div class="tile-sub" id="w-mm"></div></div>
+                </div></div>
+                <div class="tile live large turnstyle-tile" id="bing-tile"><div class="live-tile-inner">
+                    <div class="tile-face"><div class="tile-sub">Bing</div><div class="tile-main">Image du jour</div></div>
+                    <div class="tile-face back"><div class="tile-sub">Bing · Image du jour</div><div class="tile-main" id="bing-title">Chargement…</div></div>
+                </div></div>
+                <div class="tile live turnstyle-tile" id="gallery-tile" data-q="paysages" data-tab="images"><div class="live-tile-inner">
+                    <div class="tile-face"><div class="tile-sub">Galerie</div><div class="tile-main">Paysages</div></div>
+                    <div class="tile-face back"><div class="tile-sub">Galerie</div><div class="tile-main">Paysages</div></div>
+                </div></div>
+                <div class="tile dark turnstyle-tile" data-q="photos HD" data-tab="images"><div class="tile-sub">Sélection</div><div class="tile-main">Photos HD</div></div>
             </div>
         </section>
-
-        <!-- SECTION À LA UNE -->
         <section class="metro-section">
             <h2 class="section-header">à la une</h2>
             <div class="tiles-grid">
-                <!-- Live Tile Actualités Flip -->
-                <div class="tile wide turnstyle-tile" onclick="triggerSearch('Actualités Générales')">
-                    <div class="live-tile-inner" id="news-flip-box">
-                        <div class="tile-face">
-                            <div class="tile-sub">Actualités en Direct</div>
-                            <div class="tile-main" id="news-front-text">Avancées majeures dans l'IA quantique.</div>
-                        </div>
-                        <div class="tile-face back">
-                            <div class="tile-sub">Flash Info</div>
-                            <div class="tile-main" id="news-back-text">Les marchés mondiaux en hausse.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tile accent turnstyle-tile" onclick="triggerSearch('Actualités Tech')">
-                    <div class="tile-sub">Rubrique</div>
-                    <div class="tile-main">Tech</div>
-                </div>
-
-                <div class="tile dark turnstyle-tile" onclick="triggerSearch('Économie')">
-                    <div class="tile-sub">Rubrique</div>
-                    <div class="tile-main">Économie</div>
-                </div>
+                <div class="tile live xwide turnstyle-tile" id="news-tile" data-q="actualités" data-tab="actualités"><div class="live-tile-inner">
+                    <div class="tile-face"><div class="tile-sub">Actualités en direct</div><div class="tile-main">Chargement…</div></div>
+                    <div class="tile-face back"><div class="tile-sub">Flash info</div><div class="tile-main">Chargement…</div></div>
+                </div></div>
+                <div class="tile accent turnstyle-tile" data-q="technologie" data-tab="actualités"><div class="tile-sub">Rubrique</div><div class="tile-main">Tech</div></div>
+                <div class="tile dark turnstyle-tile" data-q="économie" data-tab="actualités"><div class="tile-sub">Rubrique</div><div class="tile-main">Économie</div></div>
             </div>
         </section>
-
-        <!-- SECTION EXPLORER -->
         <section class="metro-section">
             <h2 class="section-header">explorer</h2>
             <div class="tiles-grid">
-                <div class="tile dark turnstyle-tile" onclick="triggerSearch('calculatrice')">
-                    <div class="tile-sub">Outil</div>
-                    <div class="tile-main">Calculatrice</div>
-                </div>
-                <div class="tile accent turnstyle-tile" onclick="triggerSearch('traducteur')">
-                    <div class="tile-sub">Outil</div>
-                    <div class="tile-main">Traducteur</div>
-                </div>
-                <div class="tile dark turnstyle-tile" onclick="triggerSearch('timer')">
-                    <div class="tile-sub">Outil</div>
-                    <div class="tile-main">Minuteur</div>
-                </div>
-                <div class="tile wide turnstyle-tile" onclick="switchTab('cartes'); triggerSearch('Cartes du monde');">
-                    <div class="tile-sub">Navigation</div>
-                    <div class="tile-main">Cartes & Itinéraires</div>
-                </div>
+                <div class="tile dark turnstyle-tile" data-tool="calc"><div class="tile-sub">Outil</div><div class="tile-main">Calculatrice</div></div>
+                <div class="tile accent turnstyle-tile" data-tool="trad"><div class="tile-sub">Outil</div><div class="tile-main">Traducteur</div></div>
+                <div class="tile dark turnstyle-tile" data-tool="timer"><div class="tile-sub">Outil</div><div class="tile-main">Minuteur</div></div>
+                <div class="tile wide turnstyle-tile" data-q="Paris" data-tab="cartes"><div class="tile-sub">Navigation</div><div class="tile-main">Cartes &amp; Itinéraires</div></div>
             </div>
         </section>
     </main>
 
     <!-- PAGE DES RÉSULTATS -->
     <main id="results-view">
-        <div class="metro-tabs">
-            <div class="tab-link active" onclick="switchTab('web')">web</div>
-            <div class="tab-link" onclick="switchTab('images')">images</div>
-            <div class="tab-link" onclick="switchTab('vidéos')">vidéos</div>
-            <div class="tab-link" onclick="switchTab('actualités')">actualités</div>
-            <div class="tab-link" onclick="switchTab('shopping')">shopping</div>
-            <div class="tab-link" onclick="switchTab('cartes')">cartes</div>
-        </div>
+        <div class="metro-tabs"><div class="tab-link active" data-tab="web">web</div><div class="tab-link" data-tab="images">images</div><div class="tab-link" data-tab="vidéos">vidéos</div><div class="tab-link" data-tab="actualités">actualités</div><div class="tab-link" data-tab="shopping">shopping</div><div class="tab-link" data-tab="cartes">cartes</div></div>
 
-        <div id="widget-zone"></div>
+        <div id="widget-zone"></div><div id="ai-zone"></div>
         <div id="tab-viewport"></div>
     </main>
 
@@ -610,202 +576,145 @@
                 <div class="color-swatch" style="background:#e3a21a;" data-color="#e3a21a"></div>
             </div>
         </div>
+        <div><div style="font-size:0.9rem; margin-bottom:8px;">Flou Acrylic</div><input type="range" id="blur-range" min="0" max="30" style="width:100%"></div>
+        <label style="font-size:0.9rem;"><input type="checkbox" id="anim-chk"> Animations Turnstile</label>
         <button style="background:#b00000; color:#fff; border:none; padding:10px; cursor:pointer;" id="close-settings">Fermer</button>
     </div>
 
     <script>
-        const AppState = {
-            query: '',
-            currentTab: 'web',
-            accentColor: localStorage.getItem('nex_color') || '#0078D7'
-        };
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const ls=(k,d)=>{try{return localStorage.getItem(k)??d}catch(e){return d}};
+const lset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safe=u=>/^https?:\/\//i.test(u)?esc(u):'#';
+const txt=s=>new DOMParser().parseFromString(s||'','text/html').body.textContent;
+const host=u=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}};
+const S={q:'',tab:'web',rid:0,accent:ls('nex_color','#0078D7'),blur:ls('nex_blur','10'),anim:ls('nex_anim','1')};
+const PAL=['#0078D7','#008a00','#a200ff','#d80073','#e3a21a','#825a2c','#00aba9','#e51400'];
+const col=h=>PAL[[...h].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL.length];
+const flip=el=>el.classList.toggle('flipped');
+const jget=async u=>{const r=await fetch(u);if(!r.ok)throw 0;return r.json()};
+const viaProxy=async u=>{for(const p of [x=>'https://api.allorigins.win/raw?url='+encodeURIComponent(x),x=>'https://corsproxy.io/?'+encodeURIComponent(x)]){try{const r=await fetch(p(u));if(r.ok)return await r.text()}catch(e){}}throw 0};
+const rss=async u=>{const x=new DOMParser().parseFromString(await viaProxy(u),'text/xml');const g=(i,t)=>i.querySelector(t)?.textContent||'';const a=[...x.querySelectorAll('item')].map(i=>({t:txt(g(i,'title')),l:g(i,'link'),d:txt(g(i,'description')),p:g(i,'pubDate')}));if(!a.length)throw 0;return a};
+async function commons(q,n,type){const j=await jget('https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit='+n+'&prop=imageinfo&iiprop=url&iiurlwidth=480&format=json&origin=*&gsrsearch='+encodeURIComponent(q+' filetype:'+type));return Object.values(j.query?.pages||{}).sort((a,b)=>a.index-b.index).filter(p=>p.imageinfo).map(p=>({t:p.title.replace(/^File:|\.\w+$/g,''),th:p.imageinfo[0].thumburl,p:p.imageinfo[0].descriptionurl}))}
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initClock();
-            setInterval(initClock, 1000);
-            initWeather();
-            bindEvents();
-            startLiveTileCycle();
-            applySettings();
-        });
+/* ---------- Réglages ---------- */
+function applySettings(){const r=document.documentElement;r.style.setProperty('--accent',S.accent);r.style.setProperty('--blur',S.blur+'px');r.classList.toggle('no-anim',S.anim!=='1');$$('.color-swatch').forEach(s=>s.classList.toggle('active',s.dataset.color===S.accent));$('#blur-range').value=S.blur;$('#anim-chk').checked=S.anim==='1'}
 
-        function applySettings() {
-            document.documentElement.style.setProperty('--accent', AppState.accentColor);
-        }
+/* ---------- Horloge, météo, Bing, actualités, galerie ---------- */
+function tickClock(){const n=new Date();$('#clock-display').textContent=n.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});$('#date-display').textContent=n.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'})}
+function rotor(tile,count,apply,min,max){const inner=tile.querySelector('.live-tile-inner'),f=inner.children;let i=0;(function loop(){setTimeout(()=>{const c=count();if(apply&&c>1){i=(i+1)%c;apply(f[inner.classList.contains('flipped')?0:1],i)}flip(inner);loop()},min+Math.random()*(max-min))})()}
+const WMO={0:'Ciel dégagé',1:'Plutôt dégagé',2:'Partiellement nuageux',3:'Couvert',45:'Brouillard',48:'Brouillard givrant',51:'Bruine légère',53:'Bruine',55:'Bruine dense',61:'Pluie faible',63:'Pluie',65:'Forte pluie',71:'Neige faible',73:'Neige',75:'Forte neige',80:'Averses',81:'Averses',82:'Fortes averses',95:'Orage',96:'Orage et grêle',99:'Orage et grêle'};
+async function initWeather(){let L;
+ try{L=await new Promise((ok,ko)=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>ok({lat:p.coords.latitude,lon:p.coords.longitude}),ko,{timeout:6000}):ko())}
+ catch(e){try{const g=await jget('https://get.geojs.io/v1/ip/geo.json');L={lat:+g.latitude,lon:+g.longitude,city:g.city}}catch(e2){L={lat:48.85,lon:2.35,city:'Paris'}}}
+ const w=await jget(`https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lon}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`);
+ if(!L.city){try{const g=await jget(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${L.lat}&longitude=${L.lon}&localityLanguage=fr`);L.city=g.city||g.locality||g.principalSubdivision}catch(e){}}
+ $('#w-temp').textContent=Math.round(w.current.temperature_2m)+'°C';
+ $('#w-city').textContent=L.city||'Votre position';
+ $('#w-desc').textContent=WMO[w.current.weather_code]||'Météo';
+ $('#w-mm').textContent=`Min ${Math.round(w.daily.temperature_2m_min[0])}° · Max ${Math.round(w.daily.temperature_2m_max[0])}° · Vent ${Math.round(w.current.wind_speed_10m)} km/h`}
+async function initBing(){const d=new Date().toISOString().slice(0,10);let b;
+ try{b=JSON.parse(ls('nex_bing','null'));if(!b||b.d!==d)b=null}catch(e){b=null}
+ if(!b){const tries=[async()=>{const j=await jget('https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=fr-FR');return{url:j.url,t:j.copyright}},async()=>{const i=JSON.parse(await viaProxy('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=fr-FR')).images[0];return{url:'https://www.bing.com'+i.urlbase+'_1920x1080.jpg',t:i.copyright}}];
+  for(const f of tries){try{b=await f();if(b&&b.url){b.d=d;lset('nex_bing',JSON.stringify(b));break}}catch(e){b=null}}}
+ const f=$('#bing-tile').querySelectorAll('.tile-face');
+ if(b){document.body.style.backgroundImage=`url("${b.url}")`;f[0].style.backgroundImage=`url("${b.url}")`;$('#bing-title').textContent=b.t||'Image du jour'}
+ else $('#bing-title').textContent='Image du jour indisponible'}
+async function initNews(){let N=[];
+ try{N=await rss('https://www.francetvinfo.fr/titres.rss')}catch(e){try{N=await rss('https://www.bing.com/news/search?q=actualit%C3%A9s&format=rss&setmkt=fr-FR')}catch(e2){}}
+ const t=$('#news-tile'),m=t.querySelectorAll('.tile-main');
+ if(!N.length){m[0].textContent=m[1].textContent='Actualités indisponibles';return}
+ m[0].textContent=N[0].t;m[1].textContent=(N[1]||N[0]).t;
+ rotor(t,()=>N.length,(f,i)=>{f.querySelector('.tile-main').textContent=N[i].t},6000,6000)}
+async function initGallery(){const G=await commons('landscape mountains lake',12,'bitmap');if(!G.length)return;const t=$('#gallery-tile'),f=t.querySelectorAll('.tile-face');
+ f[0].style.backgroundImage=`url("${G[0].th}")`;f[1].style.backgroundImage=`url("${G[1%G.length].th}")`;
+ rotor(t,()=>G.length,(face,i)=>{face.style.backgroundImage=`url("${G[i].th}")`},5000,9000)}
 
-        function initClock() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock-display').textContent = `${h}:${m}`;
-            document.getElementById('date-display').textContent = '22/10/26';
-        }
+/* ---------- Navigation ---------- */
+function showResults(){$('#home-view').style.display='none';$('#header-bar').style.display='block';$('#results-view').style.display='block';scrollTo(0,0)}
+function syncTabs(){$$('.tab-link').forEach(t=>t.classList.toggle('active',t.dataset.tab===S.tab))}
+function triggerSearch(q,tab){q=(q||'').trim();if(!q)return;S.q=q;if(tab)S.tab=tab;$('#header-input').value=q;showResults();syncTabs();$('#widget-zone').innerHTML=toolFor(q);renderTab()}
+function switchTab(t){S.tab=t;syncTabs();if(S.q)renderTab()}
+function openTool(k){S.q='';S.rid++;showResults();$('#header-input').value='';$('#ai-zone').innerHTML='';$('#tab-viewport').innerHTML='';$('#widget-zone').innerHTML=({calc:()=>calcWidget('',''),trad:trWidget,timer:tWidget})[k]()}
 
-        function initWeather() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    try {
-                        const lat = pos.coords.latitude;
-                        const lon = pos.coords.longitude;
-                        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-                        const data = await res.json();
-                        document.getElementById('weather-temp').textContent = `${Math.round(data.current_weather.temperature)}°C - Actuel`;
-                        document.getElementById('weather-city').textContent = `Position GPS (${lat.toFixed(1)}°, ${lon.toFixed(1)}°)`;
-                    } catch(e) {
-                        setDefaultWeather();
-                    }
-                }, () => setDefaultWeather());
-            } else {
-                setDefaultWeather();
-            }
-        }
+/* ---------- Résultats ---------- */
+const box=h=>{$('#tab-viewport').innerHTML=h};
+const more=(l,u)=>`<p style="margin-top:16px"><a class="result-title" target="_blank" rel="noopener" href="${u}">Voir plus sur ${l} ›</a></p>`;
+const links=(a,e)=>'<div class="res-tiles">'+a.map(([n,u])=>`<a class="tile accent" style="text-decoration:none" target="_blank" rel="noopener" href="${u+e}"><div class="tile-sub">Chercher sur</div><div class="tile-main">${n}</div></a>`).join('')+'</div>';
+const imgs=a=>'<div class="img-grid">'+a.map(i=>`<a target="_blank" rel="noopener" href="${safe(i.p)}" title="${esc(i.t)}"><img loading="lazy" src="${safe(i.th)}" alt="${esc(i.t)}"></a>`).join('')+'</div>';
+const rtile=r=>{const h=host(r.l),c=col(h);return `<div class="tile live" style="background:${c}"><div class="live-tile-inner"><div class="tile-face" style="background:${c}"><img class="fav" src="https://icons.duckduckgo.com/ip3/${esc(h)}.ico" alt=""><div class="tile-main" style="font-size:.95rem">${esc(r.t.slice(0,80))}</div><div class="tile-sub">${esc(h)}</div></div><div class="tile-face back" style="background:${c}"><div class="tile-sub">${esc(h)}</div><div class="tile-main" style="font-size:.8rem">${esc(r.d.slice(0,120))}</div><a class="tile-sub" target="_blank" rel="noopener" href="${safe(r.l)}">Ouvrir ›</a></div></div></div>`};
+const rentry=r=>`<div class="result-entry"><img class="fav" src="https://icons.duckduckgo.com/ip3/${esc(host(r.l))}.ico" alt=""><div><a class="result-title" target="_blank" rel="noopener" href="${safe(r.l)}">${esc(r.t)}</a><div class="result-url">${esc(r.l.slice(0,90))}</div><div class="result-desc">${esc(r.d)}</div></div></div>`;
+const TABS={
+ web:async(q,e)=>{const [b,w]=await Promise.allSettled([rss('https://www.bing.com/search?q='+e+'&format=rss&setmkt=fr-FR'),jget('https://fr.wikipedia.org/w/api.php?action=query&list=search&srlimit=6&format=json&origin=*&srsearch='+e)]);
+  let R=b.status==='fulfilled'?b.value:[];
+  if(w.status==='fulfilled')R=R.concat(w.value.query.search.map(r=>({t:r.title+' — Wikipédia',l:'https://fr.wikipedia.org/wiki/'+encodeURIComponent(r.title.replace(/ /g,'_')),d:txt(r.snippet)})));
+  if(!R.length)throw 0;
+  return (R.length>3?'<div class="res-tiles">'+R.slice(0,3).map(rtile).join('')+'</div>':'')+'<div class="results-list">'+R.slice(R.length>3?3:0).map(rentry).join('')+'</div>'+more('Bing','https://www.bing.com/search?q='+e)},
+ images:async(q,e)=>{const a=await commons(q,30,'bitmap');if(!a.length)throw 0;return imgs(a)+more('Bing Images','https://www.bing.com/images/search?q='+e)},
+ 'vidéos':async(q,e)=>{const a=await commons(q,12,'video').catch(()=>[]);return links([['Bing Vidéos','https://www.bing.com/videos/search?q='],['YouTube','https://www.youtube.com/results?search_query=']],e)+(a.length?'<div class="result-url" style="margin-bottom:8px">Vidéos libres (Wikimedia Commons)</div>'+imgs(a):'')},
+ 'actualités':async(q,e)=>{let a;try{a=await rss('https://www.bing.com/news/search?q='+e+'&format=rss&setmkt=fr-FR')}catch(x){a=await rss('https://www.francetvinfo.fr/titres.rss')}
+  return '<div class="results-list">'+a.slice(0,15).map(r=>`<div class="result-entry"><div><a class="result-title" target="_blank" rel="noopener" href="${safe(r.l)}">${esc(r.t)}</a><div class="result-url">${esc(r.p)}</div><div class="result-desc">${esc(r.d)}</div></div></div>`).join('')+'</div>'+more('Bing Actualités','https://www.bing.com/news/search?q='+e)},
+ shopping:async(q,e)=>links([['Bing Shopping','https://www.bing.com/shop?q='],['Amazon.fr','https://www.amazon.fr/s?k='],['Fnac','https://www.fnac.com/SearchResult/ResultList.aspx?Search='],['Leboncoin','https://www.leboncoin.fr/recherche?text=']],e),
+ cartes:async(q,e)=>{const a=await jget('https://nominatim.openstreetmap.org/search?format=json&limit=5&accept-language=fr&q='+e);if(!a.length)throw 0;const [s,n,w,o]=a[0].boundingbox;
+  return `<iframe class="map" src="https://www.openstreetmap.org/export/embed.html?bbox=${w},${s},${o},${n}&layer=mapnik&marker=${a[0].lat},${a[0].lon}"></iframe><div class="results-list">`+a.map(r=>`<div class="result-entry"><div><a class="result-title" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lon}#map=15/${r.lat}/${r.lon}">${esc(r.display_name)}</a><div><a class="result-url" target="_blank" rel="noopener" href="https://www.openstreetmap.org/directions?to=${r.lat},${r.lon}">Itinéraire ›</a></div></div></div>`).join('')+'</div>'}
+};
+async function renderTab(){const id=++S.rid,q=S.q,e=encodeURIComponent(q);$('#ai-zone').innerHTML='';box('<div class="result-entry">Chargement…</div>');
+ if(S.tab==='web')overview(q,id);
+ try{const h=await TABS[S.tab](q,e);if(id!==S.rid)return;box(h);$$('#tab-viewport .res-tiles .live').forEach(t=>t.onclick=ev=>{if(ev.target.tagName!=='A')flip(t.firstElementChild)})}
+ catch(x){if(id===S.rid)box(`<div class="result-entry">Impossible de charger ces résultats (service ou réseau indisponible). <a class="result-title" target="_blank" rel="noopener" href="https://www.bing.com/search?q=${e}">Ouvrir Bing ›</a></div>`)}}
+async function overview(q,id){try{const s=await jget('https://fr.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch='+encodeURIComponent(q));const t=s.query.search[0]?.title;if(!t)return;
+ const p=await jget('https://fr.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(t.replace(/ /g,'_')));if(id!==S.rid||!p.extract)return;
+ const ss=p.extract.match(/[^.!?]+[.!?]+(\s|$)/g)||[p.extract];
+ $('#ai-zone').innerHTML=`<div class="ai-box"><div class="ai-title">AI Overview</div><div class="result-desc">${esc(ss.slice(0,3).join('').trim())}</div><div class="result-url" style="margin-top:8px">Source : <a target="_blank" rel="noopener" href="${safe(p.content_urls?.desktop?.page)}" style="color:var(--accent)">Wikipédia — ${esc(p.title)}</a> · synthèse automatique extractive, sans IA générative</div></div>`}catch(e){}}
 
-        function setDefaultWeather() {
-            document.getElementById('weather-temp').textContent = "19°C - Ensoleillé";
-            document.getElementById('weather-city').textContent = "Paris, France";
-        }
+/* ---------- Outils ---------- */
+function calc(src){const t=src.replace(/×/g,'*').replace(/÷/g,'/').replace(/,/g,'.').match(/\d+\.?\d*|\.\d+|[-+*/()^%]/g)||[];let i=0;
+ const e=()=>{let v=m();while(t[i]=='+'||t[i]=='-'){const o=t[i++],r=m();v=o=='+'?v+r:v-r}return v};
+ const m=()=>{let v=u();while(t[i]=='*'||t[i]=='/'){const o=t[i++],r=u();v=o=='*'?v*r:v/r}return v};
+ const u=()=>{if(t[i]=='-'){i++;return -u()}if(t[i]=='+'){i++;return u()}return p()};
+ const p=()=>{let b=a();if(t[i]=='^'){i++;b=Math.pow(b,u())}return b};
+ const a=()=>{const x=t[i++];if(x=='('){const v=e();if(t[i++]!=')')throw 0;return v}if(x===undefined||isNaN(x))throw 0;let v=+x;if(t[i]=='%'){i++;v/=100}return v};
+ const r=e();if(i<t.length||!isFinite(r))throw 0;return +r.toFixed(10)}
+const calcWidget=(label,val)=>`<div class="widget-box"><div class="w-title">Calculatrice</div><div class="result-url" id="calc-expr">${esc(label)}</div><input class="calc-display" id="calc-screen" readonly value="${esc(val)}"><div class="calc-pad">${['C','(',')','÷','7','8','9','×','4','5','6','-','1','2','3','+','0','.','⌫','='].map(k=>`<button class="calc-btn" onclick="calcKey('${k}')">${k}</button>`).join('')}</div></div>`;
+function calcKey(k){const s=$('#calc-screen');if(!s)return;if(s.value==='Erreur')s.value='';$('#calc-expr').textContent='';
+ if(k==='C')s.value='';else if(k==='⌫')s.value=s.value.slice(0,-1);else if(k==='='){try{if(s.value)s.value=calc(s.value)}catch(e){s.value='Erreur'}}else s.value+=k}
+document.addEventListener('keydown',e=>{const a=document.activeElement;if(!$('#calc-screen')||(a&&a.id!=='calc-screen'&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)))return;const k=e.key;
+ if(/^[\d.+\-*/()]$/.test(k))calcKey(k==='*'?'×':k==='/'?'÷':k);else if(k==='Enter'||k==='=')calcKey('=');else if(k==='Backspace')calcKey('⌫');else if(k==='Escape')calcKey('C')});
+const LG={fr:'Français',en:'English',es:'Español',de:'Deutsch',it:'Italiano',pt:'Português',nl:'Nederlands',ar:'العربية','zh-CN':'中文',ja:'日本語'};
+const opts=s=>Object.entries(LG).map(([k,v])=>`<option value="${k}"${k==s?' selected':''}>${v}</option>`).join('');
+const trWidget=()=>`<div class="widget-box"><div class="w-title">Traducteur</div><div style="display:flex;gap:6px;margin:10px 0"><select id="tr-a" class="metro-sel">${opts('fr')}</select><button class="calc-btn" onclick="trSwap()" title="Inverser">⇄</button><select id="tr-b" class="metro-sel">${opts('en')}</select></div><textarea id="tr-in" class="metro-input" rows="3" placeholder="Texte à traduire"></textarea><button class="calc-btn" style="width:100%;margin:8px 0;background:var(--accent)" onclick="trRun()">Traduire</button><div id="tr-out" class="result-desc" style="min-height:3em"></div></div>`;
+async function trRun(){const t=$('#tr-in').value.trim();if(!t)return;$('#tr-out').textContent='…';try{const j=await jget('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair='+$('#tr-a').value+'|'+$('#tr-b').value);$('#tr-out').textContent=txt(j.responseData.translatedText)}catch(e){$('#tr-out').textContent='Traduction indisponible.'}}
+function trSwap(){const a=$('#tr-a'),b=$('#tr-b'),o=$('#tr-out').textContent;[a.value,b.value]=[b.value,a.value];if(o&&o!=='…'&&!/indisponible/.test(o))$('#tr-in').value=o;$('#tr-out').textContent=''}
+const T={left:0,iv:0,end:0};
+const tFmt=ms=>{const s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const tSet=()=>((+$('#t-m').value||0)*60+(+$('#t-s').value||0))*1000;
+const tWidget=()=>`<div class="widget-box"><div class="w-title">Minuteur</div><div class="calc-display" id="t-disp">05:00</div><div style="display:flex;gap:6px;margin-bottom:8px"><input id="t-m" class="metro-input" type="number" min="0" value="5" placeholder="min" oninput="T.iv||tReset()"><input id="t-s" class="metro-input" type="number" min="0" max="59" value="0" placeholder="sec" oninput="T.iv||tReset()"></div><div style="display:flex;gap:6px"><button class="calc-btn" style="flex:1;background:var(--accent)" id="t-go" onclick="tGo()">Démarrer</button><button class="calc-btn" style="flex:1" onclick="tReset()">Réinitialiser</button></div></div>`;
+function tGo(){const g=$('#t-go');if(!g)return;if(T.iv){clearInterval(T.iv);T.iv=0;T.left=T.end-Date.now();g.textContent='Reprendre';return}
+ if(!T.left)T.left=tSet();if(T.left<=0)return;T.end=Date.now()+T.left;g.textContent='Pause';
+ T.iv=setInterval(()=>{const l=T.end-Date.now(),d=$('#t-disp');if(l<=0){tReset();beep();if($('#t-disp'))$('#t-disp').textContent='00:00';return}if(d)d.textContent=tFmt(l)},200)}
+function tReset(){clearInterval(T.iv);T.iv=0;T.left=0;const g=$('#t-go');if(g){g.textContent='Démarrer';$('#t-disp').textContent=tFmt(tSet())}}
+function beep(){try{const c=new (window.AudioContext||window.webkitAudioContext)();[0,.3,.6].forEach(t=>{const o=c.createOscillator();o.connect(c.destination);o.frequency.value=880;o.start(c.currentTime+t);o.stop(c.currentTime+t+.15)})}catch(e){}}
+function toolFor(q){const l=q.toLowerCase();
+ if(/^[\d\s.,+\-*/()×÷^%]+$/.test(q)&&/[+\-*/×÷^%]/.test(q)){try{return calcWidget(q+' =',calc(q))}catch(e){}}
+ if(/calculatrice|calculette/.test(l))return calcWidget('','');if(/traduc|translat/.test(l))return trWidget();if(/minuteur|timer|chrono/.test(l))return tWidget();return ''}
 
-        function bindEvents() {
-            // Boutons de recherche
-            document.getElementById('home-btn').addEventListener('click', () => {
-                triggerSearch(document.getElementById('home-input').value);
-            });
-            document.getElementById('home-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') triggerSearch(e.target.value);
-            });
-
-            document.getElementById('header-btn').addEventListener('click', () => {
-                triggerSearch(document.getElementById('header-input').value);
-            });
-            document.getElementById('header-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') triggerSearch(e.target.value);
-            });
-
-            // Accueil
-            document.getElementById('go-home').addEventListener('click', () => {
-                document.getElementById('results-view').style.display = 'none';
-                document.getElementById('header-bar').style.display = 'none';
-                document.getElementById('home-view').style.display = 'block';
-            });
-
-            // Paramètres
-            document.getElementById('open-settings').onclick = () => document.getElementById('settings-panel').classList.add('open');
-            document.getElementById('close-settings').onclick = () => document.getElementById('settings-panel').classList.remove('open');
-
-            document.querySelectorAll('.color-swatch').forEach(swatch => {
-                swatch.onclick = () => {
-                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-                    swatch.classList.add('active');
-                    AppState.accentColor = swatch.getAttribute('data-color');
-                    localStorage.setItem('nex_color', AppState.accentColor);
-                    applySettings();
-                };
-            });
-        }
-
-        function startLiveTileCycle() {
-            const news = [
-                "Avancées majeures dans l'IA quantique.",
-                "Les nouvelles énergies renouvelables en essor.",
-                "Exploration spatiale : mission vers Mars confirmée."
-            ];
-            let idx = 0;
-            setInterval(() => {
-                idx = (idx + 1) % news.length;
-                const front = document.getElementById('news-front-text');
-                const back = document.getElementById('news-back-text');
-                const flipBox = document.getElementById('news-flip-box');
-
-                if (front && back && flipBox) {
-                    front.textContent = news[idx];
-                    back.textContent = news[(idx + 1) % news.length];
-                    flipBox.style.transform = flipBox.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
-                }
-            }, 4000);
-        }
-
-        function triggerSearch(q) {
-            if (!q || !q.trim()) return;
-            AppState.query = q.trim();
-            document.getElementById('header-input').value = AppState.query;
-
-            document.getElementById('home-view').style.display = 'none';
-            document.getElementById('header-bar').style.display = 'block';
-            document.getElementById('results-view').style.display = 'block';
-
-            checkCalculatedWidgets(AppState.query);
-            renderTabContent(AppState.currentTab);
-        }
-
-        function switchTab(tabName) {
-            AppState.currentTab = tabName;
-            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
-            if (event && event.target) event.target.classList.add('active');
-            renderTabContent(tabName);
-        }
-
-        function checkCalculatedWidgets(q) {
-            const zone = document.getElementById('widget-zone');
-            zone.innerHTML = '';
-
-            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q) && /[+\-*/]/.test(q) || q.toLowerCase().includes('calculatrice')) {
-                let res = '';
-                try { if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q)) res = eval(q); } catch(e){}
-                zone.innerHTML = `
-                    <div class="widget-box">
-                        <div style="margin-bottom:10px; font-size:1.2rem;">Calculatrice</div>
-                        <input type="text" class="calc-display" id="calc-screen" value="${res}" readonly>
-                        <div class="calc-pad">
-                            <button class="calc-btn" onclick="calcInput('7')">7</button>
-                            <button class="calc-btn" onclick="calcInput('8')">8</button>
-                            <button class="calc-btn" onclick="calcInput('9')">9</button>
-                            <button class="calc-btn" onclick="calcInput('/')">/</button>
-                            <button class="calc-btn" onclick="calcInput('4')">4</button>
-                            <button class="calc-btn" onclick="calcInput('5')">5</button>
-                            <button class="calc-btn" onclick="calcInput('6')">6</button>
-                            <button class="calc-btn" onclick="calcInput('*')">*</button>
-                            <button class="calc-btn" onclick="calcInput('1')">1</button>
-                            <button class="calc-btn" onclick="calcInput('2')">2</button>
-                            <button class="calc-btn" onclick="calcInput('3')">3</button>
-                            <button class="calc-btn" onclick="calcInput('-')">-</button>
-                            <button class="calc-btn" onclick="calcReset()">C</button>
-                            <button class="calc-btn" onclick="calcInput('0')">0</button>
-                            <button class="calc-btn" onclick="calcRun()">=</button>
-                            <button class="calc-btn" onclick="calcInput('+')">+</button>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function calcInput(v) { document.getElementById('calc-screen').value += v; }
-        function calcReset() { document.getElementById('calc-screen').value = ''; }
-        function calcRun() {
-            try { document.getElementById('calc-screen').value = eval(document.getElementById('calc-screen').value); }
-            catch(e) { document.getElementById('calc-screen').value = 'Erreur'; }
-        }
-
-        function renderTabContent(tab) {
-            const viewport = document.getElementById('tab-viewport');
-            viewport.innerHTML = `
-                <div class="results-list">
-                    <div class="result-entry">
-                        <div>
-                            <a href="https://fr.wikipedia.org" target="_blank" class="result-title">${AppState.query} - Article Détaillé</a>
-                            <div class="result-url">https://fr.wikipedia.org/wiki/${encodeURIComponent(AppState.query)}</div>
-                            <div class="result-desc">Consultez les informations encyclopédiques complètes et certifiées sur ${AppState.query}.</div>
-                        </div>
-                    </div>
-                    <div class="result-entry">
-                        <div>
-                            <a href="https://duckduckgo.com" target="_blank" class="result-title">Recherche approfondie pour ${AppState.query}</a>
-                            <div class="result-url">https://duckduckgo.com/?q=${encodeURIComponent(AppState.query)}</div>
-                            <div class="result-desc">Résultats complémentaires en temps réel issus du Web global.</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    </script>
+/* ---------- Événements ---------- */
+function bindEvents(){
+ const go=v=>triggerSearch(v);
+ $('#home-btn').onclick=()=>go($('#home-input').value);$('#header-btn').onclick=()=>go($('#header-input').value);
+ $('#home-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};$('#header-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};
+ $('#go-home').onclick=()=>{$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
+ $$('.tab-link').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
+ $$('#home-view .tile').forEach(t=>t.onclick=()=>{const d=t.dataset;if(d.tool)openTool(d.tool);else if(d.q==='météo')triggerSearch('météo '+$('#w-city').textContent,'web');else if(d.q)triggerSearch(d.q,d.tab||'web');else{const i=t.querySelector('.live-tile-inner');if(i)flip(i)}});
+ $('#open-settings').onclick=()=>$('#settings-panel').classList.add('open');$('#close-settings').onclick=()=>$('#settings-panel').classList.remove('open');
+ $$('.color-swatch').forEach(s=>s.onclick=()=>{S.accent=s.dataset.color;lset('nex_color',S.accent);applySettings()});
+ $('#blur-range').oninput=e=>{S.blur=e.target.value;lset('nex_blur',S.blur);applySettings()};
+ $('#anim-chk').onchange=e=>{S.anim=e.target.checked?'1':'0';lset('nex_anim',S.anim);applySettings()}}
+document.addEventListener('DOMContentLoaded',()=>{applySettings();tickClock();setInterval(tickClock,10000);
+ $$('.turnstyle-tile').forEach((t,i)=>t.style.animationDelay=i*70+'ms');bindEvents();
+ rotor($('#weather-tile'),()=>1,0,7000,12000);rotor($('#bing-tile'),()=>1,0,9000,15000);
+ [initWeather,initBing,initNews,initGallery].forEach(f=>f().catch(()=>{}))});
+</script>
 </body>
 </html>
