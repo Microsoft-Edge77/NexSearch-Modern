@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexSearch</title>
-    <!-- Favicon Metro : 4 carrés (2 blancs, 2 gris) -->
+    <!-- Favicon Metro -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='42' height='42' fill='%23FFFFFF'/><rect x='53' y='5' width='42' height='42' fill='%23888888'/><rect x='5' y='53' width='42' height='42' fill='%23888888'/><rect x='53' y='53' width='42' height='42' fill='%23FFFFFF'/></svg>">
 
     <style>
         :root {
             --accent: #0078D7;
-            --bg-dark: #111111;
+            --bg-dark: #000000;
             --tile-bg: rgba(255, 255, 255, 0.12);
             --tile-hover: rgba(255, 255, 255, 0.22);
             --font-seg: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             --font-light: "Segoe UI Light", "Segoe UI", sans-serif;
-            --font-semilight: "Segoe UI Semilight", "Segoe UI", sans-serif;
         }
 
         * {
@@ -31,50 +30,47 @@
             color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
+            background-image: url('https://picsum.photos/id/1015/1920/1080');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            transition: background 0.5s ease;
+            position: relative;
         }
 
-        /* Overlay sombre et flouté pour le fond Bing */
+        /* Overlay Bing sombre et flouté */
         #bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(15px) brightness(0.6);
-            -webkit-backdrop-filter: blur(15px) brightness(0.6);
-            z-index: -1;
-            display: none;
+            backdrop-filter: blur(18px) brightness(0.6);
+            -webkit-backdrop-filter: blur(18px) brightness(0.6);
+            z-index: 0;
         }
 
-        body.has-bing-bg #bg-overlay {
-            display: block;
-        }
-
-        /* Animations Metro Turnstile */
-        .turnstyle-in {
-            animation: turnstyleIn 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+        /* Animation Metro Turnstile */
+        .turnstyle-tile {
+            animation: turnstyleIn 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
             transform-origin: left center;
+            perspective: 1000px;
         }
 
         @keyframes turnstyleIn {
-            0% { opacity: 0; transform: rotateY(-15deg) scale(0.96) translateX(-20px); }
+            0% { opacity: 0; transform: rotateY(-30deg) scale(0.9) translateX(-30px); }
             100% { opacity: 1; transform: rotateY(0deg) scale(1) translateX(0); }
         }
 
-        /* Header Metro Transparent & Flouté */
+        /* Header Metro */
         header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 15px 6%;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
         }
 
         .brand-logo {
@@ -86,13 +82,12 @@
         }
 
         .logo-icon-grid {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 3px;
         }
-
         .logo-icon-grid div:nth-child(1), .logo-icon-grid div:nth-child(4) { background-color: #ffffff; }
         .logo-icon-grid div:nth-child(2), .logo-icon-grid div:nth-child(3) { background-color: #888888; }
 
@@ -101,11 +96,9 @@
             font-size: 1.8rem;
             letter-spacing: -0.5px;
             text-transform: lowercase;
+            color: #ffffff;
         }
-
-        .brand-name span {
-            font-weight: 700;
-        }
+        .brand-name span { font-weight: 700; }
 
         .header-search-bar {
             flex: 1;
@@ -115,12 +108,19 @@
             position: relative;
         }
 
+        .metro-input-group {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
         .metro-input {
             width: 100%;
-            padding: 10px 45px 10px 14px;
+            padding: 12px 48px 12px 16px;
             background: rgba(255, 255, 255, 0.15);
             border: 2px solid transparent;
-            color: #fff;
+            color: #ffffff;
             font-size: 1rem;
             outline: none;
             transition: all 0.2s;
@@ -128,76 +128,61 @@
 
         .metro-input:focus {
             border-color: var(--accent);
-            background: #000000;
+            background: rgba(0, 0, 0, 0.85);
         }
 
-        .input-btn {
+        /* Bouton Loupe Vectoriel SVG */
+        .search-btn-svg {
             position: absolute;
             right: 0; top: 0; bottom: 0;
-            width: 40px;
-            background: none;
+            width: 46px;
+            background: transparent;
             border: none;
-            color: #fff;
-            font-size: 1.2rem;
             cursor: pointer;
-        }
-
-        .input-btn:hover {
-            background: var(--accent);
-        }
-
-        /* Icône Paramètres Metro UI (2 barres + 1 rond superposé) */
-        .settings-icon-metro {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            cursor: pointer;
-        }
-        .settings-bar {
-            width: 100%;
-            height: 3px;
-            background: #ffffff;
-        }
-        .settings-circle {
-            width: 10px;
-            height: 10px;
-            border: 3px solid #ffffff;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #111;
-        }
-
-        .btn-icon {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            width: 44px;
-            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
         }
-
-        .btn-icon:hover {
-            background: rgba(255,255,255,0.1);
+        .search-btn-svg:hover {
+            background: var(--accent);
+        }
+        .search-btn-svg svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
         }
 
-        /* Layout Accueil Dashboard */
+        /* Icône Paramètres Metro UI */
+        .settings-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .settings-icon-svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        /* Zone de contenu principal */
+        main {
+            position: relative;
+            z-index: 10;
+        }
+
         #home-view {
             padding: 30px 6%;
             max-width: 1300px;
             margin: 0 auto;
         }
 
-        .home-top-row {
+        .top-banner {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -208,49 +193,32 @@
 
         .welcome-text {
             font-family: var(--font-light);
-            font-size: 2.5rem;
-            line-height: 1.1;
+            font-size: 2.2rem;
+            line-height: 1.2;
         }
-        .welcome-text .greeting {
-            color: #ffffff;
-        }
-        .welcome-text .sub-greeting {
-            color: #888888;
-            font-size: 2rem;
-        }
+        .welcome-text .greeting { color: #ffffff; }
+        .welcome-text .sub-greeting { color: #aaaaaa; font-size: 1.8rem; }
 
-        .clock-container {
+        .clock-box {
             text-align: right;
         }
-
         .hero-clock {
             font-family: var(--font-light);
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             line-height: 1;
-            color: #ffffff;
         }
-
         .hero-date {
-            font-family: var(--font-seg);
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #ffffff;
             margin-top: 4px;
         }
 
         .home-search-wrapper {
-            position: relative;
             max-width: 700px;
             margin-bottom: 40px;
         }
 
-        .home-search-wrapper .metro-input {
-            padding: 16px 50px 16px 18px;
-            font-size: 1.2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* Hubs & Tuiles Metro */
+        /* Grille Metro Diversifiée */
         .metro-section {
             margin-bottom: 40px;
         }
@@ -258,19 +226,21 @@
         .section-header {
             font-family: var(--font-light);
             font-size: 2rem;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             text-transform: lowercase;
+            color: #ffffff;
         }
 
         .tiles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-auto-rows: 140px;
             gap: 12px;
         }
 
+        /* Styles de Tuiles variées */
         .tile {
             background: var(--tile-bg);
-            aspect-ratio: 1;
             padding: 14px;
             display: flex;
             flex-direction: column;
@@ -279,12 +249,13 @@
             position: relative;
             user-select: none;
             overflow: hidden;
-            transition: transform 0.1s ease, background-color 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
             background-size: cover;
             background-position: center;
         }
 
         .tile:hover {
+            transform: scale(1.02);
             background-color: var(--tile-hover);
         }
 
@@ -292,23 +263,14 @@
             transform: scale(0.96);
         }
 
-        .tile.wide {
-            grid-column: span 2;
-            aspect-ratio: 2 / 1;
-        }
-
-        .tile.large {
-            grid-column: span 2;
-            grid-row: span 2;
-            aspect-ratio: 1;
-        }
-
-        .tile.accent {
-            background: var(--accent);
-        }
+        /* Tailles de tuiles */
+        .tile.wide { grid-column: span 2; }
+        .tile.large { grid-column: span 2; grid-row: span 2; }
+        .tile.accent { background-color: var(--accent); }
+        .tile.dark { background-color: rgba(0, 0, 0, 0.4); }
 
         .tile-sub {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #ffffff;
@@ -317,8 +279,7 @@
         }
 
         .tile-main {
-            font-family: var(--font-seg);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.3;
             color: #ffffff;
             z-index: 2;
@@ -328,15 +289,11 @@
         .tile-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.35);
             z-index: 1;
         }
 
-        /* Flip Live Tiles */
-        .live-tile {
-            perspective: 1000px;
-        }
-
+        /* Live Tile Flip */
         .live-tile-inner {
             position: relative;
             width: 100%;
@@ -363,7 +320,7 @@
             background: var(--accent);
         }
 
-        /* Vue Résultats */
+        /* Page Résultats */
         #results-view {
             display: none;
             padding: 25px 6%;
@@ -371,468 +328,120 @@
             margin: 0 auto;
         }
 
-        /* Onglets Metro */
         .metro-tabs {
             display: flex;
-            gap: 30px;
+            gap: 25px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             margin-bottom: 25px;
             overflow-x: auto;
-            white-space: nowrap;
         }
 
         .tab-link {
             font-family: var(--font-light);
             font-size: 1.8rem;
-            color: #888888;
+            color: #777777;
             padding-bottom: 8px;
             cursor: pointer;
             text-transform: lowercase;
             transition: color 0.2s;
         }
 
-        .tab-link:hover {
-            color: #cccccc;
-        }
+        .tab-link:hover { color: #cccccc; }
+        .tab-link.active { color: #ffffff; }
 
-        .tab-link.active {
-            color: #ffffff;
-        }
-
-        /* AI Overview Card */
-        .ai-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 22px;
-            margin-bottom: 30px;
-        }
-
-        .ai-card-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent);
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .ai-card-body {
-            font-family: var(--font-seg);
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #ffffff;
-        }
-
-        .ai-sources {
-            margin-top: 12px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .source-pill {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px 10px;
-            font-size: 0.8rem;
-            color: #aaa;
-            text-decoration: none;
-        }
-
-        .source-pill:hover {
-            color: #fff;
-            background: var(--accent);
-        }
-
-        /* Résultats Web & Live Tiles Recherche */
         .results-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .result-entry {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.05);
             padding: 16px;
             display: flex;
-            gap: 16px;
+            gap: 14px;
             align-items: flex-start;
-            transition: background 0.2s;
-        }
-
-        .result-entry:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .result-favicon-box {
-            width: 36px;
-            height: 36px;
-            background: #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .result-favicon-box img {
-            width: 20px;
-            height: 20px;
-        }
-
-        .result-content {
-            flex: 1;
         }
 
         .result-title {
-            font-family: var(--font-seg);
             font-size: 1.2rem;
             color: var(--accent);
             text-decoration: none;
             display: inline-block;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
-        .result-title:hover {
-            text-decoration: underline;
-        }
+        .result-title:hover { text-decoration: underline; }
+        .result-url { font-size: 0.8rem; color: #888888; margin-bottom: 6px; }
+        .result-desc { font-size: 0.95rem; color: #dddddd; line-height: 1.4; }
 
-        .result-url {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 6px;
-        }
-
-        .result-desc {
-            font-size: 0.95rem;
-            color: #ddd;
-            line-height: 1.4;
-        }
-
-        /* Live Tile de Résultat de Recherche */
-        .result-live-tile {
-            background: var(--tile-bg);
-            padding: 16px;
-            min-height: 140px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* Outils & Widgets (Calculatrice, Timer, Traducteur) */
+        /* Widgets Outils */
         .widget-box {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 24px;
-            margin-bottom: 30px;
-            max-width: 440px;
-        }
-
-        .widget-title {
-            font-family: var(--font-light);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            text-transform: lowercase;
-            color: #fff;
+            padding: 20px;
+            margin-bottom: 25px;
+            max-width: 400px;
         }
 
         .calc-display {
             width: 100%;
-            background: #000;
-            color: #fff;
+            background: #000000;
+            color: #ffffff;
             text-align: right;
             font-family: var(--font-light);
-            font-size: 2.2rem;
-            padding: 12px;
-            border: 1px solid #333;
-            margin-bottom: 12px;
+            font-size: 2rem;
+            padding: 10px;
+            border: 1px solid #333333;
+            margin-bottom: 10px;
         }
 
         .calc-pad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
         .calc-btn {
-            padding: 14px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.1);
             border: none;
-            color: #fff;
-            font-size: 1.1rem;
+            color: #ffffff;
+            font-size: 1rem;
             cursor: pointer;
         }
-
         .calc-btn:hover { background: var(--accent); }
 
-        /* Timer Widget */
-        .timer-display {
-            font-family: var(--font-light);
-            font-size: 3rem;
-            text-align: center;
-            background: #000;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #333;
-        }
-
-        .timer-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* Traducteur Widget */
-        .translator-box {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .translator-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .translator-box select, .translator-box textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-        }
-        .translator-box textarea { resize: none; height: 80px; }
-        .translator-box select option { background: #222; }
-
-        /* Grille Images */
-        .images-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-        }
-
-        .img-item {
-            aspect-ratio: 1;
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-            position: relative;
-            background-color: #222;
-            overflow: hidden;
-        }
-
-        .img-item-caption {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 14px;
-            display: flex;
-            align-items: flex-end;
-            font-size: 0.9rem;
-            opacity: 0;
-            transition: opacity 0.25s;
-        }
-
-        .img-item:hover .img-item-caption { opacity: 1; }
-
-        /* Modale Lecteur Image Modern UI (Commandes à droite) */
-        #img-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            gap: 30px;
-        }
-
-        .modal-img-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-
-        #img-modal img {
-            max-width: 100%;
-            max-height: 85vh;
-            border: 2px solid var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .modal-actions-right {
-            width: 260px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .metro-btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 14px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-
-        .metro-btn:hover { opacity: 0.85; }
-        .metro-btn.secondary { background: rgba(255,255,255,0.15); }
-        .metro-btn.danger { background: #b00000; }
-
-        /* Grille Vidéos */
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .video-card {
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-        }
-        .video-player-box {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-            margin-bottom: 10px;
-        }
-
-        /* Shopping Grid */
-        .shopping-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-        }
-        .shop-card {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .shop-price {
-            font-family: var(--font-light);
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin: 10px 0;
-        }
-
-        /* Cartes (Maps) Split View */
-        .maps-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            height: 65vh;
-        }
-        .map-viewport {
-            background: #1a1a1a;
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .map-sidebar {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-        }
-
-        /* Flyout Paramètres Metro */
+        /* Flyout Paramètres */
         #settings-panel {
             position: fixed;
-            top: 0; right: -400px;
-            width: 100%; max-width: 360px;
+            top: 0; right: -380px;
+            width: 100%; max-width: 350px;
             height: 100%;
-            background: #1e1e1e;
+            background: #181818;
             z-index: 200;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
-            transition: right 0.35s cubic-bezier(0.1, 0.9, 0.2, 1);
-            padding: 30px 25px;
+            transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
         }
 
         #settings-panel.open { right: 0; }
 
-        .panel-title {
-            font-family: var(--font-light);
-            font-size: 2rem;
-            text-transform: lowercase;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .color-matrix {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 10px;
+            gap: 8px;
         }
-
-        .color-swatch {
-            aspect-ratio: 1;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
+        .color-swatch { aspect-ratio: 1; cursor: pointer; border: 2px solid transparent; }
         .color-swatch.active { border-color: #ffffff; }
 
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: var(--font-seg);
-        }
-
-        .history-box {
-            max-height: 180px;
-            overflow-y: auto;
-            margin-top: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .history-entry {
-            background: rgba(255,255,255,0.06);
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .history-entry:hover { background: var(--accent); }
-
         @media (max-width: 768px) {
-            .hero-clock { font-size: 2.8rem; }
             .tiles-grid { grid-template-columns: repeat(2, 1fr); }
             .tile.wide, .tile.large { grid-column: span 2; }
             .brand-name { display: none; }
-            .maps-layout { grid-template-columns: 1fr; height: auto; }
-            #img-modal { flex-direction: column; padding: 20px; }
-            .modal-actions-right { width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
@@ -850,173 +459,146 @@
         </div>
 
         <div class="header-search-bar" id="header-bar">
-            <input type="text" class="metro-input" id="header-input" placeholder="Rechercher...">
-            <button class="input-btn" id="header-btn">➔</button>
+            <div class="metro-input-group">
+                <input type="text" class="metro-input" id="header-input" placeholder="Rechercher...">
+                <button class="search-btn-svg" id="header-btn" title="Rechercher">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+            </div>
         </div>
 
-        <button class="btn-icon" id="open-settings" title="Paramètres">
-            <div class="settings-icon-metro">
-                <div class="settings-bar"></div>
-                <div class="settings-bar"></div>
-                <div class="settings-bar"></div>
-                <div class="settings-circle"></div>
-            </div>
+        <button class="settings-btn" id="open-settings" title="Paramètres">
+            <svg class="settings-icon-svg" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
         </button>
     </header>
 
     <!-- ACCUEIL METRO DASHBOARD -->
-    <main id="home-view" class="turnstyle-in">
-        <div class="home-top-row">
+    <main id="home-view">
+        <div class="top-banner">
             <div class="welcome-text">
                 <div class="greeting">Bonjour.</div>
                 <div class="sub-greeting">Que cherchez vous ?</div>
             </div>
-            <div class="clock-container">
+            <div class="clock-box">
                 <div class="hero-clock" id="clock-display">12:00</div>
                 <div class="hero-date" id="date-display">22/10/26</div>
             </div>
         </div>
 
         <div class="home-search-wrapper">
-            <input type="text" class="metro-input" id="home-input" placeholder="Que recherchez-vous aujourd'hui ?">
-            <button class="input-btn" id="home-btn" style="width:50px; font-size:1.4rem;">➔</button>
+            <div class="metro-input-group">
+                <input type="text" class="metro-input" id="home-input" placeholder="Que recherchez-vous aujourd'hui ?">
+                <button class="search-btn-svg" id="home-btn" title="Rechercher">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+            </div>
         </div>
 
-        <!-- AUJOURD'HUI -->
+        <!-- SECTION AUJOURD'HUI -->
         <section class="metro-section">
             <h2 class="section-header">aujourd'hui</h2>
             <div class="tiles-grid">
-                <div class="tile accent wide" id="weather-card">
+                <!-- Tuile Météo Large -->
+                <div class="tile accent wide turnstyle-tile" id="weather-tile">
                     <div class="tile-sub">Météo Locale</div>
-                    <div class="tile-main" id="weather-temp">Chargement...</div>
-                    <div class="tile-sub" id="weather-city">Position...</div>
+                    <div class="tile-main" id="weather-temp">19°C - Ensoleillé</div>
+                    <div class="tile-sub" id="weather-city">Paris, France</div>
                 </div>
-                <div class="tile live-tile" onclick="executeSearch('Bing Image du jour')">
-                    <div class="live-tile-inner" id="tile-bing-inner">
-                        <div class="tile-face" id="tile-bing-front" style="background-image:url('https://bingw.j12.workers.dev/1080p')">
-                            <div class="tile-overlay"></div>
-                            <div class="tile-sub">Bing</div>
-                            <div class="tile-main">Image du Jour</div>
-                        </div>
-                        <div class="tile-face back">
-                            <div class="tile-sub">Découverte</div>
-                            <div class="tile-main">Explorer le monde en HD</div>
-                        </div>
-                    </div>
+
+                <!-- Tuile Bing Image du Jour (Grand Format) -->
+                <div class="tile large turnstyle-tile" onclick="triggerSearch('Bing Image du jour')" style="background-image:url('https://picsum.photos/id/1018/600/600')">
+                    <div class="tile-overlay"></div>
+                    <div class="tile-sub">Bing</div>
+                    <div class="tile-main">Image du Jour HD</div>
                 </div>
-                <div class="tile" onclick="executeSearch('Paysages extraordinaires')" style="background-image:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80')">
+
+                <!-- Tuile Galerie Paysages -->
+                <div class="tile turnstyle-tile" onclick="triggerSearch('Paysages extraordinaires')" style="background-image:url('https://picsum.photos/id/1015/300/300')">
                     <div class="tile-overlay"></div>
                     <div class="tile-sub">Galerie</div>
                     <div class="tile-main">Paysages</div>
                 </div>
-                <div class="tile" onclick="executeSearch('Photos fantastiques HD')" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80')">
-                    <div class="tile-overlay"></div>
+
+                <!-- Tuile Photos HD -->
+                <div class="tile dark turnstyle-tile" onclick="triggerSearch('Photos HD')">
                     <div class="tile-sub">Sélection</div>
                     <div class="tile-main">Photos HD</div>
                 </div>
             </div>
         </section>
 
-        <!-- À LA UNE -->
+        <!-- SECTION À LA UNE -->
         <section class="metro-section">
             <h2 class="section-header">à la une</h2>
             <div class="tiles-grid">
-                <div class="tile wide live-tile" id="news-tile-live" onclick="executeSearch('Actualités Générales')">
-                    <div class="live-tile-inner" id="news-flip-inner">
+                <!-- Live Tile Actualités Flip -->
+                <div class="tile wide turnstyle-tile" onclick="triggerSearch('Actualités Générales')">
+                    <div class="live-tile-inner" id="news-flip-box">
                         <div class="tile-face">
                             <div class="tile-sub">Actualités en Direct</div>
-                            <div class="tile-main" id="news-text-front">Chargement des actualités...</div>
+                            <div class="tile-main" id="news-front-text">Avancées majeures dans l'IA quantique.</div>
                         </div>
                         <div class="tile-face back">
                             <div class="tile-sub">Flash Info</div>
-                            <div class="tile-main" id="news-text-back">Restez informé en temps réel.</div>
+                            <div class="tile-main" id="news-back-text">Les marchés mondiaux en hausse.</div>
                         </div>
                     </div>
                 </div>
-                <div class="tile accent" onclick="executeSearch('Actualités Technologie')">
+
+                <div class="tile accent turnstyle-tile" onclick="triggerSearch('Actualités Tech')">
                     <div class="tile-sub">Rubrique</div>
                     <div class="tile-main">Tech</div>
                 </div>
-                <div class="tile" onclick="executeSearch('Économie marchés financiers')">
+
+                <div class="tile dark turnstyle-tile" onclick="triggerSearch('Économie')">
                     <div class="tile-sub">Rubrique</div>
                     <div class="tile-main">Économie</div>
                 </div>
             </div>
         </section>
 
-        <!-- EXPLORER -->
+        <!-- SECTION EXPLORER -->
         <section class="metro-section">
             <h2 class="section-header">explorer</h2>
             <div class="tiles-grid">
-                <div class="tile" onclick="executeSearch('calculatrice')">
+                <div class="tile dark turnstyle-tile" onclick="triggerSearch('calculatrice')">
                     <div class="tile-sub">Outil</div>
                     <div class="tile-main">Calculatrice</div>
                 </div>
-                <div class="tile" onclick="executeSearch('traducteur')">
+                <div class="tile accent turnstyle-tile" onclick="triggerSearch('traducteur')">
                     <div class="tile-sub">Outil</div>
                     <div class="tile-main">Traducteur</div>
                 </div>
-                <div class="tile" onclick="executeSearch('timer')">
+                <div class="tile dark turnstyle-tile" onclick="triggerSearch('timer')">
                     <div class="tile-sub">Outil</div>
                     <div class="tile-main">Minuteur</div>
                 </div>
-                <div class="tile accent" onclick="switchTab('maps'); executeSearch('Carte monde');">
+                <div class="tile wide turnstyle-tile" onclick="switchTab('cartes'); triggerSearch('Cartes du monde');">
                     <div class="tile-sub">Navigation</div>
-                    <div class="tile-main">Cartes</div>
+                    <div class="tile-main">Cartes & Itinéraires</div>
                 </div>
             </div>
-        </section>
-
-        <!-- RÉCEMMENT -->
-        <section class="metro-section">
-            <h2 class="section-header">récemment</h2>
-            <div class="tiles-grid" id="recent-tiles-container"></div>
         </section>
     </main>
 
     <!-- PAGE DES RÉSULTATS -->
-    <main id="results-view" class="turnstyle-in">
+    <main id="results-view">
         <div class="metro-tabs">
             <div class="tab-link active" onclick="switchTab('web')">web</div>
             <div class="tab-link" onclick="switchTab('images')">images</div>
-            <div class="tab-link" onclick="switchTab('videos')">vidéos</div>
-            <div class="tab-link" onclick="switchTab('news')">actualités</div>
+            <div class="tab-link" onclick="switchTab('vidéos')">vidéos</div>
+            <div class="tab-link" onclick="switchTab('actualités')">actualités</div>
             <div class="tab-link" onclick="switchTab('shopping')">shopping</div>
             <div class="tab-link" onclick="switchTab('cartes')">cartes</div>
         </div>
 
         <div id="widget-zone"></div>
-
-        <div class="ai-card" id="ai-box">
-            <div class="ai-card-title">AI Overview - Synthèse Gemini</div>
-            <div class="ai-card-body" id="ai-content">Génération de la synthèse IA en cours...</div>
-            <div class="ai-sources" id="ai-sources"></div>
-        </div>
-
         <div id="tab-viewport"></div>
     </main>
 
-    <!-- MODALE LECTEUR IMAGE (Commandes à droite) -->
-    <div id="img-modal">
-        <div class="modal-img-container">
-            <img id="modal-img" src="" alt="Aperçu">
-        </div>
-        <div class="modal-actions-right">
-            <button class="metro-btn secondary" onclick="navImage(-1)">◄ Précédent</button>
-            <a id="modal-full-link" target="_blank" class="metro-btn">Taille réelle</a>
-            <a id="modal-site-link" target="_blank" class="metro-btn secondary">Site source</a>
-            <button class="metro-btn secondary" onclick="navImage(1)">Suivant ►</button>
-            <button class="metro-btn danger" onclick="closeImgModal()">Fermer</button>
-        </div>
-    </div>
-
-    <!-- FLYOUT PARAMÈTRES METRO -->
+    <!-- FLYOUT PARAMÈTRES -->
     <div id="settings-panel">
-        <div class="panel-title">
-            <span>paramètres</span>
-            <button class="btn-icon" id="close-settings">✕</button>
-        </div>
-
+        <div style="font-family:var(--font-light); font-size:1.8rem; border-bottom:1px solid #333; padding-bottom:10px;">paramètres</div>
         <div>
             <div style="font-size:0.9rem; margin-bottom:8px;">Couleur d'accentuation</div>
             <div class="color-matrix">
@@ -1026,43 +608,16 @@
                 <div class="color-swatch" style="background:#a200ff;" data-color="#a200ff"></div>
                 <div class="color-swatch" style="background:#d80073;" data-color="#d80073"></div>
                 <div class="color-swatch" style="background:#e3a21a;" data-color="#e3a21a"></div>
-                <div class="color-swatch" style="background:#00aba9;" data-color="#00aba9"></div>
-                <div class="color-swatch" style="background:#b91d47;" data-color="#b91d47"></div>
             </div>
         </div>
-
-        <div class="setting-row">
-            <span>Résumés IA (AI Overview)</span>
-            <input type="checkbox" id="chk-ai" checked style="width:18px; height:18px; accent-color:var(--accent);">
-        </div>
-
-        <div class="setting-row">
-            <span>Fond Bing Flouté</span>
-            <input type="checkbox" id="chk-bing" style="width:18px; height:18px; accent-color:var(--accent);">
-        </div>
-
-        <div>
-            <div class="setting-row">
-                <span>Historique Local</span>
-                <button class="metro-btn secondary" onclick="clearHistory()" style="padding:4px 10px; font-size:0.8rem;">Vider</button>
-            </div>
-            <div class="history-box" id="history-list"></div>
-        </div>
+        <button style="background:#b00000; color:#fff; border:none; padding:10px; cursor:pointer;" id="close-settings">Fermer</button>
     </div>
 
     <script>
-        /* ÉTAT GLOBAL DE L'APPLICATION */
         const AppState = {
             query: '',
             currentTab: 'web',
-            history: JSON.parse(localStorage.getItem('nex_hist') || '[]'),
-            aiEnabled: localStorage.getItem('nex_ai') !== 'false',
-            bingBg: localStorage.getItem('nex_bing') === 'true',
-            accentColor: localStorage.getItem('nex_color') || '#0078D7',
-            activeImgIndex: 0,
-            imageGallery: [],
-            timerInterval: null,
-            timerSeconds: 0
+            accentColor: localStorage.getItem('nex_color') || '#0078D7'
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1070,24 +625,12 @@
             setInterval(initClock, 1000);
             initWeather();
             bindEvents();
+            startLiveTileCycle();
             applySettings();
-            renderHistory();
-            startLiveTilesCycle();
-            renderRecentTiles();
         });
 
         function applySettings() {
             document.documentElement.style.setProperty('--accent', AppState.accentColor);
-            document.getElementById('chk-ai').checked = AppState.aiEnabled;
-            document.getElementById('chk-bing').checked = AppState.bingBg;
-
-            if (AppState.bingBg) {
-                document.body.classList.add('has-bing-bg');
-                document.body.style.backgroundImage = "url('https://bingw.j12.workers.dev/1080p')";
-            } else {
-                document.body.classList.remove('has-bing-bg');
-                document.body.style.backgroundImage = 'none';
-            }
         }
 
         function initClock() {
@@ -1098,7 +641,7 @@
             document.getElementById('date-display').textContent = '22/10/26';
         }
 
-        async function initWeather() {
+        function initWeather() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     try {
@@ -1106,8 +649,8 @@
                         const lon = pos.coords.longitude;
                         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                         const data = await res.json();
-                        document.getElementById('weather-temp').textContent = `${Math.round(data.current_weather.temperature)}°C`;
-                        document.getElementById('weather-city').textContent = `Localisation GPS`;
+                        document.getElementById('weather-temp').textContent = `${Math.round(data.current_weather.temperature)}°C - Actuel`;
+                        document.getElementById('weather-city').textContent = `Position GPS (${lat.toFixed(1)}°, ${lon.toFixed(1)}°)`;
                     } catch(e) {
                         setDefaultWeather();
                     }
@@ -1123,19 +666,29 @@
         }
 
         function bindEvents() {
-            document.getElementById('home-btn').onclick = () => executeSearch(document.getElementById('home-input').value);
-            document.getElementById('home-input').onkeypress = (e) => { if (e.key === 'Enter') executeSearch(e.target.value); };
+            // Boutons de recherche
+            document.getElementById('home-btn').addEventListener('click', () => {
+                triggerSearch(document.getElementById('home-input').value);
+            });
+            document.getElementById('home-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') triggerSearch(e.target.value);
+            });
 
-            document.getElementById('header-btn').onclick = () => executeSearch(document.getElementById('header-input').value);
-            document.getElementById('header-input').onkeypress = (e) => { if (e.key === 'Enter') executeSearch(e.target.value); };
+            document.getElementById('header-btn').addEventListener('click', () => {
+                triggerSearch(document.getElementById('header-input').value);
+            });
+            document.getElementById('header-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') triggerSearch(e.target.value);
+            });
 
-            document.getElementById('go-home').onclick = () => {
+            // Accueil
+            document.getElementById('go-home').addEventListener('click', () => {
                 document.getElementById('results-view').style.display = 'none';
                 document.getElementById('header-bar').style.display = 'none';
                 document.getElementById('home-view').style.display = 'block';
-                renderRecentTiles();
-            };
+            });
 
+            // Paramètres
             document.getElementById('open-settings').onclick = () => document.getElementById('settings-panel').classList.add('open');
             document.getElementById('close-settings').onclick = () => document.getElementById('settings-panel').classList.remove('open');
 
@@ -1148,431 +701,110 @@
                     applySettings();
                 };
             });
-
-            document.getElementById('chk-ai').onchange = (e) => {
-                AppState.aiEnabled = e.target.checked;
-                localStorage.setItem('nex_ai', AppState.aiEnabled);
-                document.getElementById('ai-box').style.display = AppState.aiEnabled ? 'block' : 'none';
-            };
-
-            document.getElementById('chk-bing').onchange = (e) => {
-                AppState.bingBg = e.target.checked;
-                localStorage.setItem('nex_bing', AppState.bingBg);
-                applySettings();
-            };
         }
 
-        function startLiveTilesCycle() {
-            const headlines = [
-                "Avancées majeures en Intelligence Artificielle et calculs quantiques.",
-                "Les marchés mondiaux réagissent aux nouvelles technologies vertes.",
-                "Exploration spatiale : de nouvelles exoplanètes rocheuses découvertes.",
-                "Design Metro UI : le renouveau du minimalisme interactif."
+        function startLiveTileCycle() {
+            const news = [
+                "Avancées majeures dans l'IA quantique.",
+                "Les nouvelles énergies renouvelables en essor.",
+                "Exploration spatiale : mission vers Mars confirmée."
             ];
             let idx = 0;
             setInterval(() => {
-                idx = (idx + 1) % headlines.length;
-                const front = document.getElementById('news-text-front');
-                const back = document.getElementById('news-text-back');
-                if (front && back) {
-                    front.textContent = headlines[idx];
-                    back.textContent = headlines[(idx + 1) % headlines.length];
-                    const inner = document.getElementById('news-flip-inner');
-                    if (inner) {
-                        inner.style.transform = inner.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
-                    }
+                idx = (idx + 1) % news.length;
+                const front = document.getElementById('news-front-text');
+                const back = document.getElementById('news-back-text');
+                const flipBox = document.getElementById('news-flip-box');
+
+                if (front && back && flipBox) {
+                    front.textContent = news[idx];
+                    back.textContent = news[(idx + 1) % news.length];
+                    flipBox.style.transform = flipBox.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
                 }
-            }, 5000);
+            }, 4000);
         }
 
-        function executeSearch(q) {
+        function triggerSearch(q) {
             if (!q || !q.trim()) return;
             AppState.query = q.trim();
             document.getElementById('header-input').value = AppState.query;
 
-            // Gestion historique
-            if (!AppState.history.includes(AppState.query)) {
-                AppState.history.unshift(AppState.query);
-                if (AppState.history.length > 8) AppState.history.pop();
-                localStorage.setItem('nex_hist', JSON.stringify(AppState.history));
-                renderHistory();
-            }
-
-            // Bascule affichage
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('header-bar').style.display = 'block';
             document.getElementById('results-view').style.display = 'block';
 
-            // Vérification des outils automatiques (Calculatrice / Minuteur / Traducteur)
-            checkWidgets(AppState.query);
-
-            // Génération AI Overview & Résultats
-            renderAIOverview(AppState.query);
+            checkCalculatedWidgets(AppState.query);
             renderTabContent(AppState.currentTab);
         }
 
         function switchTab(tabName) {
             AppState.currentTab = tabName;
             document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
-            event && event.target && event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
             renderTabContent(tabName);
         }
 
-        /* DÉTECTION DES OUTILS (Calculatrice, Timer, Traducteur) */
-        function checkWidgets(q) {
+        function checkCalculatedWidgets(q) {
             const zone = document.getElementById('widget-zone');
             zone.innerHTML = '';
-            const lower = q.toLowerCase();
 
-            // Calculatrice (détection calcul simple ou mot clé)
-            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q) && /[+\-*/]/.test(q) || lower.includes('calculatrice') || lower.includes('calcul')) {
-                let initialResult = '';
-                try {
-                    if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q)) initialResult = eval(q);
-                } catch(e) {}
-
+            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q) && /[+\-*/]/.test(q) || q.toLowerCase().includes('calculatrice')) {
+                let res = '';
+                try { if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(q)) res = eval(q); } catch(e){}
                 zone.innerHTML = `
-                    <div class="widget-box turnstyle-in">
-                        <div class="widget-title">Calculatrice</div>
-                        <input type="text" class="calc-display" id="calc-screen" value="${initialResult}" readonly>
+                    <div class="widget-box">
+                        <div style="margin-bottom:10px; font-size:1.2rem;">Calculatrice</div>
+                        <input type="text" class="calc-display" id="calc-screen" value="${res}" readonly>
                         <div class="calc-pad">
-                            <button class="calc-btn" onclick="calcAppend('7')">7</button>
-                            <button class="calc-btn" onclick="calcAppend('8')">8</button>
-                            <button class="calc-btn" onclick="calcAppend('9')">9</button>
-                            <button class="calc-btn" onclick="calcAppend('/')">/</button>
-                            <button class="calc-btn" onclick="calcAppend('4')">4</button>
-                            <button class="calc-btn" onclick="calcAppend('5')">5</button>
-                            <button class="calc-btn" onclick="calcAppend('6')">6</button>
-                            <button class="calc-btn" onclick="calcAppend('*')">*</button>
-                            <button class="calc-btn" onclick="calcAppend('1')">1</button>
-                            <button class="calc-btn" onclick="calcAppend('2')">2</button>
-                            <button class="calc-btn" onclick="calcAppend('3')">3</button>
-                            <button class="calc-btn" onclick="calcAppend('-')">-</button>
-                            <button class="calc-btn" onclick="calcClear()">C</button>
-                            <button class="calc-btn" onclick="calcAppend('0')">0</button>
-                            <button class="calc-btn" onclick="calcCompute()">=</button>
-                            <button class="calc-btn" onclick="calcAppend('+')">+</button>
-                        </div>
-                    </div>
-                `;
-            }
-            // Minuteur / Timer
-            else if (lower.includes('timer') || lower.includes('minuteur')) {
-                zone.innerHTML = `
-                    <div class="widget-box turnstyle-in">
-                        <div class="widget-title">Minuteur</div>
-                        <div class="timer-display" id="timer-screen">00:00</div>
-                        <div class="timer-controls">
-                            <button class="metro-btn" onclick="startTimer(60)">1 Min</button>
-                            <button class="metro-btn" onclick="startTimer(300)">5 Min</button>
-                            <button class="metro-btn" onclick="startTimer(600)">10 Min</button>
-                            <button class="metro-btn secondary" onclick="stopTimer()">Stop</button>
-                        </div>
-                    </div>
-                `;
-            }
-            // Traducteur
-            else if (lower.includes('traducteur') || lower.includes('traduction') || lower.includes('translate')) {
-                zone.innerHTML = `
-                    <div class="widget-box turnstyle-in" style="max-width: 500px;">
-                        <div class="widget-title">Traducteur Multilingue</div>
-                        <div class="translator-box">
-                            <div class="translator-row">
-                                <select id="trans-lang-from">
-                                    <option value="fr">Français</option>
-                                    <option value="en">Anglais</option>
-                                    <option value="es">Espagnol</option>
-                                    <option value="de">Allemand</option>
-                                    <option value="it">Italien</option>
-                                    <option value="nl">Néerlandais</option>
-                                </select>
-                                <select id="trans-lang-to">
-                                    <option value="en" selected>Anglais</option>
-                                    <option value="fr">Français</option>
-                                    <option value="es">Espagnol</option>
-                                    <option value="de">Allemand</option>
-                                    <option value="it">Italien</option>
-                                    <option value="nl">Néerlandais</option>
-                                </select>
-                            </div>
-                            <textarea id="trans-input" placeholder="Entrez le texte à traduire..."></textarea>
-                            <button class="metro-btn" onclick="performTranslation()">Traduire</button>
-                            <div id="trans-output" style="background:#000; padding:12px; min-height:50px; border:1px solid #333; color:#fff;"></div>
+                            <button class="calc-btn" onclick="calcInput('7')">7</button>
+                            <button class="calc-btn" onclick="calcInput('8')">8</button>
+                            <button class="calc-btn" onclick="calcInput('9')">9</button>
+                            <button class="calc-btn" onclick="calcInput('/')">/</button>
+                            <button class="calc-btn" onclick="calcInput('4')">4</button>
+                            <button class="calc-btn" onclick="calcInput('5')">5</button>
+                            <button class="calc-btn" onclick="calcInput('6')">6</button>
+                            <button class="calc-btn" onclick="calcInput('*')">*</button>
+                            <button class="calc-btn" onclick="calcInput('1')">1</button>
+                            <button class="calc-btn" onclick="calcInput('2')">2</button>
+                            <button class="calc-btn" onclick="calcInput('3')">3</button>
+                            <button class="calc-btn" onclick="calcInput('-')">-</button>
+                            <button class="calc-btn" onclick="calcReset()">C</button>
+                            <button class="calc-btn" onclick="calcInput('0')">0</button>
+                            <button class="calc-btn" onclick="calcRun()">=</button>
+                            <button class="calc-btn" onclick="calcInput('+')">+</button>
                         </div>
                     </div>
                 `;
             }
         }
 
-        /* FONCTIONS WIDGETS */
-        function calcAppend(val) { document.getElementById('calc-screen').value += val; }
-        function calcClear() { document.getElementById('calc-screen').value = ''; }
-        function calcCompute() {
-            try {
-                document.getElementById('calc-screen').value = eval(document.getElementById('calc-screen').value);
-            } catch(e) {
-                document.getElementById('calc-screen').value = 'Erreur';
-            }
+        function calcInput(v) { document.getElementById('calc-screen').value += v; }
+        function calcReset() { document.getElementById('calc-screen').value = ''; }
+        function calcRun() {
+            try { document.getElementById('calc-screen').value = eval(document.getElementById('calc-screen').value); }
+            catch(e) { document.getElementById('calc-screen').value = 'Erreur'; }
         }
 
-        function startTimer(seconds) {
-            clearInterval(AppState.timerInterval);
-            AppState.timerSeconds = seconds;
-            updateTimerDisplay();
-            AppState.timerInterval = setInterval(() => {
-                AppState.timerSeconds--;
-                updateTimerDisplay();
-                if (AppState.timerSeconds <= 0) {
-                    clearInterval(AppState.timerInterval);
-                    alert('Temps écoulé !');
-                }
-            }, 1000);
-        }
-        function stopTimer() {
-            clearInterval(AppState.timerInterval);
-            AppState.timerSeconds = 0;
-            updateTimerDisplay();
-        }
-        function updateTimerDisplay() {
-            const m = String(Math.floor(AppState.timerSeconds / 60)).padStart(2, '0');
-            const s = String(AppState.timerSeconds % 60)).padStart(2, '0');
-            const screen = document.getElementById('timer-screen');
-            if (screen) screen.textContent = `${m}:${s}`;
-        }
-
-        async function performTranslation() {
-            const text = document.getElementById('trans-input').value;
-            const from = document.getElementById('trans-lang-from').value;
-            const to = document.getElementById('trans-lang-to').value;
-            if (!text.trim()) return;
-
-            const out = document.getElementById('trans-output');
-            out.textContent = "Traduction en cours...";
-            try {
-                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`);
-                const data = await res.json();
-                out.textContent = data.responseData.translatedText;
-            } catch(e) {
-                out.textContent = "Erreur de traduction.";
-            }
-        }
-
-        /* RENDU IA OVERVIEW (Synthèse dynamique) */
-        async function renderAIOverview(q) {
-            const box = document.getElementById('ai-box');
-            if (!AppState.aiEnabled) {
-                box.style.display = 'none';
-                return;
-            }
-            box.style.display = 'block';
-            const content = document.getElementById('ai-content');
-            const sources = document.getElementById('ai-sources');
-            content.textContent = `Synthèse intelligente de "${q}" : NexSearch analyse les sources du web pour vous offrir un aperçu clair, structuré et synthétique, fidèle aux exigences du design moderne et fluide.`;
-            sources.innerHTML = `
-                <a href="#" class="source-pill">Encyclopédie Web</a>
-                <a href="#" class="source-pill">Tech Index 2026</a>
-                <a href="#" class="source-pill">Flux Global Actu</a>
-            `;
-        }
-
-        /* RENDU DES ONGLETS */
-        async function renderTabContent(tab) {
+        function renderTabContent(tab) {
             const viewport = document.getElementById('tab-viewport');
-            viewport.innerHTML = '<div style="color:#888; padding:20px;">Chargement des résultats...</div>';
-
-            setTimeout(() => {
-                if (tab === 'web') {
-                    viewport.innerHTML = `
-                        <div class="results-list">
-                            <div class="result-entry">
-                                <div class="result-favicon-box"><img src="https://www.google.com/s2/favicons?domain=wikipedia.org" alt="favicon"></div>
-                                <div class="result-content">
-                                    <a href="https://fr.wikipedia.org" target="_blank" class="result-title">${AppState.query} - Encyclopédie Libre</a>
-                                    <div class="result-url">https://fr.wikipedia.org/wiki/${encodeURIComponent(AppState.query)}</div>
-                                    <div class="result-desc">Retrouvez toutes les définitions, l'historique et les aspects détaillés concernant ${AppState.query} sur l'encyclopédie collaborative mondiale.</div>
-                                </div>
-                            </div>
-                            <!-- Live Tile de Recherche (1 quart des résultats) -->
-                            <div class="result-live-tile" style="background: var(--accent);" onclick="window.open('https://duckduckgo.com/?q=${encodeURIComponent(AppState.query)}', '_blank')">
-                                <div style="font-size:0.8rem; text-transform:uppercase;">Live Tile Découverte</div>
-                                <div style="font-size:1.2rem; font-family:var(--font-light);">Explorer "${AppState.query}" en profondeur sur DuckDuckGo</div>
-                                <div style="font-size:0.8rem;">Accès direct ➔</div>
-                            </div>
-                            <div class="result-entry">
-                                <div class="result-favicon-box"><img src="https://www.google.com/s2/favicons?domain=github.com" alt="favicon"></div>
-                                <div class="result-content">
-                                    <a href="https://github.com" target="_blank" class="result-title">Projets & Code Source associés à ${AppState.query}</a>
-                                    <div class="result-url">https://github.com/search?q=${encodeURIComponent(AppState.query)}</div>
-                                    <div class="result-desc">Dépôts open-source, scripts, documentations et contributions de développeurs autour de ${AppState.query}.</div>
-                                </div>
-                            </div>
-                            <div class="result-entry">
-                                <div class="result-favicon-box"><img src="https://www.google.com/s2/favicons?domain=reddit.com" alt="favicon"></div>
-                                <div class="result-content">
-                                    <a href="https://reddit.com" target="_blank" class="result-title">Discussions et avis de la communauté sur ${AppState.query}</a>
-                                    <div class="result-url">https://www.reddit.com/search/?q=${encodeURIComponent(AppState.query)}</div>
-                                    <div class="result-desc">Échanges, questions et retours d'expérience partagés par les utilisateurs du monde entier.</div>
-                                </div>
-                            </div>
+            viewport.innerHTML = `
+                <div class="results-list">
+                    <div class="result-entry">
+                        <div>
+                            <a href="https://fr.wikipedia.org" target="_blank" class="result-title">${AppState.query} - Article Détaillé</a>
+                            <div class="result-url">https://fr.wikipedia.org/wiki/${encodeURIComponent(AppState.query)}</div>
+                            <div class="result-desc">Consultez les informations encyclopédiques complètes et certifiées sur ${AppState.query}.</div>
                         </div>
-                    `;
-                } else if (tab === 'images') {
-                    AppState.imageGallery = [
-                        { url: `https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Vue Conceptuelle` },
-                        { url: `https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Panorama Numérique` },
-                        { url: `https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Illustration Haute Définition` },
-                        { url: `https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Paysage Associé` },
-                        { url: `https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=80`, title: `${AppState.query} - Perspective Artistique` }
-                    ];
-                    let html = '<div class="images-grid">';
-                    AppState.imageGallery.forEach((img, idx) => {
-                        html += `
-                            <div class="img-item" style="background-image: url('${img.url}')" onclick="openImgModal(${idx})">
-                                <div class="img-item-caption">${img.title}</div>
-                            </div>
-                        `;
-                    });
-                    html += '</div>';
-                    viewport.innerHTML = html;
-                } else if (tab === 'videos') {
-                    viewport.innerHTML = `
-                        <div class="videos-grid">
-                            <div class="video-card">
-                                <div class="video-player-box">
-                                    <iframe width="100%" height="100%" src="https://www.youtube-type.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                                <div style="font-weight:600; margin-bottom:4px;">Documentaire officiel : ${AppState.query}</div>
-                                <div style="font-size:0.85rem; color:#888;">YouTube • 120k vues</div>
-                            </div>
-                            <div class="video-card">
-                                <div class="video-player-box">
-                                    <iframe width="100%" height="100%" src="https://www.youtube-type.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                                <div style="font-weight:600; margin-bottom:4px;">Tutoriel complet : Maîtriser ${AppState.query}</div>
-                                <div style="font-size:0.85rem; color:#888;">TechStream • 45k vues</div>
-                            </div>
+                    </div>
+                    <div class="result-entry">
+                        <div>
+                            <a href="https://duckduckgo.com" target="_blank" class="result-title">Recherche approfondie pour ${AppState.query}</a>
+                            <div class="result-url">https://duckduckgo.com/?q=${encodeURIComponent(AppState.query)}</div>
+                            <div class="result-desc">Résultats complémentaires en temps réel issus du Web global.</div>
                         </div>
-                    `;
-                } else if (tab === 'news') {
-                    viewport.innerHTML = `
-                        <div class="results-list">
-                            <div class="result-entry" style="border-left: 4px solid var(--accent);">
-                                <div class="result-content">
-                                    <div class="result-url">Google News • Il y a 2 heures</div>
-                                    <a href="#" class="result-title">Nouvelles avancées mondiales concernant ${AppState.query}</a>
-                                    <div class="result-desc">Les experts saluent les récentes innovations et les retombées économiques attendues pour les mois à venir.</div>
-                                </div>
-                            </div>
-                            <div class="result-entry">
-                                <div class="result-content">
-                                    <div class="result-url">Le Monde • Il y a 5 heures</div>
-                                    <a href="#" class="result-title">Analyse approfondie : Quel avenir pour ${AppState.query} ?</a>
-                                    <div class="result-desc">Décryptage complet des tendances actuelles et des enjeux stratégiques soulevés par ${AppState.query}.</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else if (tab === 'shopping') {
-                    viewport.innerHTML = `
-                        <div class="shopping-grid">
-                            <div class="shop-card">
-                                <div>
-                                    <div style="font-weight:600; margin-bottom:6px;">Kit Officiel ${AppState.query} Edition Limitée</div>
-                                    <div style="font-size:0.85rem; color:#aaa;">Fournisseur certifié Metro</div>
-                                </div>
-                                <div>
-                                    <div class="shop-price">49,99 €</div>
-                                    <button class="metro-btn" style="width:100%; padding:8px;">Voir l'offre</button>
-                                </div>
-                            </div>
-                            <div class="shop-card">
-                                <div>
-                                    <div style="font-weight:600; margin-bottom:6px;">Accessoire Pro - ${AppState.query}</div>
-                                    <div style="font-size:0.85rem; color:#aaa;">Global Store</div>
-                                </div>
-                                <div>
-                                    <div class="shop-price">29,99 €</div>
-                                    <button class="metro-btn" style="width:100%; padding:8px;">Voir l'offre</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else if (tab === 'cartes') {
-                    viewport.innerHTML = `
-                        <div class="maps-layout">
-                            <div class="map-viewport">
-                                <div style="text-align:center; color:#888;">
-                                    <div style="font-size:1.5rem; margin-bottom:10px; color:#fff;">Carte Interactive Metro</div>
-                                    <div>Recherche géographique centrée sur : <b>${AppState.query}</b></div>
-                                </div>
-                            </div>
-                            <div class="map-sidebar">
-                                <div style="font-size:1.2rem; font-family:var(--font-light);">Lieux & Coordonnées</div>
-                                <div style="font-size:0.9rem; color:#ccc;">Sélectionnez un point d'intérêt pour afficher les informations détaillées, itinéraires et avis locaux.</div>
-                                <input type="text" class="metro-input" placeholder="Filtrer un lieu...">
-                                <button class="metro-btn">Rechercher sur la carte</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }, 150);
-        }
-
-        /* MODALE IMAGE */
-        function openImgModal(idx) {
-            AppState.activeImgIndex = idx;
-            const imgObj = AppState.imageGallery[idx];
-            document.getElementById('modal-img').src = imgObj.url;
-            document.getElementById('modal-full-link').href = imgObj.url;
-            document.getElementById('modal-site-link').href = imgObj.url;
-            document.getElementById('img-modal').style.display = 'flex';
-        }
-        function closeImgModal() {
-            document.getElementById('img-modal').style.display = 'none';
-        }
-        function navImage(dir) {
-            AppState.activeImgIndex = (AppState.activeImgIndex + dir + AppState.imageGallery.length) % AppState.imageGallery.length;
-            const imgObj = AppState.imageGallery[AppState.activeImgIndex];
-            document.getElementById('modal-img').src = imgObj.url;
-            document.getElementById('modal-full-link').href = imgObj.url;
-            document.getElementById('modal-site-link').href = imgObj.url;
-        }
-
-        /* GESTION HISTORIQUE */
-        function renderHistory() {
-            const list = document.getElementById('history-list');
-            if (!list) return;
-            if (AppState.history.length === 0) {
-                list.innerHTML = '<div style="color:#777; font-size:0.85rem;">Aucun historique récent.</div>';
-                return;
-            }
-            list.innerHTML = AppState.history.map(item => `
-                <div class="history-entry" onclick="executeSearch('${item.replace(/'/g, "\\'")}')">
-                    <span>${item}</span>
-                    <span>➔</span>
+                    </div>
                 </div>
-            `).join('');
-        }
-
-        function clearHistory() {
-            AppState.history = [];
-            localStorage.removeItem('nex_hist');
-            renderHistory();
-        }
-
-        function renderRecentTiles() {
-            const container = document.getElementById('recent-tiles-container');
-            if (!container) return;
-            if (AppState.history.length === 0) {
-                container.innerHTML = '<div style="color:#777; font-size:0.9rem;">Effectuez des recherches pour les retrouver ici.</div>';
-                return;
-            }
-            container.innerHTML = AppState.history.slice(0, 4).map(item => `
-                <div class="tile accent" onclick="executeSearch('${item.replace(/'/g, "\\'")}')">
-                    <div class="tile-sub">Historique</div>
-                    <div class="tile-main">${item}</div>
-                </div>
-            `).join('');
+            `;
         }
     </script>
 </body>
