@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NexSearch</title>
+  <script>
+    (function () {
+      const path = decodeURIComponent(location.pathname);
+
+      // Accepte : /NexSearch-Modern/q=recherche
+      const match = path.match(/\/q=([^/]+)\/?$/);
+
+      if (match) {
+        const q = match[1];
+
+        // Transmet la recherche à index.html sans la faire apparaître en clair dans l’URL de redirection
+        sessionStorage.setItem("nexsearch-url-query", q);
+
+        // Recharge la page principale
+        location.replace("/NexSearch-Modern/");
+        return;
+      }
+
+      // Si l’adresse ne correspond pas au format /q=..., retour à l’accueil
+      location.replace("/NexSearch-Modern/");
+    })();
+  </script>
+</head>
+<body></body>
+</html>
