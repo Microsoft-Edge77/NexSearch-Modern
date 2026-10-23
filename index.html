@@ -519,6 +519,20 @@
         .video-card img{width:100%;height:140px;object-fit:cover;display:block}
         .video-card .tile-main,.video-card .tile-sub{padding:8px 10px}
         .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:16px}
+
+        /* --- Lecteur vidéo plein écran (vue du site) --- */
+        #video-view{display:none;position:relative;z-index:10;padding:18px 3% 30px;max-width:1700px;margin:0 auto}
+        .vv-bar{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+        .vv-back{background:rgba(255,255,255,.12);color:#fff;border:0;padding:10px 18px;cursor:pointer;font-size:1rem;flex:none}
+        .vv-back:hover{background:var(--accent)}
+        .vv-info{flex:1;min-width:0}
+        .vv-title{font-family:var(--font-light);font-size:1.5rem;line-height:1.25;overflow-wrap:anywhere}
+        .vv-author{font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:#aaaaaa;margin-top:2px}
+        .vv-yt{font-size:.9rem;color:#fff;text-decoration:none;background:rgba(255,255,255,.12);padding:10px 16px;flex:none}
+        .vv-yt:hover{background:var(--accent)}
+        .vv-frame{width:min(100%,calc((100vh - 170px) * 16 / 9));aspect-ratio:16/9;margin:0 auto;background:#000;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+        .vv-frame iframe{width:100%;height:100%;border:0;display:block}
+        @media (max-width:600px){#video-view{padding:12px 2% 20px}.vv-title{font-size:1.15rem}.vv-frame{width:100%}}
     </style>
 </head>
 <body>
@@ -609,6 +623,16 @@
         <div id="tab-viewport"></div>
     </main>
 
+    <!-- LECTEUR VIDÉO PLEIN ÉCRAN (vue du site) -->
+    <main id="video-view">
+        <div class="vv-bar">
+            <button class="vv-back" id="vv-back" title="Retour aux résultats">‹ retour</button>
+            <div class="vv-info"><div class="vv-title" id="vv-title"></div><div class="vv-author" id="vv-author"></div></div>
+            <a class="vv-yt" id="vv-yt" target="_blank" rel="noopener" href="#">Ouvrir sur YouTube ›</a>
+        </div>
+        <div class="vv-frame" id="vv-frame"></div>
+    </main>
+
     <!-- FLYOUT PARAMÈTRES -->
     <div id="settings-panel">
         <div class="set-h"><div style="font-family:var(--font-light);font-size:1.8rem">paramètres</div><button class="x-btn" id="close-settings" title="Fermer"></button></div>
@@ -679,7 +703,7 @@ async function initGallery(){const G=await commons('landscape mountains lake',12
  rotor(t,()=>G.length,(face,i)=>{face.style.backgroundImage=`url("${G[i].th}")`},5000,9000)}
 
 /* ---------- Navigation ---------- */
-function showResults(){$('#home-view').style.display='none';$('#header-bar').style.display='block';$('#results-view').style.display='block';scrollTo(0,0)}
+function showResults(){closeVideo();$('#home-view').style.display='none';$('#header-bar').style.display='block';$('#results-view').style.display='block';scrollTo(0,0)}
 function syncTabs(){$$('.tab-link').forEach(t=>t.classList.toggle('active',t.dataset.tab===S.tab))}
 function triggerSearch(q,tab){q=(q||'').trim();if(!q)return;S.q=q;if(tab)S.tab=tab;$('#header-input').value=q;showResults();syncTabs();$('#widget-zone').innerHTML=toolFor(q);renderTab()}
 function switchTab(t){S.tab=t;syncTabs();if(S.q)renderTab()}
@@ -872,7 +896,8 @@ function bindEvents(){
  const go=v=>triggerSearch(v);
  $('#home-btn').onclick=()=>go($('#home-input').value);$('#header-btn').onclick=()=>go($('#header-input').value);
  $('#home-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};$('#header-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};
- $('#go-home').onclick=()=>{$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
+ $('#go-home').onclick=()=>{closeVideo();$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
+ $('#vv-back').onclick=()=>closeVideo(true);
  $$('.tab-link').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
  $$('#home-view .tile').forEach(t=>t.onclick=()=>{if(document.body.classList.contains('edit'))return;const d=t.dataset;if(d.loc)openLoc();else if(d.tool)openTool(d.tool);else if(d.q)triggerSearch(d.q,d.tab||'web');else{const i=t.querySelector('.live-tile-inner');if(i)flip(i)}});
  $$('.x-btn').forEach(b=>b.innerHTML=XS);
@@ -1002,6 +1027,23 @@ TABS.shopping=async(q,e)=>{let a=[];try{a=await nsCached('shop:'+e,600000,()=>fe
  const tile=r=>`<a class="tile live" href="${safe(r.l)}" target="_blank" rel="noopener" style="text-decoration:none"><div class="live-tile-inner"><div class="tile-face"><div class="tile-sub">Produit</div><div class="tile-main">${esc(r.t.slice(0,70))}</div><div class="tile-sub">eBay</div></div><div class="tile-face back"><div class="tile-main">${esc((r.d||'').slice(0,120))}</div><div class="tile-sub">Voir l’annonce ›</div></div></div></a>`;
  return (a.length?'<div class="shop-grid">'+a.slice(0,6).map(tile).join('')+'</div><div class="results-list">'+a.slice(6,18).map(nentry).join('')+'</div>':'')+links([['Amazon.fr','https://www.amazon.fr/s?k='],['Fnac','https://www.fnac.com/SearchResult/ResultList.aspx?Search='],['Leboncoin','https://www.leboncoin.fr/recherche?text=']],e)};
 
+/* ---------- Lecteur vidéo plein écran : vue du site avec animation Turnstile ---------- */
+function openVideo(id,t,a){
+ const v=$('#video-view');
+ $('#home-view').style.display='none';$('#results-view').style.display='none';$('#header-bar').style.display='block';
+ $('#vv-title').textContent=t||'Vidéo';$('#vv-author').textContent=a||'';
+ $('#vv-yt').href='https://www.youtube.com/watch?v='+encodeURIComponent(id);
+ $('#vv-frame').innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0" title="'+esc(t||'Vidéo')+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+ v.style.display='block';
+ v.classList.remove('turnstyle-tile');void v.offsetWidth;v.classList.add('turnstyle-tile');
+ scrollTo(0,0)}
+function closeVideo(toResults){
+ const v=$('#video-view');if(!v)return;
+ const wasOpen=v.style.display==='block';
+ $('#vv-frame').innerHTML='';v.style.display='none';v.classList.remove('turnstyle-tile');
+ if(toResults&&wasOpen){$('#results-view').style.display='block'}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#video-view').style.display==='block'&&!$('#viewer').classList.contains('open'))closeVideo(true)});
+
 renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComponent(q),t=S.tab;
  if(more){S.pg++;const b=$('#more-btn');if(b){b.disabled=true;b.textContent='Chargement…'}}
  else{S.pg=0;S.seen=new Set();$('#ai-zone').innerHTML='';box(LOAD+'<div class="result-entry">Chargement…</div>')}
@@ -1011,7 +1053,7 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
   if(!more&&t==='cartes')$('#tab-viewport').insertAdjacentHTML('afterbegin','<div class="widget-box" style="max-width:none"><div class="w-title">Choisir un lieu</div><button class="calc-btn" style="margin-top:10px;background:var(--accent)" onclick="openLoc()">Ouvrir le sélecteur</button></div>');
   
   if(!more&&t==='web')overview(q,id);
-  $$('#tab-viewport [data-yt]').forEach(c=>c.onclick=()=>{const id=c.dataset.yt;c.insertAdjacentHTML('afterend','<div class="widget-box" style="max-width:none"><iframe width="100%" height="420" style="border:0" src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>');c.scrollIntoView({behavior:'smooth',block:'start'})})}
+  $$('#tab-viewport [data-yt]').forEach(c=>c.onclick=()=>{const m=c.querySelector('.tile-main'),s=c.querySelector('.tile-sub');openVideo(c.dataset.yt,m?m.textContent:'',s?s.textContent:'')})}
  catch(x){if(id!==S.rid)return;const mb=$('#more-btn');if(mb)mb.parentElement.remove();
   const m=`<div class="result-entry">${more?'Plus de résultats indisponibles ici.':'Impossible de charger ces résultats (service ou réseau indisponible).'} <a class="result-title" target="_blank" rel="noopener" href="https://www.bing.com/search?q=${e}">Ouvrir Bing ›</a></div>`;
   if(more)$('#tab-viewport').insertAdjacentHTML('beforeend',m);else box(m)}};
