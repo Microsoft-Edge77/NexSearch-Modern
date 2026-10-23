@@ -1016,5 +1016,18 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
   const m=`<div class="result-entry">${more?'Plus de résultats indisponibles ici.':'Impossible de charger ces résultats (service ou réseau indisponible).'} <a class="result-title" target="_blank" rel="noopener" href="https://www.bing.com/search?q=${e}">Ouvrir Bing ›</a></div>`;
   if(more)$('#tab-viewport').insertAdjacentHTML('beforeend',m);else box(m)}};
 </script>
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const q = sessionStorage.getItem("nexsearch-url-query");
+
+    if (q) {
+      sessionStorage.removeItem("nexsearch-url-query");
+      triggerSearch(q, "web");
+
+      // Restaure l’URL au format souhaité
+      history.replaceState(null, "", "/NexSearch-Modern/q=" + encodeURIComponent(q));
+    }
+  });
+</script>
 </body>
 </html>
