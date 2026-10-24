@@ -485,7 +485,40 @@
         #viewer.open{display:flex}
         .v-main{flex:1;display:flex;overflow:auto;min-width:0}
         .v-main img{margin:auto;max-width:100%;max-height:100vh;-webkit-touch-callout:none;user-select:none}
-        .v-main img.real{max-width:none;max-height:none}
+        #image-view{display:none;position:relative;z-index:10;padding:18px 3% 30px;max-width:1700px;margin:0 auto}
+#image-view.open{display:block}
+.iv-bar{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.iv-back{background:rgba(255,255,255,.12);color:#fff;border:0;padding:10px 18px;cursor:pointer;font-size:1rem;flex:none}
+.iv-back:hover{background:var(--accent)}
+.iv-title{font-family:var(--font-light);font-size:1.5rem;line-height:1.25;overflow-wrap:anywhere;flex:1;min-width:0}
+.iv-stage{width:100%;height:min(78vh,900px);overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;position:relative;touch-action:none}
+.iv-stage img{transform-origin:center center;max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;cursor:grab}
+.iv-stage img.dragging{cursor:grabbing}
+.iv-zoom{position:absolute;top:12px;right:12px;z-index:4;display:flex;gap:6px}
+.iv-zoom button{background:rgba(0,0,0,.7);color:#fff;border:1px solid rgba(255,255,255,.25);width:42px;height:42px;font-size:1.15rem;cursor:pointer}
+.iv-zoom button:hover{background:var(--accent)}
+.iv-info{margin-top:10px;color:#aaa;font-size:.9rem}
+.header-actions{display:flex;align-items:center;gap:6px;flex:none}
+#pdf-viewer{display:none;position:fixed;inset:0;z-index:320;background:rgba(0,0,0,.95)}
+#pdf-viewer.open{display:flex;flex-direction:column}
+.pdf-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #333}
+.pdf-bar .w-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdf-frame{flex:1;border:0;width:100%;background:#fff}
+#mascot-overlay{display:none;position:fixed;inset:0;z-index:340;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px}
+#mascot-overlay.open{display:flex}
+.mascot-card{max-width:min(92vw,560px);background:#181818;border:1px solid #333;padding:28px;text-align:center;position:relative;animation:mascotIn .45s cubic-bezier(.1,.9,.2,1) both}
+@keyframes mascotIn{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+.mascot{width:104px;height:104px;margin:0 auto 16px;position:relative;animation:mascotBounce 1.8s ease-in-out infinite}
+@keyframes mascotBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.mascot-head{position:absolute;inset:12px 12px 0;background:var(--accent);border-radius:50% 50% 42% 42%}
+.mascot-eye{position:absolute;top:36px;width:10px;height:10px;background:#fff;border-radius:50%}
+.mascot-eye.l{left:32px}.mascot-eye.r{right:32px}
+.mascot-mouth{position:absolute;top:56px;left:50%;transform:translateX(-50%);width:26px;height:12px;border-bottom:3px solid #fff;border-radius:0 0 20px 20px}
+.mascot-q{position:absolute;right:-8px;top:-14px;width:42px;height:42px;background:#fff;color:#000;font:700 28px/42px var(--font-seg);border-radius:50%;animation:qPulse 1.4s ease-in-out infinite}
+@keyframes qPulse{0%,100%{transform:scale(1) rotate(-8deg)}50%{transform:scale(1.14) rotate(8deg)}}
+.mascot-text{font-family:var(--font-light);font-size:1.35rem;line-height:1.35;margin-bottom:14px}
+.mascot-mail{color:var(--accent);text-decoration:none;font-weight:700}
+.mascot-mail:hover{text-decoration:underline}
         .v-btns{width:200px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:12px}
         .v-btns button{background:rgba(255,255,255,.12);color:#fff;border:0;padding:12px;cursor:pointer;text-align:left}
         .v-btns button:hover{background:var(--accent)}
@@ -557,9 +590,15 @@
             </div>
         </div>
 
-        <button class="settings-btn" id="open-settings" title="Paramètres">
-            <svg class="settings-icon-svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2"><path d="M2 8h11M12 17h10"/><circle cx="18" cy="8" r="3.5"/><circle cx="6.5" cy="17" r="3.5"/></g></svg>
-        </button>
+        <div class="header-actions">
+            <button class="settings-btn" id="open-pdf" title="Importer et ouvrir un PDF dans NexSearch">
+                <svg class="settings-icon-svg" viewBox="0 0 24 24"><path fill="#fff" d="M6 2h8l6 6v14H6V2zm7 1.5V9h5.5L13 3.5zM8 13h8v1.6H8V13zm0 3.4h8V18H8v-1.6z"/></svg>
+            </button>
+            <input type="file" id="pdf-file" accept="application/pdf,.pdf" style="display:none">
+            <button class="settings-btn" id="open-settings" title="Paramètres">
+                <svg class="settings-icon-svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2"><path d="M2 8h11M12 17h10"/><circle cx="18" cy="8" r="3.5"/><circle cx="6.5" cy="17" r="3.5"/></g></svg>
+            </button>
+        </div>
     </header>
 
     <!-- ACCUEIL METRO DASHBOARD -->
@@ -632,6 +671,47 @@
         </div>
         <div class="vv-frame" id="vv-frame"></div>
     </main>
+
+    <!-- VUE IMAGE PLEINE PAGE -->
+    <main id="image-view">
+        <div class="iv-bar">
+            <button class="iv-back" id="iv-back">← Retour aux images</button>
+            <div class="iv-title" id="iv-title">Image</div>
+            <a class="vv-yt" id="iv-site" target="_blank" rel="noopener">Afficher le site</a>
+        </div>
+        <div class="iv-stage" id="iv-stage">
+            <div class="iv-zoom">
+                <button id="iv-zout" title="Zoom arrière">−</button>
+                <button id="iv-zfit" title="Ajuster">⤢</button>
+                <button id="iv-zin" title="Zoom avant">+</button>
+            </div>
+            <img id="iv-img" alt="">
+        </div>
+        <div class="iv-info">Molette ou boutons pour zoomer · glisse l’image pour te déplacer.</div>
+    </main>
+
+    <div id="pdf-viewer">
+        <div class="pdf-bar">
+            <div class="w-title" id="pdf-title">Document PDF</div>
+            <button class="calc-btn" id="pdf-download">Télécharger</button>
+            <button class="x-btn" id="pdf-close" title="Fermer"></button>
+        </div>
+        <iframe id="pdf-frame" class="pdf-frame" title="Lecteur PDF NexSearch"></iframe>
+    </div>
+
+    <div id="mascot-overlay">
+        <div class="mascot-card">
+            <button class="x-btn" id="mascot-close" title="Fermer" style="position:absolute;top:8px;right:8px"></button>
+            <div class="mascot">
+                <div class="mascot-head"></div>
+                <div class="mascot-eye l"></div><div class="mascot-eye r"></div>
+                <div class="mascot-mouth"></div>
+                <div class="mascot-q">?</div>
+            </div>
+            <div class="mascot-text">Pourquoi quitter NexSearch ?<br>Si vous ne trouvez pas ce que vous voulez, essayez plutôt des recherches plus précises, ou parlez-en au développeur → <a class="mascot-mail" href="mailto:z50.edge@outlook.com">z50.edge@outlook.com</a></div>
+            <button class="calc-btn" id="mascot-ok" style="background:var(--accent);width:100%">Continuer dans NexSearch</button>
+        </div>
+    </div>
 
     <!-- FLYOUT PARAMÈTRES -->
     <div id="settings-panel">
@@ -814,8 +894,32 @@ async function commons(q,n,type,off){const j=await jget('https://commons.wikimed
  return Object.values(j.query?.pages||{}).sort((a,b)=>a.index-b.index).filter(p=>p.imageinfo).map(p=>({t:p.title.replace(/^File:|\.\w+$/g,''),th:p.imageinfo[0].thumburl,u:p.imageinfo[0].url,p:p.imageinfo[0].descriptionurl}))}
 
 /* Visionneuse d'images */
-function openViewer(i){const v=S.imgs[i];if(!v)return;S.vi=i;const w=$('#viewer'),m=$('#v-img');w.classList.add('open');w.classList.remove('opts');m.classList.remove('real');m.src=v.th;m.alt=v.t;
+function openViewer(i){const v=S.imgs[i];if(!v)return;S.vi=i;const w=$('#viewer'),m=$('#v-img');w.classList.add('open');w.classList.remove('opts');m.src=v.th;m.alt=v.t;
  const im=new Image();im.onload=()=>{if(S.vi===i)m.src=v.u};im.src=v.u}
+
+/* Vue image pleine page, dans NexSearch */
+let IVZ=1,IVX=0,IVY=0;
+function ivApply(){const m=$('#iv-img');if(m)m.style.transform=`translate(${IVX}px,${IVY}px) scale(${IVZ})`}
+function ivZoom(z,cx,cy){const m=$('#iv-img');if(!m)return;const old=IVZ;IVZ=Math.min(8,Math.max(.2,z));
+ if(cx!==undefined){const r=m.getBoundingClientRect();IVX=cx-(cx-IVX)*(IVZ/old);IVY=cy-(cy-IVY)*(IVZ/old)}
+ ivApply()}
+function ivFit(){IVZ=1;IVX=0;IVY=0;ivApply()}
+function openImageView(i){
+ const v=S.imgs[i];if(!v)return;S.vi=i;
+ $('#iv-title').textContent=v.t||'Image';
+ $('#iv-site').href=v.p||'#';
+ const m=$('#iv-img');m.src=v.u;m.alt=v.t||'';
+ ivFit();
+ $('#image-view').classList.add('open');
+ $('#results-view').style.display='none';$('#home-view').style.display='none';
+ $('#header-bar').style.display='block';scrollTo(0,0);
+}
+function closeImageView(toResults=true){
+ const v=$('#image-view');if(!v.classList.contains('open'))return;
+ v.classList.remove('open');
+ if(toResults&&S.q){$('#results-view').style.display='block';$('#header-bar').style.display='block'}
+ scrollTo(0,0);
+}
 const vgo=d=>openViewer((S.vi+d+S.imgs.length)%S.imgs.length);
 async function dl(){const v=S.imgs[S.vi];try{const b=await (await fetch(v.u)).blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=v.t.replace(/[^\w-]+/g,'_')+'.'+(b.type.split('/')[1]||'jpg').replace('jpeg','jpg');a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}catch(e){open(v.u,'_blank','noopener')}}
 
@@ -840,7 +944,7 @@ function bindEvents(){
  const go=v=>triggerSearch(v);
  $('#home-btn').onclick=()=>go($('#home-input').value);$('#header-btn').onclick=()=>go($('#header-input').value);
  $('#home-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};$('#header-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};
- $('#go-home').onclick=()=>{closeVideo();$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
+ $('#go-home').onclick=()=>{closeVideo();closeImageView(false);$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
  $('#vv-back').onclick=()=>closeVideo(true);
  $$('.tab-link').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
  $$('#home-view .tile').forEach(t=>t.onclick=()=>{if(document.body.classList.contains('edit'))return;const d=t.dataset;if(d.loc)openLoc();else if(d.tool)openTool(d.tool);else if(d.q)triggerSearch(d.q,d.tab||'web');else{const i=t.querySelector('.live-tile-inner');if(i)flip(i)}});
@@ -858,8 +962,17 @@ function bindEvents(){
  $('#tab-viewport').onclick=e=>{const a=e.target.closest('a[data-vi]');if(a){e.preventDefault();openViewer(+a.dataset.vi)}};
  $('#v-x').onclick=()=>$('#viewer').classList.remove('open');
  $('#v-prev').onclick=()=>vgo(-1);$('#v-next').onclick=()=>vgo(1);
- $('#v-real').onclick=()=>$('#v-img').classList.toggle('real');
+ $('#v-real').onclick=()=>openImageView(S.vi);
  $('#v-site').onclick=()=>open(S.imgs[S.vi].p,'_blank','noopener');$('#v-dl').onclick=dl;
+ $('#iv-back').onclick=()=>closeImageView(true);
+ $('#iv-zin').onclick=()=>ivZoom(IVZ*1.25);
+ $('#iv-zout').onclick=()=>ivZoom(IVZ/1.25);
+ $('#iv-zfit').onclick=ivFit;
+ $('#iv-stage').addEventListener('wheel',e=>{e.preventDefault();ivZoom(IVZ*(e.deltaY<0?1.15:.87),e.clientX,e.clientY)},{passive:false});
+ $('#iv-stage').addEventListener('pointerdown',e=>{if(e.button!==0)return;const m=$('#iv-img');m.classList.add('dragging');const sx=e.clientX-IVX,sy=e.clientY-IVY;
+  const move=ev=>{IVX=ev.clientX-sx;IVY=ev.clientY-sy;ivApply()};
+  const up=()=>{m.classList.remove('dragging');removeEventListener('pointermove',move);removeEventListener('pointerup',up)};
+  addEventListener('pointermove',move);addEventListener('pointerup',up)});
  const m=$('#v-main');let lp,x0=0,y0=0;
  m.onpointerdown=e=>{x0=e.clientX;y0=e.clientY;lp=setTimeout(()=>$('#viewer').classList.add('opts'),500)};
  m.onpointermove=e=>{if(Math.hypot(e.clientX-x0,e.clientY-y0)>10)clearTimeout(lp)};
@@ -993,7 +1106,7 @@ function closeVideo(toResults){
  const wasOpen=v.style.display==='block';
  $('#vv-frame').innerHTML='';v.style.display='none';v.classList.remove('turnstyle-tile');
  if(toResults&&wasOpen){$('#results-view').style.display='block'}}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#video-view').style.display==='block'&&!$('#viewer').classList.contains('open'))closeVideo(true)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#image-view').classList.contains('open'))closeImageView(true);else if($('#video-view').style.display==='block'&&!$('#viewer').classList.contains('open'))closeVideo(true)}});
 
 renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComponent(q),t=S.tab;
  if(more){S.pg++;const b=$('#more-btn');if(b){b.disabled=true;b.textContent='Chargement…'}}
@@ -1022,6 +1135,46 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
       history.replaceState(null, "", "/NexSearch-Modern/q=" + encodeURIComponent(q));
     }
   });
+</script>
+
+
+<script>
+/* NexSearch : lecteur PDF intégré + animation moteur de recherche */
+(function(){
+  const $=s=>document.querySelector(s);
+  let pdfUrl=null;
+  function closePdf(){ $('#pdf-viewer').classList.remove('open'); if(pdfUrl){URL.revokeObjectURL(pdfUrl);pdfUrl=null} $('#pdf-frame').src='about:blank'; }
+  function openPdf(file){
+    if(!file||file.type!=='application/pdf'&&!/\.pdf$/i.test(file.name)){alert('Veuillez choisir un fichier PDF.');return}
+    if(pdfUrl)URL.revokeObjectURL(pdfUrl);
+    pdfUrl=URL.createObjectURL(file);
+    $('#pdf-title').textContent=file.name;
+    $('#pdf-frame').src=pdfUrl;
+    $('#pdf-viewer').classList.add('open');
+  }
+  $('#open-pdf').onclick=()=>$('#pdf-file').click();
+  $('#pdf-file').onchange=e=>openPdf(e.target.files[0]);
+  $('#pdf-close').onclick=closePdf;
+  $('#pdf-download').onclick=()=>{if(pdfUrl){const a=document.createElement('a');a.href=pdfUrl;a.download=$('#pdf-title').textContent||'document.pdf';a.click()}};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#pdf-viewer').classList.contains('open'))closePdf()});
+  document.addEventListener('dragover',e=>e.preventDefault());
+  document.addEventListener('drop',e=>{e.preventDefault();const f=[...e.dataTransfer.files].find(f=>/\.pdf$/i.test(f.name)||f.type==='application/pdf');if(f)openPdf(f)});
+
+  const ENGINES=/^(bing|google|brave|duckduckgo|duck duck go|duckduck go|yahoo|ecosia|qwant|startpage|mojeek|searx|searxng)$/i;
+  let mascotTimer=null;
+  function closeMascot(){ $('#mascot-overlay').classList.remove('open'); clearTimeout(mascotTimer) }
+  function maybeMascot(q){
+    if(!ENGINES.test((q||'').trim()))return;
+    $('#mascot-overlay').classList.add('open');
+    clearTimeout(mascotTimer);mascotTimer=setTimeout(closeMascot,10000);
+  }
+  $('#mascot-close').onclick=closeMascot;
+  $('#mascot-ok').onclick=closeMascot;
+  $('#mascot-overlay').addEventListener('click',e=>{if(e.target.id==='mascot-overlay')closeMascot()});
+
+  const oldTrigger=window.triggerSearch;
+  window.triggerSearch=function(q,tab){maybeMascot(q);return oldTrigger&&q?oldTrigger(q,tab):undefined};
+})();
 </script>
 
 <div id="footer-container"></div>
