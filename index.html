@@ -644,7 +644,7 @@
         <label class="set-row"><span>Animations Turnstile</span><span class="metro-switch"><input type="checkbox" id="anim-chk"><span class="metro-slider"></span></span></label>
         <label class="set-row"><span>Déplacer / redimensionner les tuiles</span><span class="metro-switch"><input type="checkbox" id="edit-chk"><span class="metro-slider"></span></span></label>
         <div><div class="set-l">Clé API Pollinations (facultatif)</div><input id="key-in" class="metro-input" placeholder="Clé pour de meilleures limites" style="padding:8px"></div>
-        <div><div class="set-l">Proxy CORS personnel (facultatif)</div><input id="px-in" class="metro-input" placeholder="Proxy CORS personnel" style="padding:8px"></div>
+        <div><div class="set-l">Proxy CORS personnel (facultatif)</div><input id="px-in" class="metro-input" placeholder="Proxy CORS personnel" style="padding:8px"><div class="result-url" style="color:#e51400;margin:6px 0 0">DANGER : modifier ce paramètre pourrait perturber le fonctionnement du site.</div></div>
         <details id="hist-box"><summary>Historique NexSearch</summary><div id="hist-list"></div><button class="calc-btn" id="hist-clear" style="margin-top:8px;background:#b00000">Tout supprimer</button></details>
     </div>
     <div id="viewer"><button class="x-btn" id="v-x" style="position:absolute;top:8px;right:8px;z-index:3" title="Fermer"></button>
@@ -930,7 +930,8 @@ document.addEventListener('DOMContentLoaded',initLayout);
 // Déclarés avant toute utilisation dans ce bloc : le Worker est initialisé avant v3.
 const NS_PX=(()=>{try{return atob('aHR0cHM6Ly9wcm94eS1uZXhzZWFyY2guemFvLWdvdXJkZXQud29ya2Vycy5kZXY/dXJsPQ==')}catch(e){return''}})();
 const NS_WORKER=NS_PX.replace(/\?url=$/,'').replace(/\/+$/,'');
-S.px=ls('nex_px',NS_PX);
+const NS_LBL='Proxy par défaut défini';
+S.px=ls('nex_px','')||NS_PX;
 const parseRss=t=>{const x=new DOMParser().parseFromString(t,'text/xml');const g=(i,q)=>i.querySelector(q)?.textContent||'';return [...x.querySelectorAll('item')].map(i=>({t:txt(g(i,'title')),l:g(i,'link'),d:txt(g(i,'description')),p:g(i,'pubDate')}))};
 async function feedItems(u){const E=encodeURIComponent(u),tries=[];
  if(S.px)tries.push(async()=>parseRss(await (await fetch(S.px+E)).text()));
@@ -964,7 +965,13 @@ TABS.web=async(q,e,pg)=>{const dom=!pg&&/^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/\
  R=fresh(R);if(!R.length)throw 0;if(pg)return R.map(rentry).join('');
  S.R=R;const note=b.status==='fulfilled'?'':'<div class="result-url" style="margin-top:12px">Les résultats Bing n\'ont pas pu être chargés (services gratuits bloqués). Réglages → « Proxy CORS personnel » pour les débloquer.</div>';
  return (R.length>3?'<div class="res-tiles">'+R.slice(0,3).map(rtile).join('')+'</div>':'')+'<div class="results-list" id="lst">'+R.slice(R.length>3?3:0).map(rentry).join('')+'</div>'+note};
-document.addEventListener('DOMContentLoaded',()=>{const p=$('#px-in');p.value=S.px||NS_PX;p.onchange=e=>{S.px=e.target.value.trim();lset('nex_px',S.px)}});
+document.addEventListener('DOMContentLoaded',()=>{const p=$('#px-in');
+ const show=()=>{p.value=S.px===NS_PX?NS_LBL:S.px};
+ if(S.px===NS_PX)lset('nex_px','');
+ show();
+ p.onchange=e=>{const v=e.target.value.trim();
+  if(!v||v===NS_LBL||v===NS_PX){S.px=NS_PX;lset('nex_px','')}else{S.px=v;lset('nex_px',v)}
+  show()}});
 </script>
 
 <script>
