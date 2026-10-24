@@ -1073,19 +1073,29 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
       sessionStorage.removeItem("nexsearch-url-query");
       triggerSearch(q, "web");
 
-      // Restaure l’URL au format souhaité
+    
+  // Restaure l’URL au format souhaité
       history.replaceState(null, "", "/NexSearch-Modern/q=" + encodeURIComponent(q));
     }
   });
 </script>
-    <div id="footer-container"></div>
+
+<div id="footer-container"></div>
 
 <script>
-fetch("footer.html")
-.then(r => r.text())
-.then(html => {
-    document.getElementById("footer-container").innerHTML = html;
-});
+(async () => {
+    try {
+        const response = await fetch("footer.html");
+        if (!response.ok) {
+            throw new Error("Erreur de chargement du footer");
+        }
+
+        document.getElementById("footer-container").innerHTML =
+            await response.text();
+    } catch (error) {
+        console.error("NexSearch : impossible de charger footer.html", error);
+    }
+})();
 </script>
 </body>
 </html>
