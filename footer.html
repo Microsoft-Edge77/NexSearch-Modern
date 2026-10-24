@@ -20,31 +20,33 @@
 </footer>
 
 <style>
-/* Conteneur du footer chargé depuis index.html */
+/* Conteneur : toujours collé en bas de la fenêtre, au-dessus de tout */
 #footer-container {
-    position: relative !important;
-    z-index: 2147483647 !important;
-    isolation: isolate;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+
+    z-index: 2147483000 !important;
     width: 100%;
-    flex-shrink: 0;
-    margin-top: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    transform: none !important;
+    filter: none !important;
     pointer-events: auto !important;
 }
 
 /* Barre du footer */
 #nexFooter {
-    position: relative !important;
-    z-index: 2147483647 !important;
-
     display: block;
     width: 100%;
     box-sizing: border-box;
-
     margin: 0;
-    padding: 0;
-    flex-shrink: 0;
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
 
-    background: #000000 !important;
+    background: #000000;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
 
     opacity: 1 !important;
@@ -53,15 +55,10 @@
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     transform: none !important;
-
-    pointer-events: auto !important;
 }
 
 /* Contenu */
 #nexFooter .nex-footer-inner {
-    position: relative;
-    z-index: 1;
-
     width: 100%;
     max-width: 1400px;
     box-sizing: border-box;
@@ -74,7 +71,6 @@
     gap: 14px;
     flex-wrap: wrap;
 
-    background: #000000;
     text-align: center;
 }
 
@@ -90,17 +86,10 @@
 
 /* Lien de confidentialité */
 #nexFooter .nex-footer-link {
-    position: relative;
-    z-index: 2;
-
     display: inline-block;
     padding: 2px 0;
-
-    background: #000000;
     text-decoration: none;
     cursor: pointer;
-    pointer-events: auto !important;
-
     transition: color 0.2s ease;
 }
 
@@ -118,7 +107,7 @@
     #nexFooter .nex-footer-inner {
         flex-direction: column;
         gap: 8px;
-        padding: 20px 16px;
+        padding: 14px 16px;
     }
 }
 </style>
