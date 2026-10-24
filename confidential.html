@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,208 +8,330 @@
 <title>NexSearch | Confidentialité</title>
 
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-:root{
-    --accent:#0078D7;
-    --bg:#000000;
-    --tile:#111111;
-    --text:#ffffff;
-    --muted:#cfcfcf;
+:root {
+    --accent: #0078D7;
+    --bg: #000000;
+    --tile: #111111;
+    --text: #ffffff;
+    --muted: #cfcfcf;
 }
 
 html,
-body{
-    background:#000;
-    color:#fff;
-    font-family:"Segoe UI",sans-serif;
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
 }
 
-body{
-    min-height:100vh;
-    overflow-x:hidden;
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-header{
-    padding:40px;
+header {
+    padding: 40px;
 }
 
-.logo{
-    font-size:4rem;
-    font-weight:300;
-    line-height:1;
+.logo {
+    font-size: 4rem;
+    font-weight: 300;
+    line-height: 1;
 }
 
-.logo span{
-    font-weight:700;
+.logo span {
+    font-weight: 700;
 }
 
-.subtitle{
-    color:#a8a8a8;
-    margin-top:10px;
-    font-size:1.1rem;
+.subtitle {
+    color: #a8a8a8;
+    margin-top: 10px;
+    font-size: 1.1rem;
 }
 
-.hero{
-    padding:0 40px 40px;
-    max-width:800px;
+.hero {
+    padding: 0 40px 40px;
+    max-width: 800px;
 }
 
-.hero h1{
-    font-size:3rem;
-    font-weight:300;
-    margin-bottom:12px;
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 12px;
 }
 
-.hero p{
-    color:#bfbfbf;
-    line-height:1.7;
+.hero p {
+    color: #bfbfbf;
+    line-height: 1.7;
 }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-    gap:12px;
+/* ===== GRILLE METRO ===== */
 
-    padding:40px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    /*
+      Chaque rangée standard mesure 170 px.
+      Les tuiles hautes occupent deux rangées.
+    */
+    grid-auto-rows: 170px;
+    grid-auto-flow: row dense;
+
+    gap: 12px;
+    padding: 40px;
 }
 
-.tile{
-    aspect-ratio:1;
-
-    perspective:1200px;
+.tile {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    perspective: 1200px;
 }
 
-.tile-inner{
-    width:100%;
-    height:100%;
+/* Tailles des tuiles */
 
-    position:relative;
-
-    transform-style:preserve-3d;
-
-    transition:
-    transform .7s cubic-bezier(.1,.9,.2,1);
+.tile.big {
+    grid-column: span 2;
+    grid-row: span 2;
 }
 
-.tile.flipped .tile-inner{
-    transform:rotateY(180deg);
+.tile.wide {
+    grid-column: span 2;
 }
 
-/* FACES */
-
-.tile-face{
-    position:absolute;
-    inset:0;
-
-    backface-visibility:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:30px;
-
-    background:var(--tile);
-    border-left:5px solid var(--accent);
+.tile.tall {
+    grid-row: span 2;
 }
 
-.tile-front{
+/* Faces recto-verso */
 
-    text-align:center;
-
-    font-size:2.1rem;
-    font-weight:300;
-    line-height:1.2;
+.tile-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .7s cubic-bezier(.1, .9, .2, 1);
 }
 
-.tile-back{
-
-    transform:rotateY(180deg);
-
-    flex-direction:column;
-    align-items:flex-start;
-    justify-content:flex-start;
+.tile.flipped .tile-inner {
+    transform: rotateY(180deg);
 }
 
-.tile-back h2{
-    color:var(--accent);
-    font-size:1.6rem;
-    font-weight:300;
+.tile-face {
+    position: absolute;
+    inset: 0;
 
-    margin-bottom:15px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background: var(--tile);
+    border-left: 5px solid var(--accent);
+
+    overflow: hidden;
 }
 
-.tile-back p{
-    color:var(--muted);
-    line-height:1.7;
-    font-size:.95rem;
+.tile-front {
+    text-align: center;
+    font-size: 2.1rem;
+    font-weight: 300;
+    line-height: 1.2;
 }
 
-.big{
-    grid-column:span 2;
+.tile-back {
+    transform: rotateY(180deg);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: auto;
 }
 
-.accent .tile-face{
-    background:var(--accent);
-    border-left:none;
+.tile-back h2 {
+    color: var(--accent);
+    font-size: 1.6rem;
+    font-weight: 300;
+    margin-bottom: 15px;
 }
 
-.accent .tile-back{
-    background:#005fa8;
+.tile-back p {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: .95rem;
+}
+
+/* Tuile bleue */
+
+.accent .tile-face {
+    background: var(--accent);
+    border-left: none;
+}
+
+.accent .tile-back {
+    background: #005fa8;
 }
 
 .accent p,
 .accent h2,
-.accent .tile-front{
-    color:white;
+.accent .tile-front {
+    color: white;
 }
 
-footer{
-    padding:40px;
-    color:#8b8b8b;
-    font-size:.85rem;
+/* ===== PIED DE PAGE ===== */
+
+footer {
+    padding: 40px;
+    color: #8b8b8b;
+    font-size: .85rem;
 }
 
-@media(max-width:700px){
+/* ===== TABLETTE ===== */
 
-    header{
-        padding:25px;
+@media (max-width: 1000px) {
+    header {
+        padding: 30px;
     }
 
-    .hero{
-        padding:0 25px 25px;
+    .hero {
+        padding: 0 30px 30px;
     }
 
-    .grid{
-        padding:25px;
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: 165px;
+        padding: 30px;
+        gap: 10px;
     }
 
-    .big{
-        grid-column:auto;
+    .tile-face {
+        padding: 22px;
     }
 
-    .tile-front{
-        font-size:1.8rem;
+    .tile-front {
+        font-size: 1.8rem;
     }
 
-    .hero h1{
-        font-size:2rem;
+    .hero h1 {
+        font-size: 2.5rem;
     }
-
 }
 
+/* ===== MOBILE ===== */
+
+@media (max-width: 700px) {
+    header {
+        padding: 25px;
+    }
+
+    .logo {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    .subtitle {
+        font-size: .95rem;
+        line-height: 1.5;
+    }
+
+    .hero {
+        padding: 0 25px 25px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 160px;
+        gap: 9px;
+        padding: 25px;
+    }
+
+    /*
+      Les grandes tuiles ne prennent plus toute la hauteur
+      sur mobile, ce qui réduit les trous.
+    */
+    .tile.big,
+    .tile.tall {
+        grid-row: span 1;
+    }
+
+    .tile.big,
+    .tile.wide {
+        grid-column: span 2;
+    }
+
+    .tile-face {
+        padding: 18px;
+    }
+
+    .tile-front {
+        font-size: 1.5rem;
+    }
+
+    .tile-back h2 {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+    }
+
+    .tile-back p {
+        font-size: .82rem;
+        line-height: 1.5;
+    }
+
+    footer {
+        padding: 25px;
+    }
+}
+
+/* ===== PETITS MOBILES ===== */
+
+@media (max-width: 380px) {
+    .grid {
+        padding: 15px;
+        gap: 8px;
+        grid-auto-rows: 150px;
+    }
+
+    .tile-face {
+        padding: 12px;
+    }
+
+    .tile-front {
+        font-size: 1.2rem;
+    }
+
+    .tile-back h2 {
+        font-size: 1.05rem;
+    }
+
+    .tile-back p {
+        font-size: .76rem;
+    }
+}
+
+/* Respect du réglage d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .tile-inner {
+        transition: none;
+    }
+}
 </style>
 </head>
+
 <body>
 
 <header>
-
     <div class="logo">
         nex<span>search</span>
     </div>
@@ -216,24 +339,21 @@ footer{
     <div class="subtitle">
         confidentialité • transparence • respect de l'utilisateur
     </div>
-
 </header>
 
 <section class="hero">
-
     <h1>Déclaration de confidentialité</h1>
 
     <p>
         NexSearch a été conçu pour proposer une expérience de recherche inspirée de Metro et de Windows Phone tout en respectant votre vie privée. Survolez les tuiles ou faites défiler la page sur mobile pour découvrir chaque section.
     </p>
-
 </section>
 
 <div class="grid">
 
+    <!-- 1. Grande tuile -->
     <div class="tile big accent">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Pourquoi<br>NexSearch ?
             </div>
@@ -244,13 +364,12 @@ footer{
                     NexSearch rassemble recherche web, actualités, images, vidéos, cartes et outils dans une interface moderne inspirée du design Metro.
                 </p>
             </div>
-
         </div>
     </div>
 
-    <div class="tile">
+    <!-- 2. Tuile haute -->
+    <div class="tile tall">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Vie privée
             </div>
@@ -261,13 +380,12 @@ footer{
                     Le respect de l'utilisateur est l'une des priorités de NexSearch.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 3 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Comptes
             </div>
@@ -278,13 +396,12 @@ footer{
                     Aucun compte n'est nécessaire pour utiliser les principales fonctionnalités de NexSearch.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 4 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Données
             </div>
@@ -295,128 +412,114 @@ footer{
                     NexSearch n'a pas vocation à collecter ou revendre vos données personnelles.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 5 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Paramètres
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Stockage local</h2>
-
                 <p>
                     Certaines préférences comme la couleur d'accentuation ou les réglages visuels peuvent être enregistrées sur votre appareil.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 6 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Historique
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Historique</h2>
-
                 <p>
                     Les fonctionnalités d'historique disponibles sont destinées à améliorer votre expérience de navigation.
                 </p>
             </div>
-
         </div>
     </div>
 
-    <div class="tile">
+    <!-- 7. Tuile large -->
+    <div class="tile wide">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 IA
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Intelligence artificielle</h2>
-
                 <p>
                     Certaines réponses peuvent être générées par des services d'IA et peuvent occasionnellement contenir des erreurs.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 8 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Services tiers
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Services tiers</h2>
-
                 <p>
                     Météo, actualités, cartes ou IA peuvent provenir de services externes appliquant leurs propres règles.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 9 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Publicité
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Publicité</h2>
-
                 <p>
                     Certaines formes de publicité ou d'affiliation pourront être utilisées afin de financer le développement du projet.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 10 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Sécurité
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Sécurité</h2>
-
                 <p>
                     Nous faisons de notre mieux pour maintenir NexSearch fiable et sécurisé, sans garantir une protection absolue.
                 </p>
             </div>
-
         </div>
     </div>
 
+    <!-- 11 -->
     <div class="tile">
         <div class="tile-inner">
-
             <div class="tile-face tile-front">
                 Résumé
             </div>
 
             <div class="tile-face tile-back">
                 <h2>Résumé</h2>
-
                 <p>
                     Pas de compte obligatoire.<br>
                     Interface Metro.<br>
@@ -424,86 +527,61 @@ footer{
                     Utilisation simple et directe.
                 </p>
             </div>
-
         </div>
     </div>
 
 </div>
 
 <footer>
-
     NexSearch • Dernière mise à jour : 24 octobre 2026
-
 </footer>
 
 <script>
-
 /* -------- PC -------- */
 
-document.querySelectorAll(".tile").forEach(tile=>{
-
+document.querySelectorAll(".tile").forEach(tile => {
     let timer;
 
-    tile.addEventListener("mouseenter",()=>{
-
-        if(window.matchMedia("(hover:hover)").matches){
-
-            timer=setTimeout(()=>{
-
+    tile.addEventListener("mouseenter", () => {
+        if (window.matchMedia("(hover:hover)").matches) {
+            timer = setTimeout(() => {
                 tile.classList.add("flipped");
-
-            },1000);
-
+            }, 1000);
         }
-
     });
 
-    tile.addEventListener("mouseleave",()=>{
-
+    tile.addEventListener("mouseleave", () => {
         clearTimeout(timer);
 
-        if(window.matchMedia("(hover:hover)").matches){
-
+        if (window.matchMedia("(hover:hover)").matches) {
             tile.classList.remove("flipped");
-
         }
-
     });
-
 });
 
 /* -------- MOBILE -------- */
 
-const observer=new IntersectionObserver(entries=>{
-
-    entries.forEach(entry=>{
-
-        if(
-            entry.isIntersecting &&
-            !entry.target.dataset.done
-        ){
-
-            setTimeout(()=>{
-
-                entry.target.classList.add("flipped");
-                entry.target.dataset.done="1";
-
-            },1000);
-
-        }
-
+if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (
+                entry.isIntersecting &&
+                !entry.target.dataset.done
+            ) {
+                setTimeout(() => {
+                    entry.target.classList.add("flipped");
+                    entry.target.dataset.done = "1";
+                }, 1000);
+            }
+        });
+    }, {
+        threshold: 0.6
     });
 
-},{
-    threshold:0.6
-});
-
-document.querySelectorAll(".tile").forEach(tile=>{
-
-    observer.observe(tile);
-
-});
-
+    document.querySelectorAll(".tile").forEach(tile => {
+        observer.observe(tile);
+    });
+}
 </script>
 
 </body>
