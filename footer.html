@@ -1,197 +1,119 @@
-<!-- NexSearch Footer -->
-
-<footer id="nexFooter" class="nex-footer">
-
-    <div class="nex-footer-inner">
-
-        <span class="nex-footer-copy">
-            © 2026 NexSearch
-        </span>
-
-        <a
-            class="nex-footer-link"
-            href="https://microsoft-edge77.github.io/NexSearch-Modern/confidential"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="NexSearch | Confidentialité">
-
-            Déclaration de confidentialité →
-
-        </a>
-
-    </div>
-
-</footer>
-
-<style>
-
-.nex-footer{
-
-    width:100%;
-
-    background:#000000;
-
-    border-top:1px solid rgba(255,255,255,.08);
-
-    position:relative;
-
-    z-index:1;
-
-    margin-top:48px;
-
-    flex-shrink:0;
-
-   opacity:1;
-transform:translateY(0);
-pointer-events:auto;
-
-    transition:
-        opacity .35s ease,
-        transform .35s ease;
-
-}
-
-.nex-footer.visible{
-
-    opacity:1;
-
-    transform:translateY(0);
-
-    pointer-events:auto;
-
-}
-
-.nex-footer-inner{
-
-    max-width:1400px;
-
-    margin:0 auto;
-
-    padding:18px 24px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:14px;
-
-    flex-wrap:wrap;
-
-    text-align:center;
-
-}
-
-.nex-footer-copy{
-
-    color:#ffffff;
-
-    font-family:"Segoe UI","Segoe UI Variable",sans-serif;
-
-    font-size:.92rem;
-
-    font-weight:400;
-
-}
-
-.nex-footer-link{
-
-    color:#ffffff;
-
-    text-decoration:none;
-
-    font-family:"Segoe UI","Segoe UI Variable",sans-serif;
-
-    font-size:.92rem;
-
-    transition:
-        color .2s ease,
-        opacity .2s ease;
-
-}
-
-.nex-footer-link:hover{
-
-    color:#0078D7;
-
-}
-
-.nex-footer-link:active{
-
-    opacity:.7;
-
-}
-
-@media (max-width:600px){
-
-    .nex-footer-inner{
-
-        flex-direction:column;
-
-        gap:8px;
-
-        padding:20px;
-
-    }
-
-}
-
-</style>
-
-<script>
-
-(function(){
-
-    const footer = document.getElementById("nexFooter");
-
-    function updateFooterVisibility(){
-
-        if(!footer) return;
-
-        const rect = footer.getBoundingClientRect();
-
-        const viewportHeight = window.innerHeight;
-
-        /*
-            On considère que le footer est correctement placé
-            seulement lorsqu'il est proche du bas réel de la page.
-        */
-
-        const nearBottom =
-            rect.top > viewportHeight * 0.75;
-
-        if(nearBottom){
-
-            footer.classList.add("visible");
-
-        }else{
-
-            footer.classList.remove("visible");
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSearch — Footer</title>
+
+    <style>
+        html {
+            min-height: 100%;
         }
 
-    }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: #000000;
+        }
 
-    window.addEventListener(
-        "load",
-        updateFooterVisibility
-    );
+        /* Le contenu principal occupe l'espace disponible */
+        #app,
+        #main,
+        #main-content,
+        #search-page,
+        main {
+            flex: 1 0 auto;
+        }
 
-    window.addEventListener(
-        "resize",
-        updateFooterVisibility
-    );
+        /* Footer NexSearch */
+        #nexFooter {
+            width: 100%;
+            box-sizing: border-box;
+            background: #000000;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+            flex-shrink: 0;
 
-    window.addEventListener(
-        "scroll",
-        updateFooterVisibility
-    );
+            opacity: 1;
+            transform: none;
+            pointer-events: auto;
+        }
 
-    setTimeout(updateFooterVisibility,500);
-    setTimeout(updateFooterVisibility,1500);
-    setTimeout(updateFooterVisibility,3000);
+        .nex-footer-inner {
+            width: 100%;
+            max-width: 1400px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            padding: 18px 24px;
 
-})();
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
 
-</script>
+        .nex-footer-copy,
+        .nex-footer-link {
+            color: #ffffff;
+            font-family: "Segoe UI", "Segoe UI Variable", sans-serif;
+            font-size: .92rem;
+            font-weight: 400;
+        }
+
+        .nex-footer-link {
+            text-decoration: none;
+            transition: color .2s ease, opacity .2s ease;
+        }
+
+        .nex-footer-link:hover {
+            color: #0078D7;
+        }
+
+        .nex-footer-link:active {
+            opacity: .7;
+        }
+
+        @media (max-width: 600px) {
+            .nex-footer-inner {
+                flex-direction: column;
+                gap: 8px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NexSearch Footer -->
+    <footer id="nexFooter" class="nex-footer">
+
+        <div class="nex-footer-inner">
+
+            <span class="nex-footer-copy">
+                © 2026 NexSearch
+            </span>
+
+            <a
+                class="nex-footer-link"
+                href="https://microsoft-edge77.github.io/NexSearch-Modern/confidential"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="NexSearch | Confidentialité">
+
+                Déclaration de confidentialité →
+
+            </a>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>
