@@ -1,5 +1,6 @@
 <!-- NexSearch Footer -->
-<footer class="nex-footer">
+
+<footer id="nexFooter" class="nex-footer">
 
     <div class="nex-footer-inner">
 
@@ -15,6 +16,7 @@
             title="NexSearch | Confidentialité">
 
             Déclaration de confidentialité →
+
         </a>
 
     </div>
@@ -38,6 +40,26 @@
     margin-top:48px;
 
     flex-shrink:0;
+
+    opacity:0;
+
+    transform:translateY(10px);
+
+    pointer-events:none;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+
+}
+
+.nex-footer.visible{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+    pointer-events:auto;
 
 }
 
@@ -72,8 +94,6 @@
     font-size:.92rem;
 
     font-weight:400;
-
-    letter-spacing:.2px;
 
 }
 
@@ -117,13 +137,63 @@
 
     }
 
-    .nex-footer-copy,
-    .nex-footer-link{
-
-        font-size:.9rem;
-
-    }
-
 }
 
 </style>
+
+<script>
+
+(function(){
+
+    const footer = document.getElementById("nexFooter");
+
+    function updateFooterVisibility(){
+
+        if(!footer) return;
+
+        const rect = footer.getBoundingClientRect();
+
+        const viewportHeight = window.innerHeight;
+
+        /*
+            On considère que le footer est correctement placé
+            seulement lorsqu'il est proche du bas réel de la page.
+        */
+
+        const nearBottom =
+            rect.top > viewportHeight * 0.75;
+
+        if(nearBottom){
+
+            footer.classList.add("visible");
+
+        }else{
+
+            footer.classList.remove("visible");
+
+        }
+
+    }
+
+    window.addEventListener(
+        "load",
+        updateFooterVisibility
+    );
+
+    window.addEventListener(
+        "resize",
+        updateFooterVisibility
+    );
+
+    window.addEventListener(
+        "scroll",
+        updateFooterVisibility
+    );
+
+    setTimeout(updateFooterVisibility,500);
+    setTimeout(updateFooterVisibility,1500);
+    setTimeout(updateFooterVisibility,3000);
+
+})();
+
+</script>
