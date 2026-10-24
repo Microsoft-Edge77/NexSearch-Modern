@@ -20,18 +20,16 @@
 </footer>
 
 <style>
-/* Conteneur : toujours collé en bas de la fenêtre, au-dessus de tout */
+/* Conteneur : à la fin du contenu, dans le flux, au-dessus du fond */
 #footer-container {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    top: auto !important;
-
+    position: relative !important;
     z-index: 2147483000 !important;
+    clear: both;
+
     width: 100%;
-    margin: 0 !important;
-    padding: 0 !important;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 
     transform: none !important;
     filter: none !important;
