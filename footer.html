@@ -1,119 +1,79 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexSearch — Footer</title>
+```html
+<!-- NexSearch Footer -->
+<footer class="nex-footer">
+    <div class="nex-footer-inner">
+        <span class="nex-footer-copy">© 2026 NexSearch</span>
 
-    <style>
-        html {
-            min-height: 100%;
-        }
+        <a
+            class="nex-footer-link"
+            href="https://microsoft-edge77.github.io/NexSearch-Modern/confidential"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="NexSearch | Confidentialité">
+            Déclaration de confidentialité →
+        </a>
+    </div>
+</footer>
 
-        body {
-            min-height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            background: #000000;
-        }
+<style>
+html {
+    min-height: 100%;
+}
 
-        /* Le contenu principal occupe l'espace disponible */
-        #app,
-        #main,
-        #main-content,
-        #search-page,
-        main {
-            flex: 1 0 auto;
-        }
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
 
-        /* Footer NexSearch */
-        #nexFooter {
-            width: 100%;
-            box-sizing: border-box;
-            background: #000000;
-            border-top: 1px solid rgba(255, 255, 255, .08);
-            position: relative;
-            z-index: 1;
-            margin-top: auto;
-            flex-shrink: 0;
+.nex-footer {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto;
+    flex-shrink: 0;
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+}
 
-            opacity: 1;
-            transform: none;
-            pointer-events: auto;
-        }
+.nex-footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    text-align: center;
+}
 
-        .nex-footer-inner {
-            width: 100%;
-            max-width: 1400px;
-            box-sizing: border-box;
-            margin: 0 auto;
-            padding: 18px 24px;
+.nex-footer-copy,
+.nex-footer-link {
+    color: #fff;
+    font-family: "Segoe UI", "Segoe UI Variable", sans-serif;
+    font-size: .92rem;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            text-align: center;
-        }
+.nex-footer-link {
+    text-decoration: none;
+    transition: color .2s ease;
+}
 
-        .nex-footer-copy,
-        .nex-footer-link {
-            color: #ffffff;
-            font-family: "Segoe UI", "Segoe UI Variable", sans-serif;
-            font-size: .92rem;
-            font-weight: 400;
-        }
+.nex-footer-link:hover {
+    color: #0078D7;
+}
 
-        .nex-footer-link {
-            text-decoration: none;
-            transition: color .2s ease, opacity .2s ease;
-        }
+.nex-footer-link:active {
+    opacity: .7;
+}
 
-        .nex-footer-link:hover {
-            color: #0078D7;
-        }
-
-        .nex-footer-link:active {
-            opacity: .7;
-        }
-
-        @media (max-width: 600px) {
-            .nex-footer-inner {
-                flex-direction: column;
-                gap: 8px;
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- NexSearch Footer -->
-    <footer id="nexFooter" class="nex-footer">
-
-        <div class="nex-footer-inner">
-
-            <span class="nex-footer-copy">
-                © 2026 NexSearch
-            </span>
-
-            <a
-                class="nex-footer-link"
-                href="https://microsoft-edge77.github.io/NexSearch-Modern/confidential"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="NexSearch | Confidentialité">
-
-                Déclaration de confidentialité →
-
-            </a>
-
-        </div>
-
-    </footer>
-
-</body>
-</html>
+@media (max-width: 600px) {
+    .nex-footer-inner {
+        flex-direction: column;
+        gap: 8px;
+        padding: 20px;
+    }
+}
+</style>
+```
