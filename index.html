@@ -485,40 +485,7 @@
         #viewer.open{display:flex}
         .v-main{flex:1;display:flex;overflow:auto;min-width:0}
         .v-main img{margin:auto;max-width:100%;max-height:100vh;-webkit-touch-callout:none;user-select:none}
-        #image-view{display:none;position:relative;z-index:10;padding:18px 3% 30px;max-width:1700px;margin:0 auto}
-#image-view.open{display:block}
-.iv-bar{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
-.iv-back{background:rgba(255,255,255,.12);color:#fff;border:0;padding:10px 18px;cursor:pointer;font-size:1rem;flex:none}
-.iv-back:hover{background:var(--accent)}
-.iv-title{font-family:var(--font-light);font-size:1.5rem;line-height:1.25;overflow-wrap:anywhere;flex:1;min-width:0}
-.iv-stage{width:100%;height:min(78vh,900px);overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;position:relative;touch-action:none}
-.iv-stage img{transform-origin:center center;max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;cursor:grab}
-.iv-stage img.dragging{cursor:grabbing}
-.iv-zoom{position:absolute;top:12px;right:12px;z-index:4;display:flex;gap:6px}
-.iv-zoom button{background:rgba(0,0,0,.7);color:#fff;border:1px solid rgba(255,255,255,.25);width:42px;height:42px;font-size:1.15rem;cursor:pointer}
-.iv-zoom button:hover{background:var(--accent)}
-.iv-info{margin-top:10px;color:#aaa;font-size:.9rem}
-.header-actions{display:flex;align-items:center;gap:6px;flex:none}
-#pdf-viewer{display:none;position:fixed;inset:0;z-index:320;background:rgba(0,0,0,.95)}
-#pdf-viewer.open{display:flex;flex-direction:column}
-.pdf-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #333}
-.pdf-bar .w-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pdf-frame{flex:1;border:0;width:100%;background:#fff}
-#mascot-overlay{display:none;position:fixed;inset:0;z-index:340;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px}
-#mascot-overlay.open{display:flex}
-.mascot-card{max-width:min(92vw,560px);background:#181818;border:1px solid #333;padding:28px;text-align:center;position:relative;animation:mascotIn .45s cubic-bezier(.1,.9,.2,1) both}
-@keyframes mascotIn{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
-.mascot{width:104px;height:104px;margin:0 auto 16px;position:relative;animation:mascotBounce 1.8s ease-in-out infinite}
-@keyframes mascotBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.mascot-head{position:absolute;inset:12px 12px 0;background:var(--accent);border-radius:50% 50% 42% 42%}
-.mascot-eye{position:absolute;top:36px;width:10px;height:10px;background:#fff;border-radius:50%}
-.mascot-eye.l{left:32px}.mascot-eye.r{right:32px}
-.mascot-mouth{position:absolute;top:56px;left:50%;transform:translateX(-50%);width:26px;height:12px;border-bottom:3px solid #fff;border-radius:0 0 20px 20px}
-.mascot-q{position:absolute;right:-8px;top:-14px;width:42px;height:42px;background:#fff;color:#000;font:700 28px/42px var(--font-seg);border-radius:50%;animation:qPulse 1.4s ease-in-out infinite}
-@keyframes qPulse{0%,100%{transform:scale(1) rotate(-8deg)}50%{transform:scale(1.14) rotate(8deg)}}
-.mascot-text{font-family:var(--font-light);font-size:1.35rem;line-height:1.35;margin-bottom:14px}
-.mascot-mail{color:var(--accent);text-decoration:none;font-weight:700}
-.mascot-mail:hover{text-decoration:underline}
+        .v-main img.real{max-width:none;max-height:none}
         .v-btns{width:200px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:12px}
         .v-btns button{background:rgba(255,255,255,.12);color:#fff;border:0;padding:12px;cursor:pointer;text-align:left}
         .v-btns button:hover{background:var(--accent)}
@@ -567,6 +534,33 @@
         .vv-frame iframe{width:100%;height:100%;border:0;display:block}
         @media (max-width:600px){#video-view{padding:12px 2% 20px}.vv-title{font-size:1.15rem}.vv-frame{width:100%}}
     </style>
+
+<style>
+.header-actions{display:flex;align-items:center;gap:4px;flex:0 0 auto;margin-left:auto}
+.header-actions button{flex:0 0 40px}
+.header-search-bar{min-width:0}
+#ns-image-view{position:relative;z-index:10;padding:20px 4%;background:rgba(0,0,0,.65)}
+#ns-image[hidden],#ns-image-view[hidden],#viewer[hidden],#ns-pdf-view[hidden],#ns-mascot[hidden]{display:none!important}
+.ns-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.ns-bar button,.ns-controls button{border:0;background:#292929;color:white;padding:12px;cursor:pointer}
+.ns-bar button:hover,.ns-controls button:hover{background:var(--accent)}
+#ns-image-title{flex:1;min-width:120px;overflow-wrap:anywhere;font-size:1.2rem}
+#ns-image-stage{height:72vh;min-height:240px;background:#080808;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;touch-action:none}
+#ns-image{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;flex:none;user-select:none;transform-origin:center;cursor:grab}
+#ns-image-stage:active{cursor:grabbing}
+.ns-controls{display:flex;gap:4px;align-items:center}
+#ns-image-status{color:#bbb;margin-top:10px;min-height:1.4em}
+#ns-pdf-view{position:fixed;inset:0;z-index:400;background:#181818;display:flex;flex-direction:column;padding:12px}
+#ns-pdf-frame{flex:1;min-height:0;width:100%;border:0;background:white}
+#ns-pdf-name{flex:1;overflow-wrap:anywhere}
+#ns-mascot{position:fixed;inset:0;z-index:450;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}
+.ns-message{position:relative;max-width:540px;padding:30px;background:#181818;border:1px solid #444;line-height:1.6;text-align:center}
+.ns-message a{color:var(--accent)}
+.ns-character{position:relative;margin:10px auto 20px;background:var(--accent);border-radius:45%;width:85px;height:85px;font-size:42px;line-height:85px;animation:ns-bob 1.5s ease-in-out infinite}
+.ns-character:after{content:'?';position:absolute;right:-20px;top:-20px;background:white;color:black;border-radius:50%;font-size:28px;width:40px;height:40px;line-height:40px}
+@keyframes ns-bob{50%{transform:translateY(-9px) rotate(4deg)}}
+@media(prefers-reduced-motion:reduce){.ns-character{animation:none}}
+</style>
 </head>
 <body>
 
@@ -590,15 +584,9 @@
             </div>
         </div>
 
-        <div class="header-actions">
-            <button class="settings-btn" id="open-pdf" title="Importer et ouvrir un PDF dans NexSearch">
-                <svg class="settings-icon-svg" viewBox="0 0 24 24"><path fill="#fff" d="M6 2h8l6 6v14H6V2zm7 1.5V9h5.5L13 3.5zM8 13h8v1.6H8V13zm0 3.4h8V18H8v-1.6z"/></svg>
-            </button>
-            <input type="file" id="pdf-file" accept="application/pdf,.pdf" style="display:none">
-            <button class="settings-btn" id="open-settings" title="Paramètres">
-                <svg class="settings-icon-svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2"><path d="M2 8h11M12 17h10"/><circle cx="18" cy="8" r="3.5"/><circle cx="6.5" cy="17" r="3.5"/></g></svg>
-            </button>
-        </div>
+        <button class="settings-btn" id="open-settings" title="Paramètres">
+            <svg class="settings-icon-svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2"><path d="M2 8h11M12 17h10"/><circle cx="18" cy="8" r="3.5"/><circle cx="6.5" cy="17" r="3.5"/></g></svg>
+        </button>
     </header>
 
     <!-- ACCUEIL METRO DASHBOARD -->
@@ -671,47 +659,6 @@
         </div>
         <div class="vv-frame" id="vv-frame"></div>
     </main>
-
-    <!-- VUE IMAGE PLEINE PAGE -->
-    <main id="image-view">
-        <div class="iv-bar">
-            <button class="iv-back" id="iv-back">← Retour aux images</button>
-            <div class="iv-title" id="iv-title">Image</div>
-            <a class="vv-yt" id="iv-site" target="_blank" rel="noopener">Afficher le site</a>
-        </div>
-        <div class="iv-stage" id="iv-stage">
-            <div class="iv-zoom">
-                <button id="iv-zout" title="Zoom arrière">−</button>
-                <button id="iv-zfit" title="Ajuster">⤢</button>
-                <button id="iv-zin" title="Zoom avant">+</button>
-            </div>
-            <img id="iv-img" alt="">
-        </div>
-        <div class="iv-info">Molette ou boutons pour zoomer · glisse l’image pour te déplacer.</div>
-    </main>
-
-    <div id="pdf-viewer">
-        <div class="pdf-bar">
-            <div class="w-title" id="pdf-title">Document PDF</div>
-            <button class="calc-btn" id="pdf-download">Télécharger</button>
-            <button class="x-btn" id="pdf-close" title="Fermer"></button>
-        </div>
-        <iframe id="pdf-frame" class="pdf-frame" title="Lecteur PDF NexSearch"></iframe>
-    </div>
-
-    <div id="mascot-overlay">
-        <div class="mascot-card">
-            <button class="x-btn" id="mascot-close" title="Fermer" style="position:absolute;top:8px;right:8px"></button>
-            <div class="mascot">
-                <div class="mascot-head"></div>
-                <div class="mascot-eye l"></div><div class="mascot-eye r"></div>
-                <div class="mascot-mouth"></div>
-                <div class="mascot-q">?</div>
-            </div>
-            <div class="mascot-text">Pourquoi quitter NexSearch ?<br>Si vous ne trouvez pas ce que vous voulez, essayez plutôt des recherches plus précises, ou parlez-en au développeur → <a class="mascot-mail" href="mailto:z50.edge@outlook.com">z50.edge@outlook.com</a></div>
-            <button class="calc-btn" id="mascot-ok" style="background:var(--accent);width:100%">Continuer dans NexSearch</button>
-        </div>
-    </div>
 
     <!-- FLYOUT PARAMÈTRES -->
     <div id="settings-panel">
@@ -894,32 +841,8 @@ async function commons(q,n,type,off){const j=await jget('https://commons.wikimed
  return Object.values(j.query?.pages||{}).sort((a,b)=>a.index-b.index).filter(p=>p.imageinfo).map(p=>({t:p.title.replace(/^File:|\.\w+$/g,''),th:p.imageinfo[0].thumburl,u:p.imageinfo[0].url,p:p.imageinfo[0].descriptionurl}))}
 
 /* Visionneuse d'images */
-function openViewer(i){const v=S.imgs[i];if(!v)return;S.vi=i;const w=$('#viewer'),m=$('#v-img');w.classList.add('open');w.classList.remove('opts');m.src=v.th;m.alt=v.t;
- const im=new Image();im.onload=()=>{if(S.vi===i)m.src=v.u};im.src=v.u}
-
-/* Vue image pleine page, dans NexSearch */
-let IVZ=1,IVX=0,IVY=0;
-function ivApply(){const m=$('#iv-img');if(m)m.style.transform=`translate(${IVX}px,${IVY}px) scale(${IVZ})`}
-function ivZoom(z,cx,cy){const m=$('#iv-img');if(!m)return;const old=IVZ;IVZ=Math.min(8,Math.max(.2,z));
- if(cx!==undefined){const r=m.getBoundingClientRect();IVX=cx-(cx-IVX)*(IVZ/old);IVY=cy-(cy-IVY)*(IVZ/old)}
- ivApply()}
-function ivFit(){IVZ=1;IVX=0;IVY=0;ivApply()}
-function openImageView(i){
- const v=S.imgs[i];if(!v)return;S.vi=i;
- $('#iv-title').textContent=v.t||'Image';
- $('#iv-site').href=v.p||'#';
- const m=$('#iv-img');m.src=v.u;m.alt=v.t||'';
- ivFit();
- $('#image-view').classList.add('open');
- $('#results-view').style.display='none';$('#home-view').style.display='none';
- $('#header-bar').style.display='block';scrollTo(0,0);
-}
-function closeImageView(toResults=true){
- const v=$('#image-view');if(!v.classList.contains('open'))return;
- v.classList.remove('open');
- if(toResults&&S.q){$('#results-view').style.display='block';$('#header-bar').style.display='block'}
- scrollTo(0,0);
-}
+function openViewer(i){const v=S.imgs[i];if(!v)return;S.vi=i;const w=$('#viewer'),m=$('#v-img');w.classList.add('open');w.classList.remove('opts');m.classList.remove('real');m.src=v.th;m.alt=v.t;
+ const im=new Image();im.onload=()=>{if(S.vi===i)m.src=v.u};if(v.u)im.src=v.u}
 const vgo=d=>openViewer((S.vi+d+S.imgs.length)%S.imgs.length);
 async function dl(){const v=S.imgs[S.vi];try{const b=await (await fetch(v.u)).blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=v.t.replace(/[^\w-]+/g,'_')+'.'+(b.type.split('/')[1]||'jpg').replace('jpeg','jpg');a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}catch(e){open(v.u,'_blank','noopener')}}
 
@@ -944,7 +867,7 @@ function bindEvents(){
  const go=v=>triggerSearch(v);
  $('#home-btn').onclick=()=>go($('#home-input').value);$('#header-btn').onclick=()=>go($('#header-input').value);
  $('#home-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};$('#header-input').onkeydown=e=>{if(e.key==='Enter')go(e.target.value)};
- $('#go-home').onclick=()=>{closeVideo();closeImageView(false);$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
+ $('#go-home').onclick=()=>{closeVideo();$('#results-view').style.display='none';$('#header-bar').style.display='none';$('#home-view').style.display='block'};
  $('#vv-back').onclick=()=>closeVideo(true);
  $$('.tab-link').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
  $$('#home-view .tile').forEach(t=>t.onclick=()=>{if(document.body.classList.contains('edit'))return;const d=t.dataset;if(d.loc)openLoc();else if(d.tool)openTool(d.tool);else if(d.q)triggerSearch(d.q,d.tab||'web');else{const i=t.querySelector('.live-tile-inner');if(i)flip(i)}});
@@ -962,17 +885,8 @@ function bindEvents(){
  $('#tab-viewport').onclick=e=>{const a=e.target.closest('a[data-vi]');if(a){e.preventDefault();openViewer(+a.dataset.vi)}};
  $('#v-x').onclick=()=>$('#viewer').classList.remove('open');
  $('#v-prev').onclick=()=>vgo(-1);$('#v-next').onclick=()=>vgo(1);
- $('#v-real').onclick=()=>openImageView(S.vi);
+ $('#v-real').onclick=()=>$('#v-img').classList.toggle('real');
  $('#v-site').onclick=()=>open(S.imgs[S.vi].p,'_blank','noopener');$('#v-dl').onclick=dl;
- $('#iv-back').onclick=()=>closeImageView(true);
- $('#iv-zin').onclick=()=>ivZoom(IVZ*1.25);
- $('#iv-zout').onclick=()=>ivZoom(IVZ/1.25);
- $('#iv-zfit').onclick=ivFit;
- $('#iv-stage').addEventListener('wheel',e=>{e.preventDefault();ivZoom(IVZ*(e.deltaY<0?1.15:.87),e.clientX,e.clientY)},{passive:false});
- $('#iv-stage').addEventListener('pointerdown',e=>{if(e.button!==0)return;const m=$('#iv-img');m.classList.add('dragging');const sx=e.clientX-IVX,sy=e.clientY-IVY;
-  const move=ev=>{IVX=ev.clientX-sx;IVY=ev.clientY-sy;ivApply()};
-  const up=()=>{m.classList.remove('dragging');removeEventListener('pointermove',move);removeEventListener('pointerup',up)};
-  addEventListener('pointermove',move);addEventListener('pointerup',up)});
  const m=$('#v-main');let lp,x0=0,y0=0;
  m.onpointerdown=e=>{x0=e.clientX;y0=e.clientY;lp=setTimeout(()=>$('#viewer').classList.add('opts'),500)};
  m.onpointermove=e=>{if(Math.hypot(e.clientX-x0,e.clientY-y0)>10)clearTimeout(lp)};
@@ -1062,7 +976,7 @@ TABS.web=async(q,e,pg)=>{
 };
 TABS.images=async(q,e,pg)=>{
  const R=await nsCached('worker-images:'+q.trim().toLowerCase(),300000,()=>nsWorker('images',q));
- const a=R.map(r=>({t:r.title||'Image',th:r.thumbnail||r.image||'',p:r.page||r.url||r.image||''})).filter(i=>i.th&&i.p);
+ const a=R.map(r=>({t:r.title||'Image',th:r.thumbnail||r.image||'',u:r.image||r.thumbnail||'',p:r.page||r.url||r.image||''})).filter(i=>i.th&&i.p);
  if(!a.length)throw Error('Aucune image');
  const off=pg?S.imgs.length:0;S.imgs=pg?S.imgs.concat(a):a;
  const h=a.map((i,k)=>`<a href="${safe(i.p)}" data-vi="${off+k}" title="${esc(i.t)}"><img loading="lazy" src="${safe(i.th)}" alt="${esc(i.t)}"></a>`).join('');
@@ -1106,7 +1020,7 @@ function closeVideo(toResults){
  const wasOpen=v.style.display==='block';
  $('#vv-frame').innerHTML='';v.style.display='none';v.classList.remove('turnstyle-tile');
  if(toResults&&wasOpen){$('#results-view').style.display='block'}}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#image-view').classList.contains('open'))closeImageView(true);else if($('#video-view').style.display==='block'&&!$('#viewer').classList.contains('open'))closeVideo(true)}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#video-view').style.display==='block'&&!$('#viewer').classList.contains('open'))closeVideo(true)});
 
 renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComponent(q),t=S.tab;
  if(more){S.pg++;const b=$('#more-btn');if(b){b.disabled=true;b.textContent='Chargement…'}}
@@ -1138,44 +1052,33 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
 </script>
 
 
-<script>
-/* NexSearch : lecteur PDF intégré + animation moteur de recherche */
-(function(){
-  const $=s=>document.querySelector(s);
-  let pdfUrl=null;
-  function closePdf(){ $('#pdf-viewer').classList.remove('open'); if(pdfUrl){URL.revokeObjectURL(pdfUrl);pdfUrl=null} $('#pdf-frame').src='about:blank'; }
-  function openPdf(file){
-    if(!file||file.type!=='application/pdf'&&!/\.pdf$/i.test(file.name)){alert('Veuillez choisir un fichier PDF.');return}
-    if(pdfUrl)URL.revokeObjectURL(pdfUrl);
-    pdfUrl=URL.createObjectURL(file);
-    $('#pdf-title').textContent=file.name;
-    $('#pdf-frame').src=pdfUrl;
-    $('#pdf-viewer').classList.add('open');
-  }
-  $('#open-pdf').onclick=()=>$('#pdf-file').click();
-  $('#pdf-file').onchange=e=>openPdf(e.target.files[0]);
-  $('#pdf-close').onclick=closePdf;
-  $('#pdf-download').onclick=()=>{if(pdfUrl){const a=document.createElement('a');a.href=pdfUrl;a.download=$('#pdf-title').textContent||'document.pdf';a.click()}};
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#pdf-viewer').classList.contains('open'))closePdf()});
-  document.addEventListener('dragover',e=>e.preventDefault());
-  document.addEventListener('drop',e=>{e.preventDefault();const f=[...e.dataTransfer.files].find(f=>/\.pdf$/i.test(f.name)||f.type==='application/pdf');if(f)openPdf(f)});
-
-  const ENGINES=/^(bing|google|brave|duckduckgo|duck duck go|duckduck go|yahoo|ecosia|qwant|startpage|mojeek|searx|searxng)$/i;
-  let mascotTimer=null;
-  function closeMascot(){ $('#mascot-overlay').classList.remove('open'); clearTimeout(mascotTimer) }
-  function maybeMascot(q){
-    if(!ENGINES.test((q||'').trim()))return;
-    $('#mascot-overlay').classList.add('open');
-    clearTimeout(mascotTimer);mascotTimer=setTimeout(closeMascot,10000);
-  }
-  $('#mascot-close').onclick=closeMascot;
-  $('#mascot-ok').onclick=closeMascot;
-  $('#mascot-overlay').addEventListener('click',e=>{if(e.target.id==='mascot-overlay')closeMascot()});
-
-  const oldTrigger=window.triggerSearch;
-  window.triggerSearch=function(q,tab){maybeMascot(q);return oldTrigger&&q?oldTrigger(q,tab):undefined};
-})();
-</script>
+<main id="ns-image-view" hidden>
+ <div class="ns-bar">
+  <button id="ns-image-back" type="button">← Retour aux images</button>
+  <div id="ns-image-title"></div>
+  <div class="ns-controls" aria-label="Zoom de l’image">
+   <button id="ns-minus" type="button" aria-label="Zoom arrière">−</button>
+   <span id="ns-scale" aria-live="polite">100 %</span>
+   <button id="ns-plus" type="button" aria-label="Zoom avant">+</button>
+   <button id="ns-fit" type="button">Ajuster</button>
+  </div>
+ </div>
+ <div id="ns-image-stage"><img id="ns-image" alt="" draggable="false" hidden></div>
+ <p id="ns-image-status" role="status"></p>
+</main>
+<section id="ns-pdf-view" hidden aria-label="Lecteur PDF">
+ <div class="ns-bar"><span id="ns-pdf-name"></span><button id="ns-pdf-import">Autre PDF</button><button id="ns-pdf-close">Fermer</button></div>
+ <iframe id="ns-pdf-frame" title="Document PDF"></iframe>
+ <p>Si le lecteur intégré reste vide, <a id="ns-pdf-download" style="color:white">téléchargez le document</a>.</p>
+</section>
+<input id="ns-pdf-input" type="file" accept="application/pdf,.pdf" hidden>
+<div id="ns-mascot" hidden>
+ <div class="ns-message" role="dialog" aria-modal="true" aria-label="Pourquoi quitter NexSearch ?">
+  <div class="ns-character" aria-hidden="true">••</div>
+  <p>Pourquoi quitter NexSearch ? Si vous ne trouvez pas ce que vous voulez, essayez plutôt des recherches plus précises, ou parlez en au développeur → <a href="mailto:z50.edge@outlook.com">z50.edge@outlook.com</a></p>
+  <button id="ns-mascot-close" class="calc-btn">Continuer la recherche</button>
+ </div>
+</div>
 
 <div id="footer-container"></div>
 
@@ -1219,6 +1122,91 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
         new ResizeObserver(placeFooter).observe(document.body);
     }
 })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ 'use strict';
+ const el=id=>document.getElementById(id);
+ let active=false, generation=0, zoom=1, panX=0, panY=0, resultScroll=0;
+ const view=el('ns-image-view'), image=el('ns-image'), stage=el('ns-image-stage');
+ const status=el('ns-image-status');
+ function apply(){image.style.transform=`translate(${panX}px,${panY}px) scale(${zoom})`;el('ns-scale').textContent=Math.round(zoom*100)+' %'}
+ function fit(){zoom=1;panX=panY=0;apply()}
+ function zoomTo(value,x=0,y=0){const old=zoom;zoom=Math.max(.25,Math.min(10,value));const ratio=zoom/old;panX=x-(x-panX)*ratio;panY=y-(y-panY)*ratio;apply()}
+ function hideOverlay(){const v=el('viewer');v.classList.remove('open','opts');v.hidden=true;}
+ function closeImage(results=true){if(!active)return;active=false;++generation;view.hidden=true;hideOverlay();image.onload=image.onerror=null;
+  if(results){el('results-view').style.display='block';el('header-bar').style.display='block';window.scrollTo(0,resultScroll)}
+ }
+ function showImage(index){
+  const item=S.imgs[index];if(!item)return;
+  const preview=el('v-img');
+  const existing=S.vi===index&&preview.complete&&preview.naturalWidth>0?(preview.currentSrc||preview.src):'';
+  const candidates=[...new Set([existing,item.u,item.th].filter(u=>typeof u==='string'&&/^(https?:|blob:|data:image\/)/i.test(u)))];
+  resultScroll=window.scrollY;S.vi=index;active=true;const token=++generation;
+  hideOverlay();if(typeof closeVideo==='function')closeVideo();
+  el('home-view').style.display='none';el('results-view').style.display='none';el('header-bar').style.display='block';
+  view.hidden=false;el('ns-image-title').textContent=item.t||'Image';
+  image.onload=image.onerror=null;image.removeAttribute('src');image.hidden=true;image.alt=item.t||'Image';
+  fit();status.textContent='Chargement de l’image…';window.scrollTo(0,0);el('ns-image-back').focus();
+  function attempt(i){
+   if(token!==generation||!active)return;
+   if(i>=candidates.length){status.textContent='Cette image est indisponible. Revenez aux résultats pour en choisir une autre.';return}
+   image.onload=()=>{
+    if(token!==generation||!active)return;
+    image.hidden=false;status.textContent='Molette ou boutons pour zoomer · glisser pour déplacer.';fit();
+    const original=item.u;
+    if(original&&original!==image.src){const full=new Image();full.onload=()=>{
+     if(token!==generation||!active)return;
+     image.onload=null;image.onerror=null;image.src=full.src;
+    };full.src=original;}
+   };
+   image.onerror=()=>attempt(i+1);image.src=candidates[i];
+  }
+  attempt(0);
+ }
+ const nativeOpen=openViewer;
+ openViewer=function(index){el('viewer').hidden=false;return nativeOpen(index)};
+ el('v-real').onclick=()=>showImage(S.vi);
+ el('ns-image-back').onclick=()=>closeImage(true);
+ el('ns-plus').onclick=()=>zoomTo(zoom*1.25);
+ el('ns-minus').onclick=()=>zoomTo(zoom/1.25);
+ el('ns-fit').onclick=fit;
+ stage.addEventListener('wheel',e=>{e.preventDefault();const r=stage.getBoundingClientRect();zoomTo(zoom*(e.deltaY<0?1.15:1/1.15),e.clientX-r.left-r.width/2,e.clientY-r.top-r.height/2)},{passive:false});
+ let drag=null;
+ stage.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={id:e.pointerId,x:e.clientX-panX,y:e.clientY-panY};stage.setPointerCapture(e.pointerId)});
+ stage.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;panX=e.clientX-drag.x;panY=e.clientY-drag.y;apply()});
+ function stop(e){if(drag&&drag.id===e.pointerId)drag=null}
+ stage.addEventListener('pointerup',stop);stage.addEventListener('pointercancel',stop);
+ el('go-home').addEventListener('click',()=>closeImage(false),true);
+ const nativeSearch=triggerSearch;
+ triggerSearch=function(q,tab){closeImage(false);const result=nativeSearch(q,tab);
+  if(/^(bing|google|brave|duck\s*duck\s*go|yahoo|ecosia|qwant|startpage|mojeek|searx(?:ng)?)$/i.test((q||'').trim()))el('ns-mascot').hidden=false;
+  return result;
+ };
+ el('ns-mascot-close').onclick=()=>{el('ns-mascot').hidden=true};
+ el('ns-mascot').onclick=e=>{if(e.target===el('ns-mascot'))el('ns-mascot').hidden=true};
+ const actions=document.createElement('div');actions.className='header-actions';
+ const settings=el('open-settings');settings.parentNode.insertBefore(actions,settings);
+ const pdfButton=document.createElement('button');pdfButton.type='button';pdfButton.className='settings-btn';pdfButton.title='Ouvrir un PDF';pdfButton.setAttribute('aria-label','Importer un PDF');
+ pdfButton.innerHTML='<svg class="settings-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zm8 2v5h5M8 13h8v2H8zm0 4h8v2H8z"/></svg>';
+ actions.append(pdfButton,settings);
+ let pdfUrl=null;
+ function closePdf(){el('ns-pdf-view').hidden=true;el('ns-pdf-frame').src='about:blank';if(pdfUrl){URL.revokeObjectURL(pdfUrl);pdfUrl=null}}
+ pdfButton.onclick=el('ns-pdf-import').onclick=()=>el('ns-pdf-input').click();
+ el('ns-pdf-close').onclick=closePdf;
+ el('ns-pdf-input').onchange=async e=>{
+  const file=e.target.files[0];e.target.value='';if(!file)return;
+  const bytes=new Uint8Array(await file.slice(0,5).arrayBuffer());
+  if(String.fromCharCode(...bytes)!=='%PDF-'){alert('Veuillez sélectionner un document PDF valide.');return}
+  closePdf();pdfUrl=URL.createObjectURL(file);el('ns-pdf-name').textContent=file.name;el('ns-pdf-frame').src=pdfUrl;el('ns-pdf-download').href=pdfUrl;el('ns-pdf-download').download=file.name;el('ns-pdf-view').hidden=false;
+ };
+ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+  if(!el('ns-mascot').hidden)el('ns-mascot').hidden=true;
+  else if(!el('ns-pdf-view').hidden)closePdf();
+  else if(active)closeImage(true);
+ });
+});
 </script>
 </body>
 </html>
