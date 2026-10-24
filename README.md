@@ -9,3 +9,4 @@ Sa philosophie est simple : **le Web mérite autre chose qu’une interface conv
 NexSearch est un projet indépendant qui évolue continuellement, avec une ambition claire : offrir une autre façon d’explorer Internet, réunir les outils essentiels dans un seul environnement et prouver qu’il est possible de concevoir une alternative originale aux moteurs de recherche traditionnels.
 
 **NexSearch. Votre Web. Votre interface. Votre façon de chercher.**
+Accédez à NexSearch maintenant : [NexSearch — Le Web, autrement](https://Microsoft-Edge77.github.io/NexSearch/Modern)
