@@ -1,8 +1,11 @@
-```html
-<!-- NexSearch Footer -->
-<footer class="nex-footer">
+<!-- NexSearch Footer : footer.html -->
+
+<footer id="nexFooter" class="nex-footer">
     <div class="nex-footer-inner">
-        <span class="nex-footer-copy">© 2026 NexSearch</span>
+
+        <span class="nex-footer-copy">
+            © 2026 NexSearch
+        </span>
 
         <a
             class="nex-footer-link"
@@ -12,68 +15,110 @@
             title="NexSearch | Confidentialité">
             Déclaration de confidentialité →
         </a>
+
     </div>
 </footer>
 
 <style>
-html {
-    min-height: 100%;
+/* Conteneur du footer chargé depuis index.html */
+#footer-container {
+    position: relative !important;
+    z-index: 2147483647 !important;
+    isolation: isolate;
+    width: 100%;
+    flex-shrink: 0;
+    margin-top: auto;
+    pointer-events: auto !important;
 }
 
-body {
-    min-height: 100vh;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-}
+/* Barre du footer */
+#nexFooter {
+    position: relative !important;
+    z-index: 2147483647 !important;
 
-.nex-footer {
+    display: block;
     width: 100%;
     box-sizing: border-box;
-    margin-top: auto;
+
+    margin: 0;
+    padding: 0;
     flex-shrink: 0;
-    background: #000;
-    border-top: 1px solid rgba(255, 255, 255, .08);
+
+    background: #000000 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
+
+    pointer-events: auto !important;
 }
 
-.nex-footer-inner {
+/* Contenu */
+#nexFooter .nex-footer-inner {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
     max-width: 1400px;
+    box-sizing: border-box;
     margin: 0 auto;
     padding: 18px 24px;
+
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 14px;
     flex-wrap: wrap;
+
+    background: #000000;
     text-align: center;
 }
 
-.nex-footer-copy,
-.nex-footer-link {
-    color: #fff;
+/* Texte */
+#nexFooter .nex-footer-copy,
+#nexFooter .nex-footer-link {
+    color: #ffffff;
     font-family: "Segoe UI", "Segoe UI Variable", sans-serif;
-    font-size: .92rem;
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
-.nex-footer-link {
+/* Lien de confidentialité */
+#nexFooter .nex-footer-link {
+    position: relative;
+    z-index: 2;
+
+    display: inline-block;
+    padding: 2px 0;
+
+    background: #000000;
     text-decoration: none;
-    transition: color .2s ease;
+    cursor: pointer;
+    pointer-events: auto !important;
+
+    transition: color 0.2s ease;
 }
 
-.nex-footer-link:hover {
+#nexFooter .nex-footer-link:hover {
     color: #0078D7;
 }
 
-.nex-footer-link:active {
-    opacity: .7;
+#nexFooter .nex-footer-link:focus-visible {
+    outline: 2px solid #0078D7;
+    outline-offset: 4px;
 }
 
+/* Mobile */
 @media (max-width: 600px) {
-    .nex-footer-inner {
+    #nexFooter .nex-footer-inner {
         flex-direction: column;
         gap: 8px;
-        padding: 20px;
+        padding: 20px 16px;
     }
 }
 </style>
-```
