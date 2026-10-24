@@ -20,10 +20,12 @@
 </footer>
 
 <style>
-/* Conteneur : à la fin du contenu, dans le flux, au-dessus du fond */
+/* Conteneur : à la fin du contenu, dans le flux, au-dessus du fond
+   mais SOUS le menu paramètres (200), le sélecteur de lieu (250)
+   et la visionneuse d'images (300) */
 #footer-container {
     position: relative !important;
-    z-index: 2147483000 !important;
+    z-index: 20 !important;
     clear: both;
 
     width: 100%;
