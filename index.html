@@ -1084,14 +1084,35 @@ renderTab=async function(more){const id=more?S.rid:++S.rid,q=S.q,e=encodeURIComp
 
 <script>
 (async () => {
+    const container = document.getElementById("footer-container");
+    if (!container) return;
+
+    // Rattache le footer directement à <body> pour qu'il ne soit prisonnier
+    // d'aucun parent (transform, filter, overflow, contexte d'empilement)
+    if (container.parentElement !== document.body) {
+        document.body.appendChild(container);
+    }
+
     try {
         const response = await fetch("footer.html");
         if (!response.ok) {
             throw new Error("Erreur de chargement du footer");
         }
 
-        document.getElementById("footer-container").innerHTML =
-            await response.text();
+        container.innerHTML = await response.text();
+
+        // Réserve en bas de page la hauteur du footer fixe
+        const footer = document.getElementById("nexFooter");
+        if (footer) {
+            const reserveSpace = () => {
+                document.body.style.paddingBottom = footer.offsetHeight + "px";
+            };
+            reserveSpace();
+            window.addEventListener("resize", reserveSpace);
+            if ("ResizeObserver" in window) {
+                new ResizeObserver(reserveSpace).observe(footer);
+            }
+        }
     } catch (error) {
         console.error("NexSearch : impossible de charger footer.html", error);
     }
