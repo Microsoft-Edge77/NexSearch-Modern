@@ -1277,6 +1277,22 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-me
 #nf-msg:empty{display:none}
 #nf-snd{color:#fff;transition:background .2s}#nf-snd svg{display:block}#nf-snd.on{background:var(--accent)}
 @media (max-width:700px){#nf-side{top:auto;bottom:90px;transform:none}#nf-bar .nf-brand{display:none}}
+#nf-top{display:none}
+#nf .nf-i{display:none}
+#nf .nf-v{overflow:hidden}
+#nf .nf-v iframe{inset:auto;top:-48px;left:0;width:100%;height:calc(100% + 48px)}
+@media (min-width:701px) and (pointer:fine){
+ #nf-bar{padding:8px 6px;gap:8px}
+ #nf-bar .nf-brand{font-size:1.25rem}
+ #nf-q{max-width:220px;padding:6px 10px;font-size:.85rem}
+}
+@media (max-width:700px),(pointer:coarse){
+ #nf-side{display:none}
+ #nf-bar{left:0;right:0;justify-content:center;padding:8px 60px;transform:translateY(-120%);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.1,.9,.2,1),opacity .2s}
+ #nf-bar.show{transform:none;opacity:1;pointer-events:auto}
+ #nf-q{flex:none;width:min(100%,420px);max-width:none;text-align:center}
+ #nf-top{display:block;position:fixed;top:0;left:0;right:60px;height:56px;z-index:4}
+}
 </style>
 <div id="nf" aria-label="NexFlow">
  <div id="nf-bar"><div class="nf-brand">nex<b>flow</b></div><input id="nf-q" placeholder="Rechercher des shorts…"></div>
@@ -1328,6 +1344,9 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-me
  $('#nf-x').onclick=closeFlow;$('#nf-up').onclick=()=>go(-1);$('#nf-down').onclick=()=>go(1);
  snd.onclick=()=>{muted=!muted;snd.innerHTML=muted?SND_OFF:SND_ON;snd.classList.toggle('on',!muted);snd.title=snd.ariaLabel=muted?'Activer le son':'Couper le son';const f=list.querySelector('iframe');if(f)post(f,muted?'mute':'unMute')};
  qi.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){qi.blur();load(true)}};
+ const bar=$('#nf-bar'),zone=document.createElement('div');zone.id='nf-top';ov.appendChild(zone);
+ zone.onclick=()=>{bar.classList.add('show');qi.focus()};
+ qi.addEventListener('blur',()=>setTimeout(()=>bar.classList.remove('show'),200));
  document.addEventListener('keydown',e=>{if(!ov.classList.contains('open')||e.target===qi)return;
   if(e.key==='Escape')closeFlow();else if(e.key==='ArrowDown'){e.preventDefault();go(1)}else if(e.key==='ArrowUp'){e.preventDefault();go(-1)}});
 })();
