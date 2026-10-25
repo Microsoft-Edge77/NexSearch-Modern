@@ -1368,5 +1368,37 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-me
 })();
 </script>
 <!-- fin mise en page v2 -->
+<!-- NexFlow : son mobile -->
+<style id="nf-sound-mobile">
+#nf-bar.keep{transform:none!important;opacity:1!important;pointer-events:auto!important}
+@media (max-width:700px),(pointer:coarse){
+ #nf-bar #nf-snd{display:flex!important;flex:none;width:44px;height:44px;margin-left:8px}
+ #nf-bar #nf-q{width:min(calc(100% - 52px),380px)!important}
+}
+</style>
+<script>
+(function(){
+ const ov=document.getElementById('nf'),bar=document.getElementById('nf-bar'),side=document.getElementById('nf-side'),snd=document.getElementById('nf-snd'),yt=document.getElementById('nf-yt');
+ if(!ov||!bar||!snd)return;
+ const mq=matchMedia('(max-width:700px),(pointer:coarse)');
+ const place=()=>{
+  if(mq.matches){if(snd.parentNode!==bar)bar.appendChild(snd)}
+  else if(side&&snd.parentNode!==side){side.insertBefore(snd,yt&&yt.parentNode===side?yt:null)}
+ };
+ place();
+ if(mq.addEventListener)mq.addEventListener('change',place);else if(mq.addListener)mq.addListener(place);
+ /* garder la barre visible le temps de toucher le bouton volume */
+ let t;
+ const keep=()=>{bar.classList.add('keep');clearTimeout(t);t=setTimeout(()=>bar.classList.remove('keep'),2500)};
+ snd.addEventListener('pointerdown',keep);snd.addEventListener('touchstart',keep,{passive:true});snd.addEventListener('click',keep);
+ /* son activé par défaut sur mobile, à la première ouverture de NexFlow */
+ let done=false;
+ new MutationObserver(()=>{
+  if(done||!ov.classList.contains('open')||!mq.matches)return;
+  done=true;setTimeout(()=>snd.click(),500);
+ }).observe(ov,{attributes:true,attributeFilter:['class']});
+})();
+</script>
+<!-- fin son mobile -->
 </body>
 </html>
