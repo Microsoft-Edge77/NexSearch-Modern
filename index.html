@@ -675,6 +675,7 @@
         <label class="set-row"><span>Déplacer / redimensionner les tuiles</span><span class="metro-switch"><input type="checkbox" id="edit-chk"><span class="metro-slider"></span></span></label>
         <div><div class="set-l">Clé API Pollinations (facultatif)</div><input id="key-in" class="metro-input" placeholder="Clé pour de meilleures limites" style="padding:8px"></div>
         <div><div class="set-l">Proxy CORS personnel (facultatif)</div><input id="px-in" class="metro-input" placeholder="Proxy CORS personnel" style="padding:8px"><div class="result-url" style="color:#e51400;margin:6px 0 0">DANGER : modifier ce paramètre pourrait perturber le fonctionnement du site.</div></div>
+        <label class="set-row" data-nxb="1"><span>Proposer NexSearch Browser</span><span class="metro-switch"><input type="checkbox" id="nxb-chk"><span class="metro-slider"></span></span></label>
         <details id="hist-box"><summary>Historique NexSearch</summary><div id="hist-list"></div><button class="calc-btn" id="hist-clear" style="margin-top:8px;background:#b00000">Tout supprimer</button></details>
     </div>
     <div id="viewer"><button class="x-btn" id="v-x" style="position:absolute;top:8px;right:8px;z-index:3" title="Fermer"></button>
@@ -1460,5 +1461,66 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-me
  close.addEventListener('click',closeGame);
  window.addEventListener('message',function(e){if(frame&&e.source===frame.contentWindow&&e.data&&e.data.type==='nex-gd:close')closeGame();});
 })();</script>
-<!-- NEX-GD:MODULE:END --></body>
+<!-- NEX-GD:MODULE:END --><!--nxb-->
+<style id="nxb-style">
+#nxb-toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,160%);z-index:150;width:min(620px,94vw);background:var(--accent);color:#fff;padding:16px 18px;transition:transform .4s cubic-bezier(.1,.9,.2,1);pointer-events:none;box-shadow:0 6px 24px rgba(0,0,0,.5);border-radius:var(--r,0)}
+#nxb-toast.show{transform:translate(-50%,0);pointer-events:auto}
+#nxb-toast .t1{font-family:var(--font-light);font-size:1.5rem;line-height:1.2}
+#nxb-toast .t2{font-size:.88rem;margin:6px 0 12px}
+#nxb-toast .bt{display:flex;gap:8px;flex-wrap:wrap}
+.nxb-b{background:#000;color:#fff;border:0;padding:10px 16px;cursor:pointer;font-size:.9rem;text-decoration:none;display:inline-block;border-radius:var(--r,0)}
+.nxb-b:hover{background:#fff;color:#000}
+#nxb-ov{display:none;position:fixed;inset:0;z-index:500;overflow-y:auto;padding:70px 6% 50px;background:rgba(0,0,0,.9);backdrop-filter:blur(var(--blur,10px));-webkit-backdrop-filter:blur(var(--blur,10px))}
+#nxb-ov.open{display:block;animation:turnstyleIn .5s cubic-bezier(.1,.9,.2,1) both}
+#nxb-x{position:fixed;top:12px;right:14px;z-index:510;background:none;border:0;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+#nxb-x:hover{background:var(--accent)}
+.nxb-in{max-width:760px;margin:0 auto}
+.nxb-h{font-family:var(--font-light);font-size:2.2rem;line-height:1.2}
+.nxb-s{color:#aaa;margin:4px 0 18px}
+.nxb-big{display:block;text-align:center;background:var(--accent);color:#fff;padding:18px;font-size:1.2rem;text-decoration:none;margin:18px 0;border-radius:var(--r,0)}
+.nxb-big:hover{filter:brightness(1.15)}
+.nxb-box{background:rgba(255,255,255,.1);border-left:4px solid var(--accent);padding:16px;margin:14px 0;line-height:1.55}
+.nxb-box b{font-weight:600}
+.nxb-st{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+.nxb-n{flex:none;width:30px;height:30px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700}
+.nxb-ul{margin:8px 0 0 18px}
+.nxb-lk{color:var(--accent);cursor:pointer;text-decoration:underline;font-size:.9rem}
+</style>
+<div id="nxb-toast" role="dialog" aria-label="NexSearch Browser"><div class="t1">NexSearch Browser</div><div class="t2">Le navigateur Windows de NexSearch : design Metro, onglets verticaux, publicités et traqueurs bloqués. Gratuit.</div><div class="bt"><button class="nxb-b" id="nxb-more">Découvrir et télécharger</button><button class="nxb-b" id="nxb-later">Plus tard</button><button class="nxb-b" id="nxb-never">Ne plus afficher</button></div></div>
+<div id="nxb-ov" aria-label="Télécharger NexSearch Browser"><button id="nxb-x" title="Fermer" aria-label="Fermer"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 3l18 18M21 3L3 21" stroke="#fff" stroke-width="2" fill="none"/></svg></button>
+<div class="nxb-in"><div class="nxb-h">NexSearch Browser</div><div class="nxb-s">Le navigateur Windows fait pour NexSearch. Gratuit, sans compte.</div>
+<ul class="nxb-ul"><li>Design Metro, noir et épuré, onglets verticaux</li><li>Publicités et traqueurs bloqués par défaut</li><li>NexSearch comme moteur de recherche et page d’accueil</li><li>Basé sur Chromium, le moteur de Chrome et d’Edge : tous les sites s’affichent</li></ul>
+<a class="nxb-big" id="nxb-dl" href="#" download>Télécharger pour Windows</a>
+<div class="nxb-box"><b>Windows peut essayer de bloquer le fichier. C’est normal.</b><br>NexSearch Browser est une application récente et indépendante. Windows (SmartScreen) affiche ce message pour tout logiciel peu téléchargé qui n’a pas encore de certificat d’éditeur : « Windows a protégé votre ordinateur ». Cela ne veut pas dire que le fichier est dangereux. Vous pouvez aussi analyser le fichier vous-même avant de l’ouvrir.<span id="nxb-vt"></span></div>
+<div class="nxb-st"><div class="nxb-n">1</div><div>Cliquez sur <b>Télécharger pour Windows</b>, puis ouvrez le fichier <b>NexSearch-Browser-Setup.exe</b>.</div></div>
+<div class="nxb-st"><div class="nxb-n">2</div><div>Si Windows affiche « Windows a protégé votre ordinateur », cliquez sur <b>Informations complémentaires</b>.</div></div>
+<div class="nxb-st"><div class="nxb-n">3</div><div>Cliquez sur <b>Exécuter quand même</b>, puis suivez l’installation.</div></div>
+<div style="margin-top:22px"><span class="nxb-lk" id="nxb-mute">Ne plus me proposer NexSearch Browser</span><div style="color:#aaa;font-size:.8rem;margin-top:4px">Vous pourrez réactiver cette proposition dans les paramètres.</div></div></div></div>
+<script>
+(function(){
+ var DL="https://github.com/Microsoft-Edge77/NexSearch-Modern/releases/latest/download/NexSearch-Browser-Setup.exe",VT="https://www.virustotal.com/gui/file/6403f65969884d56675c72940f87ce876307916c0895cad77e16854708e632e7?nocache=1";
+ var g=function(i){return document.getElementById(i)};
+ var muted=function(){return ls('nex_nxb','1')==='0'};
+ var toast=g('nxb-toast'),ov=g('nxb-ov'),chk=g('nxb-chk');
+ var hideToast=function(){toast.classList.remove('show')};
+ if(chk){chk.checked=!muted();chk.onchange=function(){lset('nex_nxb',chk.checked?'1':'0');if(!chk.checked)hideToast()}}
+ var ua=navigator.userAgent;
+ if(/NexSearch[- ]?Browser\//i.test(ua)){toast.remove();ov.remove();return}
+ var pc=/Windows NT/i.test(ua)&&matchMedia('(pointer:fine) and (min-width:901px)').matches&&!/Mobile|Android|iPhone|iPad/i.test(ua);
+ if(!pc){toast.remove();ov.remove();return}
+ var dl=g('nxb-dl');dl.href=DL;
+ if(VT){var s=g('nxb-vt');s.innerHTML=' <a class="nxb-lk" target="_blank" rel="noopener"></a>';var a=s.querySelector('a');a.href=VT;a.textContent='Voir l’analyse VirusTotal du fichier';}
+ var mute=function(){lset('nex_nxb','0');if(chk)chk.checked=false;hideToast();ov.classList.remove('open')};
+ var open=function(){hideToast();ov.classList.add('open');ov.scrollTop=0};
+ g('nxb-more').onclick=open;g('nxb-x').onclick=function(){ov.classList.remove('open')};
+ g('nxb-later').onclick=function(){hideToast();try{sessionStorage.setItem('nxb_s','1')}catch(e){}};
+ g('nxb-never').onclick=mute;g('nxb-mute').onclick=mute;
+ dl.addEventListener('click',function(){setTimeout(function(){lset('nex_nxb','0');if(chk)chk.checked=false},500)});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('open'))ov.classList.remove('open')});
+ var seen=false;try{seen=sessionStorage.getItem('nxb_s')==='1'}catch(e){}
+ if(!muted()&&!seen)setTimeout(function(){if(!muted()&&!ov.classList.contains('open'))toast.classList.add('show');setTimeout(hideToast,25000)},2500);
+})();
+</script>
+<!--/nxb-->
+</body>
 </html>
