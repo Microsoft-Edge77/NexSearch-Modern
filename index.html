@@ -558,8 +558,7 @@
 #nx-message{position:fixed;inset:0;z-index:450;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}.nx-card{max-width:540px;background:#181818;border:1px solid #444;padding:30px;text-align:center;line-height:1.6}.nx-card a{color:var(--accent)}
 .nx-character{position:relative;background:var(--accent);border-radius:45%;width:85px;height:85px;line-height:85px;font-size:42px;margin:10px auto 20px;animation:nx-bob 1.5s ease-in-out infinite}.nx-character:after{content:'?';position:absolute;right:-20px;top:-20px;background:white;color:black;border-radius:50%;font-size:28px;width:40px;height:40px;line-height:40px}@keyframes nx-bob{50%{transform:translateY(-9px) rotate(4deg)}}
 .nova-project{width:100%;max-width:970px;margin:auto;background:#111;border:1px solid #ffffff26;box-shadow:0 12px 45px #0006;animation:nova-in .35s ease-out both}.nova-project iframe{display:block;width:100%;height:auto;aspect-ratio:485/402;border:0;background:#111}.nova-project p{padding:12px;color:#bbb}.nova-project a{color:var(--accent)}@keyframes nova-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.nova-project,.nx-character{animation:none}}
-</style>
-<style id="nex-ui-patch">
+</style><style id="nex-ui-patch">
 :root{--accent-tr:background-color .28s ease,color .28s ease,border-color .28s ease,fill .28s ease,stroke .28s ease,box-shadow .28s ease}
 .tile,.tile-face,.calc-btn,.metro-input,.tab-link,.result-title,.metro-switch .metro-slider,.v-btns button,.nx-bar button,.vv-back,.vv-yt,.color-swatch,.search-btn-svg,.widget-box,.loc-btn{transition:var(--accent-tr),transform .2s ease,opacity .2s ease,filter .2s ease}
 #settings-panel{background:linear-gradient(160deg,rgba(28,28,30,.60),rgba(10,10,12,.74))!important;backdrop-filter:blur(30px) saturate(150%);-webkit-backdrop-filter:blur(30px) saturate(150%);border-left:1px solid rgba(255,255,255,.10);box-shadow:-20px 0 60px rgba(0,0,0,.45)}
@@ -615,7 +614,6 @@ body.mc-mode .result-entry,body.mc-mode .ai-box,body.mc-mode .res-tiles .tile,bo
 .mc-boom{position:fixed;z-index:2147483100;pointer-events:none;border-radius:50%;background:radial-gradient(circle,#fff,#ffb020 35%,#e51400 65%,transparent 72%);animation:mc-boom .55s ease-out forwards}
 @keyframes mc-boom{from{transform:scale(.2);opacity:1}to{transform:scale(3.2);opacity:0}}
 </style>
-
 </head>
 <body>
 
@@ -1226,8 +1224,7 @@ pdfButton.onclick=el('nx-import').onclick=()=>el('nx-file').click();el('nx-close
 el('nx-file').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;try{const bytes=new Uint8Array(await file.slice(0,5).arrayBuffer());if(String.fromCharCode(...bytes)!=='%PDF-'){alert('Veuillez sélectionner un document PDF valide.');return}closePdf();pdfUrl=URL.createObjectURL(file);el('nx-name').textContent=file.name;el('nx-frame').src=pdfUrl;el('nx-download').href=pdfUrl;el('nx-download').download=file.name;el('nx-pdf').hidden=false}catch(error){alert('Impossible de lire ce document PDF.')}};
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-message').hidden)el('nx-message').hidden=true;else if(!el('nx-pdf').hidden)closePdf();else if(active)closeImage(true)});
 });
-</script><!-- ===== NexSearch : mise à jour du 25/10/2026 — à coller juste avant 
-<script id="nex-ui-patch-js">
+</script><!-- ===== NexSearch : mise à jour du 25/10/2026 — à coller juste avant <script id="nex-ui-patch-js">
 (function(){
 "use strict";
 var $=function(s){return document.querySelector(s)},$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
@@ -1251,8 +1248,7 @@ function schedule(){clearTimeout(tmr);tmr=setTimeout(function(){try{markMica();p
 function startPatch(){['tab-viewport','ai-zone','news-grid','widget-zone'].forEach(function(id){var z=document.getElementById(id);if(!z)return;new MutationObserver(schedule).observe(z,{childList:true,subtree:true})});window.addEventListener('resize',function(){clearTimeout(tmr);tmr=setTimeout(layoutGalleries,180)});schedule();setInterval(schedule,2000)}
 if(document.readyState==='complete')startPatch();else window.addEventListener('load',startPatch);
 })();
-<\\/script>
-
+</script>
 </body> (après le dernier </script>) ===== -->
 <style>
 /* 1. Titres trop longs : jamais de débordement horizontal */
