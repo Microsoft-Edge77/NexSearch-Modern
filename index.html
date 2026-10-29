@@ -1172,135 +1172,28 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-me
 
 
 
-<style id="nex-metro-assembler-animation-style">
-/* NexSearch Metro UI animation module — quick slide + Turnstile */
-@keyframes nexMetroTurnstileIn {
-  0% { opacity: 0; transform: perspective(700px) translateX(22px) rotateY(-58deg) scale(.96); }
-  65% { opacity: 1; transform: perspective(700px) translateX(-2px) rotateY(5deg) scale(1.005); }
-  100% { opacity: 1; transform: perspective(700px) translateX(0) rotateY(0) scale(1); }
-}
-@keyframes nexMetroSlideIn {
-  0% { opacity: 0; transform: translateX(18px) rotateY(-12deg); }
-  100% { opacity: 1; transform: translateX(0) rotateY(0); }
-}
-.nex-metro-turnstile-in {
-  animation: nexMetroTurnstileIn .34s cubic-bezier(.2,.75,.25,1) both !important;
-  transform-origin: left center;
-  backface-visibility: hidden;
-}
-.nex-metro-slide-in {
-  animation: nexMetroSlideIn .26s cubic-bezier(.2,.75,.25,1) both !important;
-}
-@media (prefers-reduced-motion: reduce) {
-  .nex-metro-turnstile-in,.nex-metro-slide-in { animation: none !important; }
-}
+
+
+<style id="nex-metro-assembler-animation-style-v2">
+@keyframes nexMetroSettingsTurnstileV2{0%{opacity:0;transform:perspective(900px) translateX(34px) rotateY(-24deg)}70%{opacity:1;transform:perspective(900px) translateX(-3px) rotateY(3deg)}100%{opacity:1;transform:perspective(900px) translateX(0) rotateY(0)}}
+@keyframes nexMetroGeoTurnstileV2{0%{opacity:0;transform:perspective(1100px) rotateY(-18deg) translateX(22px) scale(.985)}75%{opacity:1;transform:perspective(1100px) rotateY(2deg) translateX(-2px) scale(1.002)}100%{opacity:1;transform:perspective(1100px) rotateY(0) translateX(0) scale(1)}}
+@keyframes nexMetroMediaSlideV2{0%{opacity:0;transform:translate3d(0,16px,0) scale(.985)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+#settings-panel.open{animation:nexMetroSettingsTurnstileV2 .32s cubic-bezier(.2,.8,.2,1) both!important;transform-origin:right center;backface-visibility:hidden}
+#nex-gd-overlay:not([hidden]){animation:nexMetroGeoTurnstileV2 .32s cubic-bezier(.2,.8,.2,1) both;transform-origin:center center;backface-visibility:hidden}
+.nex-metro-media-enter-v2{animation:nexMetroMediaSlideV2 .28s cubic-bezier(.2,.75,.25,1) both;will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){#settings-panel.open,#nex-gd-overlay:not([hidden]),.nex-metro-media-enter-v2{animation:none!important;will-change:auto}}
 </style>
-<script id="nex-metro-assembler-animation-runtime">
-(() => {
-  'use strict';
-  if (window.__nexMetroAssemblerAnimations) return;
-  window.__nexMetroAssemblerAnimations = true;
-
-  const menuSelectors = [
-    '#settings-panel', '#settings', '#settings-menu', '#settings-view',
-    '#loc-box', '#geo-dash', '#geodash', '#geo-dash-panel', '#geoDash',
-    '[id*="geo"][id*="dash" i]', '[class*="geo"][class*="dash" i]'
-  ];
-  const mediaSelectors = [
-    'video', 'iframe[src*="youtube"]', 'iframe[src*="youtu.be"]',
-    '.video-result', '.video-card', '.video-tile', '[data-type="video"]',
-    '.image-result', '.image-card', '.image-tile', '.image-result-card',
-    '[data-type="image"]', 'img.result-image', '.results img'
-  ];
-  const allSelectors = [...menuSelectors, ...mediaSelectors].join(',');
-
-  function visible(el) {
-    if (!el || !el.isConnected || el.hidden || el.getAttribute('aria-hidden') === 'true') return false;
-    const style = getComputedStyle(el);
-    return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity || 1) > 0;
-  }
-  function animate(el, kind) {
-    if (!(el instanceof Element) || el.closest('#nex-metro-assembler-animation-runtime')) return;
-    if (el.dataset && el.dataset.nexMetroAnimating === '1') return;
-    if (el.matches('img') && !el.complete) {
-      el.addEventListener('load', () => animate(el, 'media'), {once:true});
-      return;
-    }
-    if (el.dataset) el.dataset.nexMetroAnimating = '1';
-    el.classList.remove('nex-metro-turnstile-in', 'nex-metro-slide-in');
-    void el.offsetWidth;
-    el.classList.add(kind === 'media' ? 'nex-metro-slide-in' : 'nex-metro-turnstile-in');
-    el.addEventListener('animationend', () => {
-      el.classList.remove('nex-metro-turnstile-in', 'nex-metro-slide-in');
-      if (el.dataset) delete el.dataset.nexMetroAnimating;
-    }, {once:true});
-    window.setTimeout(() => {
-      if (el.dataset) delete el.dataset.nexMetroAnimating;
-      el.classList.remove('nex-metro-turnstile-in', 'nex-metro-slide-in');
-    }, 650);
-  }
-  function animateMediaWithin(root) {
-    if (!(root instanceof Element)) return;
-    if (root.matches && root.matches(mediaSelectors.join(','))) animate(root, 'media');
-    root.querySelectorAll && root.querySelectorAll(mediaSelectors.join(',')).forEach((el, i) => {
-      window.setTimeout(() => animate(el, 'media'), Math.min(i * 35, 210));
-    });
-  }
-  function scan(root) {
-    if (!(root instanceof Element)) return;
-    if (root.matches && root.matches(allSelectors)) {
-      const isMedia = root.matches(mediaSelectors.join(','));
-      if (isMedia) animate(root, 'media');
-      else if (visible(root)) animate(root, 'menu');
-    }
-    root.querySelectorAll && root.querySelectorAll(allSelectors).forEach(el => {
-      if (el.matches(mediaSelectors.join(','))) {
-        if (visible(el)) animate(el, 'media');
-      } else if (visible(el)) animate(el, 'menu');
-    });
-    animateMediaWithin(root);
-  }
-  function observe() {
-    scan(document.body);
-    const observer = new MutationObserver(records => {
-      for (const record of records) {
-        if (record.type === 'childList') {
-          record.addedNodes.forEach(node => { if (node instanceof Element) scan(node); });
-        } else if (record.type === 'attributes') {
-          const el = record.target;
-          if (el instanceof Element && el.matches(menuSelectors.join(',')) && visible(el)) animate(el, 'menu');
-          if (el instanceof Element && el.matches('[aria-expanded="true"],[data-state="open"]')) {
-            const targetId = el.getAttribute('aria-controls');
-            const target = targetId ? document.getElementById(targetId) : el.nextElementSibling;
-            if (target && visible(target)) animate(target, 'menu');
-          }
-        }
-      }
-    });
-    observer.observe(document.body, {
-      subtree:true, childList:true, attributes:true,
-      attributeFilter:['class','style','hidden','aria-hidden','aria-expanded','data-state']
-    });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', observe, {once:true});
-  else observe();
-
-  // Also animate panels when their known launch controls are clicked.
-  document.addEventListener('click', event => {
-    const trigger = event.target.closest('button,a,[role="button"],.tile');
-    if (!trigger) return;
-    const label = ((trigger.id || '') + ' ' + (trigger.className || '') + ' ' +
-      (trigger.getAttribute('aria-label') || '') + ' ' + (trigger.textContent || '')).toLowerCase();
-    if (/param[eè]tres|settings|g[eé]o\\s*dash|geodash/.test(label)) {
-      window.setTimeout(() => {
-        menuSelectors.forEach(selector => {
-          try { document.querySelectorAll(selector).forEach(el => { if (visible(el)) animate(el, 'menu'); }); } catch (_) {}
-        });
-      }, 40);
-    }
-  }, true);
-})();
-</script>
+<script id="nex-metro-assembler-animation-runtime-v2">(()=>{'use strict';
+if(window.__nexMetroAnimationRuntimeV2)return;window.__nexMetroAnimationRuntimeV2=true;
+const mediaSelector='.img-grid > a, .video-grid > .video-card';
+const reduced=()=>window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function animateMedia(el){if(!(el instanceof Element)||!el.matches(mediaSelector)||el.dataset.nexMetroAnimV2==='1')return;el.dataset.nexMetroAnimV2='1';if(reduced())return;el.classList.remove('nex-metro-media-enter-v2');void el.offsetWidth;el.classList.add('nex-metro-media-enter-v2');el.addEventListener('animationend',()=>{el.classList.remove('nex-metro-media-enter-v2');},{once:true});}
+function scan(node){if(!(node instanceof Element))return;if(node.matches(mediaSelector))animateMedia(node);node.querySelectorAll?.(mediaSelector).forEach(animateMedia);}
+function animateGeoIfShown(){const el=document.getElementById('nex-gd-overlay');if(!el||el.hidden||reduced())return;el.style.animation='none';void el.offsetWidth;el.style.animation='';}
+const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='childList')record.addedNodes.forEach(node=>{if(node.nodeType===1)scan(node)});else if(record.type==='attributes'){const el=record.target;if(el.id==='nex-gd-overlay'&&!el.hidden)animateGeoIfShown();if(el.id==='settings-panel'&&el.classList.contains('open')){el.style.animation='none';void el.offsetWidth;el.style.animation='';}}}});
+function start(){observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class']});document.querySelectorAll(mediaSelector).forEach(animateMedia);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();</script>
 </body> (après le dernier </script>) ===== -->
 <style>
 /* 1. Titres trop longs : jamais de débordement horizontal */
