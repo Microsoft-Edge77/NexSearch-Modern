@@ -1174,23 +1174,26 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-me
 
 
 
-<style id="nex-metro-assembler-animation-style-v2">
-@keyframes nexMetroSettingsTurnstileV2{0%{opacity:0;transform:perspective(900px) translateX(34px) rotateY(-24deg)}70%{opacity:1;transform:perspective(900px) translateX(-3px) rotateY(3deg)}100%{opacity:1;transform:perspective(900px) translateX(0) rotateY(0)}}
-@keyframes nexMetroGeoTurnstileV2{0%{opacity:0;transform:perspective(1100px) rotateY(-18deg) translateX(22px) scale(.985)}75%{opacity:1;transform:perspective(1100px) rotateY(2deg) translateX(-2px) scale(1.002)}100%{opacity:1;transform:perspective(1100px) rotateY(0) translateX(0) scale(1)}}
-@keyframes nexMetroMediaSlideV2{0%{opacity:0;transform:translate3d(0,16px,0) scale(.985)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
-#settings-panel.open{animation:nexMetroSettingsTurnstileV2 .32s cubic-bezier(.2,.8,.2,1) both!important;transform-origin:right center;backface-visibility:hidden}
-#nex-gd-overlay:not([hidden]){animation:nexMetroGeoTurnstileV2 .32s cubic-bezier(.2,.8,.2,1) both;transform-origin:center center;backface-visibility:hidden}
-.nex-metro-media-enter-v2{animation:nexMetroMediaSlideV2 .28s cubic-bezier(.2,.75,.25,1) both;will-change:transform,opacity}
-@media(prefers-reduced-motion:reduce){#settings-panel.open,#nex-gd-overlay:not([hidden]),.nex-metro-media-enter-v2{animation:none!important;will-change:auto}}
+
+
+<style id="nex-metro-assembler-animation-style-v3">
+@keyframes nexMetroSettingsTurnstileV3{0%{opacity:0;transform:perspective(900px) translateX(34px) rotateY(-24deg)}70%{opacity:1;transform:perspective(900px) translateX(-3px) rotateY(3deg)}100%{opacity:1;transform:perspective(900px) translateX(0) rotateY(0)}}
+@keyframes nexMetroGeoTurnstileV3{0%{opacity:0;transform:perspective(1100px) rotateY(-18deg) translateX(22px) scale(.985)}75%{opacity:1;transform:perspective(1100px) rotateY(2deg) translateX(-2px) scale(1.002)}100%{opacity:1;transform:perspective(1100px) rotateY(0) translateX(0) scale(1)}}
+@keyframes nexMetroMediaSlideV3{0%{opacity:0;transform:translate3d(0,16px,0) scale(.985)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+#settings-panel{transform-origin:right center;backface-visibility:hidden}
+#nex-gd-overlay:not([hidden]){animation:nexMetroGeoTurnstileV3 .32s cubic-bezier(.2,.8,.2,1) both;transform-origin:center center;backface-visibility:hidden}
+.nex-metro-media-enter-v3{animation:nexMetroMediaSlideV3 .28s cubic-bezier(.2,.75,.25,1) both;will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){#nex-gd-overlay:not([hidden]),.nex-metro-media-enter-v3{animation:none!important;will-change:auto}}
 </style>
-<script id="nex-metro-assembler-animation-runtime-v2">(()=>{'use strict';
-if(window.__nexMetroAnimationRuntimeV2)return;window.__nexMetroAnimationRuntimeV2=true;
+<script id="nex-metro-assembler-animation-runtime-v3">(()=>{'use strict';
+if(window.__nexMetroAnimationRuntimeV3)return;window.__nexMetroAnimationRuntimeV3=true;
 const mediaSelector='.img-grid > a, .video-grid > .video-card';
 const reduced=()=>window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function animateMedia(el){if(!(el instanceof Element)||!el.matches(mediaSelector)||el.dataset.nexMetroAnimV2==='1')return;el.dataset.nexMetroAnimV2='1';if(reduced())return;el.classList.remove('nex-metro-media-enter-v2');void el.offsetWidth;el.classList.add('nex-metro-media-enter-v2');el.addEventListener('animationend',()=>{el.classList.remove('nex-metro-media-enter-v2');},{once:true});}
+function animateMedia(el){if(!(el instanceof Element)||!el.matches(mediaSelector)||el.dataset.nexMetroAnimV2==='1')return;el.dataset.nexMetroAnimV2='1';if(reduced())return;el.classList.remove('nex-metro-media-enter-v3');void el.offsetWidth;el.classList.add('nex-metro-media-enter-v3');el.addEventListener('animationend',()=>{el.classList.remove('nex-metro-media-enter-v3');},{once:true});}
 function scan(node){if(!(node instanceof Element))return;if(node.matches(mediaSelector))animateMedia(node);node.querySelectorAll?.(mediaSelector).forEach(animateMedia);}
+function animateSettings(el){if(!el||reduced()||typeof el.animate!=='function')return;try{el.getAnimations().forEach(a=>a.cancel());el.animate([{opacity:0,transform:'perspective(900px) translateX(28px) rotateY(-22deg)'},{opacity:1,transform:'perspective(900px) translateX(-2px) rotateY(2deg)',offset:.78},{opacity:1,transform:'perspective(900px) translateX(0) rotateY(0)'}],{duration:340,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});}catch(e){}}
 function animateGeoIfShown(){const el=document.getElementById('nex-gd-overlay');if(!el||el.hidden||reduced())return;el.style.animation='none';void el.offsetWidth;el.style.animation='';}
-const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='childList')record.addedNodes.forEach(node=>{if(node.nodeType===1)scan(node)});else if(record.type==='attributes'){const el=record.target;if(el.id==='nex-gd-overlay'&&!el.hidden)animateGeoIfShown();if(el.id==='settings-panel'&&el.classList.contains('open')){el.style.animation='none';void el.offsetWidth;el.style.animation='';}}}});
+const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='childList')record.addedNodes.forEach(node=>{if(node.nodeType===1)scan(node)});else if(record.type==='attributes'){const el=record.target;if(el.id==='nex-gd-overlay'&&!el.hidden)animateGeoIfShown();if(el.id==='settings-panel'){if(el.classList.contains('open'))animateSettings(el);else el.getAnimations?.().forEach(a=>a.cancel());}}}});
 function start(){observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class']});document.querySelectorAll(mediaSelector).forEach(animateMedia);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();</script>
