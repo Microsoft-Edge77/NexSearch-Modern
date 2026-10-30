@@ -38,7 +38,7 @@
     pointer-events: auto !important;
 }
 
-/* Barre du footer */
+/* Barre du footer : effet Acrylic / verre flou */
 #nexFooter {
     display: block;
     width: 100%;
@@ -46,14 +46,24 @@
     margin: 0;
     padding: 0 0 env(safe-area-inset-bottom, 0px);
 
-    background: #000000;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+        linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.06),
+            rgba(255, 255, 255, 0.02)
+        ),
+        rgba(0, 0, 0, 0.55);
+
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    backdrop-filter: blur(22px) saturate(160%);
+
+    box-shadow:
+        0 -1px 24px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
     opacity: 1 !important;
     visibility: visible !important;
     filter: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
     transform: none !important;
 }
 
@@ -82,6 +92,8 @@
     font-size: 0.92rem;
     font-weight: 400;
     line-height: 1.5;
+
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 /* Lien de confidentialité */
@@ -94,11 +106,11 @@
 }
 
 #nexFooter .nex-footer-link:hover {
-    color: #0078D7;
+    color: #4CC2FF;
 }
 
 #nexFooter .nex-footer-link:focus-visible {
-    outline: 2px solid #0078D7;
+    outline: 2px solid #4CC2FF;
     outline-offset: 4px;
 }
 
@@ -108,6 +120,13 @@
         flex-direction: column;
         gap: 8px;
         padding: 14px 16px;
+    }
+}
+
+/* Repli si backdrop-filter n'est pas pris en charge */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #nexFooter {
+        background: rgba(0, 0, 0, 0.86);
     }
 }
 </style>
