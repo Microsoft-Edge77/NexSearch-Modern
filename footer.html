@@ -1,3 +1,11 @@
+<!-- NEX-PATCH:FOOTER:BEGIN -->
+<style>
+/* Le footer passe devant le fond (overlay z-index 0, main z-index 10) mais reste sous l’en-tête (100) et le panneau Paramètres (200). */
+#footer-container{position:relative;z-index:50}
+#nexFooter{position:relative;z-index:1}
+</style>
+<!-- NEX-PATCH:FOOTER:END -->
+<style>
 /* Barre du footer : effet Acrylic / verre flou, plus transparent */
 #nexFooter {
     display: block;
@@ -26,3 +34,4 @@
     filter: none !important;
     transform: none !important;
 }
+</style>
