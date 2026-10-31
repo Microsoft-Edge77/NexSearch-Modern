@@ -1,25 +1,20 @@
-<!-- NEX-PATCH:FOOTER:BEGIN -->
 <style>
 /* Le footer passe devant le fond (overlay z-index 0, main z-index 10) mais reste sous l’en-tête (100) et le panneau Paramètres (200). */
 #footer-container{position:relative;z-index:50}
-#nexFooter{position:relative;z-index:1}
-</style>
-<!-- NEX-PATCH:FOOTER:END -->
-<style>
+
 /* Barre du footer : effet Acrylic / verre flou, plus transparent */
 #nexFooter {
+    position: relative;
+    z-index: 1;
     display: block;
     width: 100%;
     box-sizing: border-box;
     margin: 0;
     padding: 0 0 env(safe-area-inset-bottom, 0px);
+    color: #fff;
 
     background:
-        linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.04),
-            rgba(255, 255, 255, 0.01)
-        ),
+        linear-gradient(to right, rgba(255,255,255,0.04), rgba(255,255,255,0.01)),
         rgba(0, 0, 0, 0.35);
 
     -webkit-backdrop-filter: blur(22px) saturate(160%);
@@ -34,4 +29,25 @@
     filter: none !important;
     transform: none !important;
 }
+#nexFooter .nxf-in{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 6%}
+#nexFooter .nxf-brand{display:flex;align-items:center;gap:10px;font-family:"Segoe UI Light","Segoe UI",sans-serif;font-size:1.3rem;text-transform:lowercase}
+#nexFooter .nxf-brand b{font-weight:700}
+#nexFooter .nxf-logo{width:18px;height:18px;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+#nexFooter .nxf-logo i{background:#fff}
+#nexFooter .nxf-logo i:nth-child(2),#nexFooter .nxf-logo i:nth-child(3){background:#888}
+#nexFooter .nxf-links{display:flex;gap:20px}
+#nexFooter a{color:#fff;text-decoration:none;font-size:.9rem}
+#nexFooter a:hover{color:var(--accent,#0078D7)}
+#nexFooter .nxf-copy{font-size:.8rem;color:#aaa}
 </style>
+
+<footer id="nexFooter">
+  <div class="nxf-in">
+    <div class="nxf-brand"><span class="nxf-logo"><i></i><i></i><i></i><i></i></span>nex<b>search</b></div>
+    <div class="nxf-links">
+      <a href="mailto:z50.edge@outlook.com">Contact</a>
+      <a href="https://github.com/Microsoft-Edge77/NexSearch-Modern" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="nxf-copy">© 2026 NexSearch</div>
+  </div>
+</footer>
