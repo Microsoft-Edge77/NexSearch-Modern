@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- NexSearch — fichier assemblé le 01/11/2026 18:26:07 (assembleur NexSearch) -->
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -815,15 +816,6 @@ function switchTab(t){S.tab=t;syncTabs();zones();if(S.q)renderTab()}
 function openTool(k){S.q='';S.rid++;S.tab='web';showResults();syncTabs();zones();$('#header-input').value='';$('#ai-zone').innerHTML='';$('#tab-viewport').innerHTML='';$('#widget-zone').innerHTML=({calc:()=>calcWidget('',''),trad:trWidget,timer:tWidget})[k]()}
 const nentry=r=>`<div class="result-entry"><div><a class="result-title" target="_blank" rel="noopener" href="${safe(r.l)}">${esc(cutWords(r.t,180))}</a><div class="result-url">${esc(r.p)}</div><div class="result-desc">${esc(cutWords(r.d,320))}</div></div></div>`;
 const fresh=a=>{a=a.filter(r=>!S.seen.has(r.l));a.forEach(r=>S.seen.add(r.l));return a};
-TABS.web=async(q,e,pg)=>{const [b,w]=await Promise.allSettled([rss('https://www.bing.com/search?q='+e+'&format=rss&setmkt=fr-FR&first='+(pg*10+1)),jget('https://fr.wikipedia.org/w/api.php?action=query&list=search&srlimit=6&format=json&origin=*&sroffset='+pg*6+'&srsearch='+e)]);
- let R=b.status==='fulfilled'?b.value:[];
- if(w.status==='fulfilled')R=R.concat(w.value.query.search.map(r=>({t:r.title+' — Wikipédia',l:'https://fr.wikipedia.org/wiki/'+encodeURIComponent(r.title.replace(/ /g,'_')),d:txt(r.snippet)})));
- R=fresh(R);if(!R.length)throw 0;if(pg)return R.map(rentry).join('');
- S.R=R;return (R.length>3?'<div class="res-tiles">'+R.slice(0,3).map(rtile).join('')+'</div>':'')+'<div class="results-list" id="lst">'+R.slice(R.length>3?3:0).map(rentry).join('')+'</div>'};
-TABS.images=async(q,e,pg)=>{const a=await commons(q,30,'bitmap',pg*30);if(!a.length)throw 0;const o=pg?S.imgs.length:0;S.imgs=pg?S.imgs.concat(a):a;
- const h=a.map((i,k)=>`<a href="${safe(i.p)}" data-vi="${o+k}" title="${esc(i.t)}"><img loading="lazy" src="${safe(i.th)}" alt="${esc(i.t)}"></a>`).join('');return pg?h:'<div class="img-grid" id="lst">'+h+'</div>'};
-TABS['actualités']=async(q,e,pg)=>{let a;try{a=await rss('https://www.bing.com/news/search?q='+e+'&format=rss&setmkt=fr-FR&first='+(pg*10+1))}catch(x){if(pg)throw 0;a=await rss('https://www.francetvinfo.fr/titres.rss')}
- a=fresh(a);if(!a.length)throw 0;const h=a.slice(0,15).map(nentry).join('');return pg?h:'<div class="results-list" id="lst">'+h+'</div>'};
 /* renderTab() : définition finale plus bas (gère aussi les cartes et les clics vidéo) */
 
 /* AI Overview : Pollinations officiel + repli Wikipédia, avec erreurs diagnostiquables */
@@ -960,20 +952,6 @@ async function initNews(){const g=$('#news-grid');let G=[];
   g.appendChild(t);addCtl(t);rotor(t,()=>N.length,(f,i)=>{cur=i;f.querySelector('.tile-main').textContent=N[i].t},7000,11000)});
  if(!G.length)g.innerHTML='<div class="result-url">Actualités indisponibles : services gratuits injoignables. Essaie le réglage « Proxy CORS personnel ».</div>';
  applyLayout()}
-TABS['actualités']=async(q,e,pg)=>{let a;try{a=await feedItems('https://www.bing.com/news/search?q='+e+'&format=rss&setmkt=fr-FR&first='+(pg*10+1))}catch(x){if(pg)throw 0;a=await feedItems('https://www.francetvinfo.fr/titres.rss')}
- a=fresh(a);if(!a.length)throw 0;const h=a.slice(0,15).map(nentry).join('');return pg?h:'<div class="results-list" id="lst">'+h+'</div>'};
-async function official(q){const j=await jget('https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&origin=*&language=fr&uselang=fr&limit=4&search='+encodeURIComponent(q));const ids=j.search.map(x=>x.id);if(!ids.length)return[];
- const e=await jget('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=claims&ids='+ids.join('|'));
- return j.search.map(x=>{const c=e.entities[x.id]?.claims?.P856?.[0]?.mainsnak?.datavalue?.value;return c?{t:x.label+' — site officiel',l:c,d:x.description||'Site officiel'}:null}).filter(Boolean)}
-TABS.web=async(q,e,pg)=>{const dom=!pg&&/^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/\S*)?$/i.test(q.trim());
- const [b,o,w]=await Promise.allSettled([feedItems('https://www.bing.com/search?q='+e+'&format=rss&setmkt=fr-FR&first='+(pg*10+1)),pg?Promise.reject(0):official(q),jget('https://fr.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&origin=*&sroffset='+pg*3+'&srsearch='+e)]);
- let R=[];if(dom){const u=/^https?:/i.test(q.trim())?q.trim():'https://'+q.trim();R.push({t:host(u),l:u,d:'Ouvrir '+u})}
- if(o.status==='fulfilled')R=R.concat(o.value);
- if(b.status==='fulfilled')R=R.concat(b.value);
- if(w.status==='fulfilled')R=R.concat(w.value.query.search.map(r=>({t:r.title+' — Wikipédia',l:'https://fr.wikipedia.org/wiki/'+encodeURIComponent(r.title.replace(/ /g,'_')),d:txt(r.snippet)})));
- R=fresh(R);if(!R.length)throw 0;if(pg)return R.map(rentry).join('');
- S.R=R;const note=b.status==='fulfilled'?'':'<div class="result-url" style="margin-top:12px">Les résultats Bing n\'ont pas pu être chargés (services gratuits bloqués). Réglages → « Proxy CORS personnel » pour les débloquer.</div>';
- return (R.length>3?'<div class="res-tiles">'+R.slice(0,3).map(rtile).join('')+'</div>':'')+'<div class="results-list" id="lst">'+R.slice(R.length>3?3:0).map(rentry).join('')+'</div>'+note};
 document.addEventListener('DOMContentLoaded',()=>{const p=$('#px-in');
  const show=()=>{p.value=S.px===NS_PX?NS_LBL:S.px};
  if(S.px===NS_PX)lset('nex_px','');
@@ -1168,36 +1146,7 @@ pdfButton.onclick=el('nx-import').onclick=()=>el('nx-file').click();el('nx-close
 el('nx-file').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;try{const bytes=new Uint8Array(await file.slice(0,5).arrayBuffer());if(String.fromCharCode(...bytes)!=='%PDF-'){alert('Veuillez sélectionner un document PDF valide.');return}closePdf();pdfUrl=URL.createObjectURL(file);el('nx-name').textContent=file.name;el('nx-frame').src=pdfUrl;el('nx-download').href=pdfUrl;el('nx-download').download=file.name;el('nx-pdf').hidden=false}catch(error){alert('Impossible de lire ce document PDF.')}};
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!el('nx-message').hidden)el('nx-message').hidden=true;else if(!el('nx-pdf').hidden)closePdf();else if(active)closeImage(true)});
 });
-</script><!-- ===== NexSearch : mise à jour du 25/10/2026 — à coller juste avant 
-
-
-
-
-
-
-
-<style id="nex-metro-assembler-animation-style-v3">
-@keyframes nexMetroSettingsTurnstileV3{0%{opacity:0;transform:perspective(900px) translateX(34px) rotateY(-24deg)}70%{opacity:1;transform:perspective(900px) translateX(-3px) rotateY(3deg)}100%{opacity:1;transform:perspective(900px) translateX(0) rotateY(0)}}
-@keyframes nexMetroGeoTurnstileV3{0%{opacity:0;transform:perspective(1100px) rotateY(-18deg) translateX(22px) scale(.985)}75%{opacity:1;transform:perspective(1100px) rotateY(2deg) translateX(-2px) scale(1.002)}100%{opacity:1;transform:perspective(1100px) rotateY(0) translateX(0) scale(1)}}
-@keyframes nexMetroMediaSlideV3{0%{opacity:0;transform:translate3d(0,16px,0) scale(.985)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
-#settings-panel{transform-origin:right center;backface-visibility:hidden}
-#nex-gd-overlay:not([hidden]){animation:nexMetroGeoTurnstileV3 .32s cubic-bezier(.2,.8,.2,1) both;transform-origin:center center;backface-visibility:hidden}
-.nex-metro-media-enter-v3{animation:nexMetroMediaSlideV3 .28s cubic-bezier(.2,.75,.25,1) both;will-change:transform,opacity}
-@media(prefers-reduced-motion:reduce){#nex-gd-overlay:not([hidden]),.nex-metro-media-enter-v3{animation:none!important;will-change:auto}}
-</style>
-<script id="nex-metro-assembler-animation-runtime-v3">(()=>{'use strict';
-if(window.__nexMetroAnimationRuntimeV3)return;window.__nexMetroAnimationRuntimeV3=true;
-const mediaSelector='.img-grid > a, .video-grid > .video-card';
-const reduced=()=>window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function animateMedia(el){if(!(el instanceof Element)||!el.matches(mediaSelector)||el.dataset.nexMetroAnimV2==='1')return;el.dataset.nexMetroAnimV2='1';if(reduced())return;el.classList.remove('nex-metro-media-enter-v3');void el.offsetWidth;el.classList.add('nex-metro-media-enter-v3');el.addEventListener('animationend',()=>{el.classList.remove('nex-metro-media-enter-v3');},{once:true});}
-function scan(node){if(!(node instanceof Element))return;if(node.matches(mediaSelector))animateMedia(node);node.querySelectorAll?.(mediaSelector).forEach(animateMedia);}
-function animateSettings(el){if(!el||reduced()||typeof el.animate!=='function')return;try{el.getAnimations().forEach(a=>a.cancel());el.animate([{opacity:0,transform:'perspective(900px) translateX(28px) rotateY(-22deg)'},{opacity:1,transform:'perspective(900px) translateX(-2px) rotateY(2deg)',offset:.78},{opacity:1,transform:'perspective(900px) translateX(0) rotateY(0)'}],{duration:340,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});}catch(e){}}
-function animateGeoIfShown(){const el=document.getElementById('nex-gd-overlay');if(!el||el.hidden||reduced())return;el.style.animation='none';void el.offsetWidth;el.style.animation='';}
-const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='childList')record.addedNodes.forEach(node=>{if(node.nodeType===1)scan(node)});else if(record.type==='attributes'){const el=record.target;if(el.id==='nex-gd-overlay'&&!el.hidden)animateGeoIfShown();if(el.id==='settings-panel'){if(el.classList.contains('open'))animateSettings(el);else el.getAnimations?.().forEach(a=>a.cancel());}}}});
-function start(){observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class']});document.querySelectorAll(mediaSelector).forEach(animateMedia);}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-})();</script>
-</body> (après le dernier </script>) ===== -->
+</script>
 <style>
 /* 1. Titres trop longs : jamais de débordement horizontal */
 .tile-main,.result-title{overflow-wrap:anywhere}
@@ -1320,10 +1269,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 <!-- ===== fin de la mise à jour ===== -->
 
-<!-- ===== NexFlow : fil vertical de YouTube Shorts (via Worker /shorts) — à coller avant 
 
-
-</body> ===== -->
 <style>
 #nf{display:none;position:fixed;inset:0;z-index:350;background:#000}
 #nf.open{display:block;animation:turnstyleIn .5s cubic-bezier(.1,.9,.2,1) both}
@@ -1624,85 +1570,79 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #nxb-toast .t1{font-family:var(--font-light);font-size:1.5rem;line-height:1.2}
 #nxb-toast .t2{font-size:.88rem;margin:6px 0 12px}
 #nxb-toast .bt{display:flex;gap:8px;flex-wrap:wrap}
-.nxb-b{background:#000;color:#fff;border:0;padding:10px 16px;cursor:pointer;font-size:.9rem;text-decoration:none;display:inline-block;border-radius:var(--r,0)}
+.nxb-b{background:#000;color:#fff;border:0;padding:10px 16px;cursor:pointer;font-size:.9rem;border-radius:var(--r,0)}
 .nxb-b:hover{background:#fff;color:#000}
 #nxb-ov{display:none;position:fixed;inset:0;z-index:500;overflow-y:auto;padding:70px 6% 50px;background:rgba(0,0,0,.9);backdrop-filter:blur(var(--blur,10px));-webkit-backdrop-filter:blur(var(--blur,10px))}
 #nxb-ov.open{display:block;animation:turnstyleIn .5s cubic-bezier(.1,.9,.2,1) both}
 #nxb-x{position:fixed;top:12px;right:14px;z-index:510;background:none;border:0;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
 #nxb-x:hover{background:var(--accent)}
-.nxb-in{max-width:760px;margin:0 auto}
-.nxb-h{font-family:var(--font-light);font-size:2.2rem;line-height:1.2}
-.nxb-s{color:#aaa;margin:4px 0 18px}
-.nxb-big{display:block;text-align:center;background:var(--accent);color:#fff;padding:18px;font-size:1.2rem;text-decoration:none;margin:18px 0;border-radius:var(--r,0)}
-.nxb-big:hover{filter:brightness(1.15)}
-.nxb-box{background:rgba(255,255,255,.1);border-left:4px solid var(--accent);padding:16px;margin:14px 0;line-height:1.55}
-.nxb-box b{font-weight:600}
+.nxb-in{max-width:820px;margin:0 auto}
+.nxb-h{font-family:var(--font-light);font-size:2.4rem;line-height:1.15}
+.nxb-s{color:#aaa;margin:6px 0 20px}
+.nxb-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:0 0 18px}
+.nxb-f{background:var(--tile-bg);padding:14px;min-height:96px;display:flex;flex-direction:column;justify-content:space-between;border-radius:var(--r,0)}
+.nxb-f:nth-child(odd){background:color-mix(in srgb,var(--accent) 45%,#000)}
+.nxb-f small{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;opacity:.8}
+.nxb-big{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--accent);color:#fff;padding:20px 22px;font-size:1.25rem;text-decoration:none;margin:0 0 6px;border-radius:var(--r,0);transition:filter .2s,transform .2s}
+.nxb-big:hover{filter:brightness(1.15)}.nxb-big:active{transform:scale(.98)}
+.nxb-big small{font-size:.8rem;opacity:.85}
+.nxb-big[aria-disabled=true]{opacity:.5;pointer-events:none}
+.nxb-box{background:rgba(255,255,255,.1);border-left:4px solid var(--accent);padding:16px;margin:16px 0;line-height:1.55}
 .nxb-st{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
 .nxb-n{flex:none;width:30px;height:30px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700}
-.nxb-ul{margin:8px 0 0 18px}
 .nxb-lk{color:var(--accent);cursor:pointer;text-decoration:underline;font-size:.9rem}
+@media(max-width:600px){.nxb-h{font-size:1.8rem}.nxb-big{font-size:1.05rem;padding:16px}}
 </style>
-<div id="nxb-toast" role="dialog" aria-label="Proposition NexSearch"><div class="t1" id="nxb-toast-title">NexSearch Browser</div><div class="t2" id="nxb-toast-text">Le navigateur Windows de NexSearch : design Metro, onglets verticaux, publicités et traqueurs bloqués. Gratuit.</div><div class="bt"><button class="nxb-b" id="nxb-more">Découvrir et télécharger</button><button class="nxb-b" id="nxb-later">Plus tard</button><button class="nxb-b" id="nxb-never">Ne plus afficher</button></div></div>
-<div id="nxb-ov" aria-label="Télécharger une application NexSearch"><button id="nxb-x" title="Fermer" aria-label="Fermer"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 3l18 18M21 3L3 21" stroke="#fff" stroke-width="2" fill="none"/></svg></button>
-<div class="nxb-in" id="nxb-win-view"><div class="nxb-h">NexSearch Browser</div><div class="nxb-s">Le navigateur Windows fait pour NexSearch. Gratuit, sans compte.</div>
-<ul class="nxb-ul"><li>Design Metro, noir et épuré, onglets verticaux</li><li>Publicités et traqueurs bloqués par défaut</li><li>NexSearch comme moteur de recherche et page d’accueil</li><li>Basé sur Chromium, le moteur de Chrome et d’Edge : tous les sites s’affichent</li></ul>
-<a class="nxb-big" id="nxb-dl" href="https://github.com/Microsoft-Edge77/NexSearch-Modern/releases/latest/download/NexSearch-Browser-Setup.exe" download="NexSearch-Browser-Setup.exe">Télécharger pour Windows</a>
-<div class="nxb-box"><b>Windows peut essayer de bloquer le fichier. C’est normal.</b><br>NexSearch Browser est une application récente et indépendante. Windows (SmartScreen) affiche ce message pour tout logiciel peu téléchargé qui n’a pas encore de certificat d’éditeur : « Windows a protégé votre ordinateur ». Cela ne veut pas dire que le fichier est dangereux. Vous pouvez aussi analyser le fichier vous-même avant de l’ouvrir.<span id="nxb-vt"></span></div>
-<div class="nxb-st"><div class="nxb-n">1</div><div>Cliquez sur <b>Télécharger pour Windows</b>, puis ouvrez le fichier <b>NexSearch-Browser-Setup.exe</b>.</div></div>
-<div class="nxb-st"><div class="nxb-n">2</div><div>Si Windows affiche « Windows a protégé votre ordinateur », cliquez sur <b>Informations complémentaires</b>.</div></div>
-<div class="nxb-st"><div class="nxb-n">3</div><div>Cliquez sur <b>Exécuter quand même</b>, puis suivez l’installation.</div></div>
-<div style="margin-top:22px"><span class="nxb-lk" id="nxb-mute">Ne plus me proposer les applications NexSearch</span><div style="color:#aaa;font-size:.8rem;margin-top:4px">Vous pourrez réactiver cette proposition dans les paramètres.</div></div></div>
-<div class="nxb-in" id="nxb-android-view" hidden><div class="nxb-h">NexSearch Mobile</div><div class="nxb-s">L’application Android faite pour NexSearch. Gratuit, sans compte.</div>
-<ul class="nxb-ul"><li>Design Metro, noir et épuré</li><li>Recherche NexSearch intégrée</li><li>Interface pensée pour Android</li></ul>
-<a class="nxb-big" id="nxb-apk-dl" href="#" download>Télécharger pour Android</a>
-<div class="nxb-s" id="nxb-apk-info">Recherche de la dernière version…</div>
-<div class="nxb-box" id="nxb-apk-error" hidden><b>Le téléchargement n’est pas disponible pour le moment.</b><br>Impossible de récupérer le fichier APK de la dernière version de NexSearch Mobile. Réessayez plus tard.</div>
-<div class="nxb-st"><div class="nxb-n">1</div><div>Cliquez sur <b>Télécharger pour Android</b>.</div></div>
-<div class="nxb-st"><div class="nxb-n">2</div><div>Ouvrez le fichier APK téléchargé, puis autorisez l’installation si Android vous le demande.</div></div>
-<div class="nxb-st"><div class="nxb-n">3</div><div>Suivez l’installation de <b>NexSearch Mobile</b>.</div></div>
-<div style="margin-top:22px"><span class="nxb-lk" id="nxb-mute-android">Ne plus me proposer les applications NexSearch</span><div style="color:#aaa;font-size:.8rem;margin-top:4px">Vous pourrez réactiver cette proposition dans les paramètres.</div></div></div></div>
-<script>
+<div id="nxb-toast" role="dialog" aria-label="Proposition NexSearch"><div class="t1" id="nxb-toast-title"></div><div class="t2" id="nxb-toast-text"></div><div class="bt"><button class="nxb-b" id="nxb-more">Découvrir et télécharger</button><button class="nxb-b" id="nxb-later">Plus tard</button><button class="nxb-b" id="nxb-never">Ne plus afficher</button></div></div>
+<div id="nxb-ov" aria-label="Télécharger une application NexSearch"><button id="nxb-x" title="Fermer" aria-label="Fermer"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 3l18 18M21 3L3 21" stroke="#fff" stroke-width="2" fill="none"/></svg></button><div class="nxb-in" id="nxb-body"></div></div>
+<script id="nxb-runtime">
+/* NexSearch Browser / Mobile : proposition adaptée à l'appareil (Windows → .exe, Android → APK).
+   Une seule fenêtre remplie par JS : aucun élément n'est supprimé, donc plus d'erreur null. */
 (function(){
- var WIN_DL="https://github.com/Microsoft-Edge77/NexSearch-Modern/releases/latest/download/NexSearch-Browser-Setup.exe";
- var WIN_NAME="NexSearch-Browser-Setup.exe";
- var MOBILE_API="https://api.github.com/repos/Microsoft-Edge77/NexSearch-Browser-Mobile/releases/latest";
- var VT="https://www.virustotal.com/gui/file/6403f65969884d56675c72940f87ce876307916c0895cad77e16854708e632e7?nocache=1";
- var g=function(i){return document.getElementById(i)};
- var muted=function(){return ls('nex_nxb','1')==='0'};
- var toast=g('nxb-toast'),ov=g('nxb-ov'),chk=g('nxb-chk');
- var winView=g('nxb-win-view'),androidView=g('nxb-android-view');
- var toastTitle=g('nxb-toast-title'),toastText=g('nxb-toast-text');
- var hideToast=function(){toast.classList.remove('show')};
- var setCommon=function(on){lset('nex_nxb',on?'1':'0');if(chk)chk.checked=on;if(!on){hideToast();ov.classList.remove('open')}};
- if(chk){chk.checked=!muted();chk.onchange=function(){setCommon(chk.checked)}}
- var ua=navigator.userAgent;
- var isAndroid=/Android/i.test(ua)&&!/Windows NT/i.test(ua);
- var isWindows=/Windows NT/i.test(ua)&&!/Android|Mobile|iPhone|iPad/i.test(ua);
- if(isAndroid){winView.remove();toastTitle.textContent='NexSearch Mobile';toastText.textContent='L’application Android de NexSearch : design Metro et recherche NexSearch intégrée. Gratuit.'}
- else if(isWindows){androidView.remove()}
- else{toast.remove();ov.remove();return}
- if(/NexSearch[- ]?(Browser|Mobile)\//i.test(ua)){toast.remove();ov.remove();return}
- var mute=function(){setCommon(false)};
- var open=function(){hideToast();ov.classList.add('open');ov.scrollTop=0};
- g('nxb-more').onclick=open;g('nxb-x').onclick=function(){ov.classList.remove('open')};
- g('nxb-later').onclick=function(){hideToast();try{sessionStorage.setItem('nxb_s','1')}catch(e){}};
- g('nxb-never').onclick=mute;g('nxb-mute').onclick=mute;g('nxb-mute-android').onclick=mute;
- var dl=g('nxb-dl');
- if(isWindows){dl.addEventListener('click',function(){setTimeout(function(){setCommon(false)},500)});if(VT){var s=g('nxb-vt');s.innerHTML=' <a class="nxb-lk" target="_blank" rel="noopener"></a>';var a=s.querySelector('a');a.href=VT;a.textContent='Voir l’analyse VirusTotal du fichier';}}
- if(isAndroid){
-  var apkLink=g('nxb-apk-dl'),apkInfo=g('nxb-apk-info'),apkError=g('nxb-apk-error');
-  apkLink.addEventListener('click',function(e){if(!apkLink.href||apkLink.href==='#'||apkLink.href===location.href){e.preventDefault();return}setTimeout(function(){setCommon(false)},500)});
-  fetch(MOBILE_API,{headers:{'Accept':'application/vnd.github+json'}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(rel){
-   var assets=(rel&&rel.assets)||[];var apk=null;
-   for(var i=0;i<assets.length;i++){if(/\.apk$/i.test(assets[i].name||'')){apk=assets[i];break}}
-   if(!apk)throw new Error('Aucun APK');
-   apkLink.href=apk.browser_download_url;apkLink.setAttribute('download',apk.name);
-   apkInfo.textContent='Version '+((rel.tag_name||'').replace(/^v/i,'')||'inconnue')+' — '+apk.name;
-  }).catch(function(){apkLink.removeAttribute('href');apkLink.removeAttribute('download');apkLink.setAttribute('aria-disabled','true');apkLink.style.opacity='.5';apkLink.style.pointerEvents='none';apkInfo.textContent='Téléchargement indisponible.';apkError.hidden=false});
- }
- document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('open'))ov.classList.remove('open')});
+ 'use strict';
+ var PL={
+  windows:{name:'NexSearch Browser',sub:'Le navigateur Windows fait pour NexSearch. Gratuit, sans compte.',
+   toast:'Le navigateur Windows de NexSearch : design Metro, onglets verticaux, publicités et traqueurs bloqués. Gratuit.',
+   feats:[['Design','Metro, noir et épuré, onglets verticaux'],['Protection','Publicités et traqueurs bloqués'],['NexSearch','Moteur et page d’accueil par défaut'],['Chromium','Le moteur de Chrome et d’Edge']],
+   btn:'Télécharger pour Windows',file:'NexSearch-Browser-Setup.exe',url:'https://github.com/Microsoft-Edge77/NexSearch-Modern/releases/latest/download/NexSearch-Browser-Setup.exe',
+   warn:'<b>Windows peut essayer de bloquer le fichier. C’est normal.</b><br>NexSearch Browser est une application récente et indépendante : Windows (SmartScreen) affiche « Windows a protégé votre ordinateur » pour tout logiciel peu téléchargé sans certificat d’éditeur. Cela ne veut pas dire que le fichier est dangereux. <a class="nxb-lk" target="_blank" rel="noopener" href="https://www.virustotal.com/gui/file/6403f65969884d56675c72940f87ce876307916c0895cad77e16854708e632e7?nocache=1">Voir l’analyse VirusTotal</a>',
+   steps:['Cliquez sur <b>Télécharger pour Windows</b>, puis ouvrez <b>NexSearch-Browser-Setup.exe</b>.','Si Windows affiche « Windows a protégé votre ordinateur », cliquez sur <b>Informations complémentaires</b>.','Cliquez sur <b>Exécuter quand même</b>, puis suivez l’installation.']},
+  android:{name:'NexSearch Mobile',sub:'L’application Android faite pour NexSearch. Gratuit, sans compte.',
+   toast:'L’application Android de NexSearch : design Metro et recherche NexSearch intégrée. Gratuit.',
+   feats:[['Design','Metro, noir et épuré'],['NexSearch','Recherche intégrée'],['Android','Interface pensée pour le tactile'],['Mises à jour','Dernière version proposée automatiquement']],
+   btn:'Télécharger pour Android',api:'https://api.github.com/repos/Microsoft-Edge77/NexSearch-Browser-Mobile/releases/latest',
+   warn:'<b>Android peut demander une autorisation.</b><br>Le fichier est installé hors Google Play : Android demande d’autoriser l’installation depuis votre navigateur. C’est normal pour une application indépendante.',
+   steps:['Cliquez sur <b>Télécharger pour Android</b>.','Ouvrez le fichier APK téléchargé, puis autorisez l’installation si Android vous le demande.','Suivez l’installation de <b>NexSearch Mobile</b>.']}
+ };
+ var ua=navigator.userAgent||'',uad=(navigator.userAgentData&&navigator.userAgentData.platform)||'';
+ var key=(/Android/i.test(ua)||uad==='Android')?'android':((/Windows/i.test(ua)||uad==='Windows')&&!/Mobile/i.test(ua))?'windows':null;
+ var g=function(i){return document.getElementById(i)},toast=g('nxb-toast'),ov=g('nxb-ov');
+ if(!key||/NexSearch[- ]?(Browser|Mobile)\//i.test(ua)){toast.remove();ov.remove();var row=document.querySelector('[data-nxb]');if(row)row.remove();return}
+ var P=PL[key],chk=g('nxb-chk');
+ var muted=function(){return ls('nex_nxb','1')==='0'},hide=function(){toast.classList.remove('show')};
+ var setOn=function(on){lset('nex_nxb',on?'1':'0');if(chk)chk.checked=on;if(!on){hide();ov.classList.remove('open')}};
+ if(chk){chk.checked=!muted();chk.onchange=function(){setOn(chk.checked)}}
+ g('nxb-toast-title').textContent=P.name;g('nxb-toast-text').textContent=P.toast;
+ g('nxb-body').innerHTML='<div class="nxb-h">'+P.name+'</div><div class="nxb-s">'+P.sub+'</div>'+
+  '<div class="nxb-feats">'+P.feats.map(function(f){return '<div class="nxb-f"><small>'+f[0]+'</small><span>'+f[1]+'</span></div>'}).join('')+'</div>'+
+  '<a class="nxb-big" id="nxb-dl" href="'+(P.url||'#')+'"'+(P.file?' download="'+P.file+'"':'')+'><span>'+P.btn+'<br><small id="nxb-info">'+(P.api?'Recherche de la dernière version…':P.file)+'</small></span><span aria-hidden="true">↓</span></a>'+
+  '<div class="nxb-box">'+P.warn+'</div>'+P.steps.map(function(s,i){return '<div class="nxb-st"><div class="nxb-n">'+(i+1)+'</div><div>'+s+'</div></div>'}).join('')+
+  '<div style="margin-top:22px"><span class="nxb-lk" id="nxb-mute">Ne plus me proposer les applications NexSearch</span><div style="color:#aaa;font-size:.8rem;margin-top:4px">Vous pourrez réactiver cette proposition dans les paramètres.</div></div>';
+ var dl=g('nxb-dl'),info=g('nxb-info');
+ if(P.api){dl.setAttribute('aria-disabled','true');
+  fetch(P.api,{headers:{Accept:'application/vnd.github+json'}}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(rel){
+   var apk=((rel&&rel.assets)||[]).filter(function(a){return /\.apk$/i.test(a.name||'')})[0];if(!apk)throw 0;
+   dl.href=apk.browser_download_url;dl.setAttribute('download',apk.name);dl.removeAttribute('aria-disabled');
+   info.textContent='Version '+((rel.tag_name||'').replace(/^v/i,'')||'récente')+' — '+apk.name;
+  }).catch(function(){info.textContent='Téléchargement indisponible pour le moment. Réessayez plus tard.'})}
+ g('nxb-more').onclick=function(){hide();ov.classList.add('open');ov.scrollTop=0};
+ g('nxb-x').onclick=function(){ov.classList.remove('open')};
+ g('nxb-later').onclick=function(){hide();try{sessionStorage.setItem('nxb_s','1')}catch(e){}};
+ g('nxb-never').onclick=g('nxb-mute').onclick=function(){setOn(false)};
+ dl.addEventListener('click',function(e){if(dl.getAttribute('aria-disabled')==='true'){e.preventDefault();return}setTimeout(function(){setOn(false)},500)});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')ov.classList.remove('open')});
  var seen=false;try{seen=sessionStorage.getItem('nxb_s')==='1'}catch(e){}
- if(!muted()&&!seen)setTimeout(function(){if(!muted()&&!ov.classList.contains('open'))toast.classList.add('show');setTimeout(hideToast,25000)},2500);
+ if(!muted()&&!seen)setTimeout(function(){if(!muted()&&!ov.classList.contains('open')){toast.classList.add('show');setTimeout(hide,25000)}},2500);
 })();
 </script>
 <!--/nxb-->
@@ -1731,8 +1671,8 @@ body.nx-glitch:after{content:'GLITCH // NEXSEARCH';position:fixed;z-index:214748
 
  // La recherche spéciale complète les résultats réels du Worker au lieu de les remplacer.
  const baseWeb=TABS.web;
- const favNex=svgData('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#0078d7"/><path d="M7 7H29V29H7ZM35 7H57V29H35ZM7 35H29V57H7ZM35 35H57V57H35Z" fill="#fff"/></svg>');
- const favBrowser=svgData('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#10151d"/><rect x="8" y="8" width="48" height="48" fill="#35cfcb"/><path d="M18 18H28V29H18ZM36 18H46V29H36ZM18 35H28V46H18ZM36 35H46V46H36Z" fill="#102b31"/></svg>');
+ const favNex=defaultIcon; /* favicon du site */
+ const favBrowser=defaultIcon; /* favicon du site */
  const entry=(t,l,d,favicon)=>({t,l,d,favicon});
  TABS.web=async function(q,e,pg){
    const query=String(q||'').trim(),low=query.toLowerCase();
