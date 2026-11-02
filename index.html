@@ -1,4 +1,46 @@
-<!DOCTYPE html>\n<html lang="fr"><head>
+<!DOCTYPE html>
+<html lang="fr"><head><style id="metro-live-tiles-recovery">
+/* ===== NexSearch Live Tiles Recovery — assembleur ===== */
+/* Les faces doivent rester superposées : ne jamais les remettre en position:relative. */
+#home-view .tile.live {
+  padding: 0;
+  perspective: 800px;
+  -webkit-perspective: 800px;
+}
+#home-view .tile.live > .live-tile-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform .8s cubic-bezier(.4,0,.2,1);
+}
+#home-view .tile.live > .live-tile-inner > .tile-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+#home-view .tile.live > .live-tile-inner > .tile-face.back {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+#home-view .tile.live > .live-tile-inner.flipped {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  #home-view .tile.live > .live-tile-inner { transition: none; }
+}
+/* ===== End Live Tiles Recovery ===== */
+</style></head><body>\n
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
@@ -556,101 +598,8 @@
 #nx-message{position:fixed;inset:0;z-index:450;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}.nx-card{max-width:540px;background:#181818;border:1px solid #444;padding:30px;text-align:center;line-height:1.6}.nx-card a{color:var(--accent)}
 .nx-character{position:relative;background:var(--accent);border-radius:45%;width:85px;height:85px;line-height:85px;font-size:42px;margin:10px auto 20px;animation:nx-bob 1.5s ease-in-out infinite}.nx-character:after{content:'?';position:absolute;right:-20px;top:-20px;background:white;color:black;border-radius:50%;font-size:28px;width:40px;height:40px;line-height:40px}@keyframes nx-bob{50%{transform:translateY(-9px) rotate(4deg)}}
 .nova-project{width:100%;max-width:970px;margin:auto;background:#111;border:1px solid #ffffff26;box-shadow:0 12px 45px #0006;animation:nova-in .35s ease-out both}.nova-project iframe{display:block;width:100%;height:auto;aspect-ratio:485/402;border:0;background:#111}.nova-project p{padding:12px;color:#bbb}.nova-project a{color:var(--accent)}@keyframes nova-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.nova-project,.nx-character{animation:none}}
-</style><style id="metro-reveal-pro-style">
-/* ===== Metro UI Reveal Pro — styles autonomes ===== */
-#home-view .tile {
-  --reveal-x: 50%;
-  --reveal-y: 50%;
-  --reveal-strength: 0;
-  --reveal-size: 320px;
-  position: relative;
-  isolation: isolate;
-}
+</style>
 
-/* Halo global : la couche ne participe jamais aux interactions. */
-#home-view .tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 50;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: var(--reveal-strength);
-  background: radial-gradient(
-    circle var(--reveal-size) at var(--reveal-x) var(--reveal-y),
-    rgba(255,255,255,.24) 0%,
-    rgba(255,255,255,.13) 20%,
-    rgba(255,255,255,.055) 43%,
-    transparent 74%
-  );
-  mix-blend-mode: screen;
-  transition: opacity 150ms ease;
-}
-
-/* Liseré lumineux discret. */
-#home-view .tile::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 51;
-  border: 1px solid rgba(255,255,255,.5);
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: var(--reveal-strength);
-  box-shadow: inset 0 0 13px rgba(255,255,255,.10), 0 0 10px rgba(255,255,255,.12);
-  mix-blend-mode: screen;
-  transition: opacity 150ms ease, box-shadow 150ms ease;
-}
-
-/* Couche locale pour les faces avant/arrière, y compris les faces colorées. */
-#home-view .tile .tile-face {
-  position: relative;
-}
-#home-view .tile .tile-face::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 40;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: var(--reveal-strength);
-  background: radial-gradient(
-    circle var(--reveal-size) at var(--reveal-x) var(--reveal-y),
-    rgba(255,255,255,.23) 0%,
-    rgba(255,255,255,.10) 26%,
-    rgba(255,255,255,.035) 52%,
-    transparent 75%
-  );
-  mix-blend-mode: screen;
-  transition: opacity 150ms ease;
-}
-
-/* Renforcement pendant l'appui, sans intercepter le clic. */
-#home-view .tile:active::before {
-  opacity: 1;
-  background: radial-gradient(
-    circle var(--reveal-size) at var(--reveal-x) var(--reveal-y),
-    rgba(255,255,255,.34) 0%,
-    rgba(255,255,255,.16) 27%,
-    rgba(255,255,255,.05) 55%,
-    transparent 76%
-  );
-}
-#home-view .tile:active::after {
-  opacity: 1;
-  box-shadow: inset 0 0 17px rgba(255,255,255,.17), 0 0 16px rgba(255,255,255,.22);
-  border-color: rgba(255,255,255,.8);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #home-view .tile::before,
-  #home-view .tile::after,
-  #home-view .tile .tile-face::after {
-    transition: none !important;
-  }
-}
-</style></head>
-<body>
 
     <div id="bg-overlay"></div>
 
@@ -2140,82 +2089,4 @@ new MutationObserver(scan).observe(vp,{childList:true,subtree:true});scan()})();
 <!-- NEX-PATCH:TILES4:END -->
 
 
-<script id="metro-reveal-pro-runtime">
-/* ===== Metro UI Reveal Pro — runtime autonome ===== */
-(() => {
-  "use strict";
-
-  const home = document.getElementById("home-view");
-  if (!home) {
-    console.warn("[Reveal Pro] #home-view absent : effet inactif.");
-    return;
-  }
-
-  let activeTile = null;
-
-  function getTile(target) {
-    if (!(target instanceof Element)) return null;
-    const tile = target.closest(".tile");
-    return tile && home.contains(tile) ? tile : null;
-  }
-
-  function setStrength(tile, value) {
-    if (tile) tile.style.setProperty("--reveal-strength", String(value));
-  }
-
-  function setPosition(tile, event) {
-    if (!tile || !event) return;
-    const rect = tile.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-
-    const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
-    tile.style.setProperty("--reveal-x", x.toFixed(2) + "%");
-    tile.style.setProperty("--reveal-y", y.toFixed(2) + "%");
-    setStrength(tile, 1);
-  }
-
-  function activate(tile, event) {
-    if (!tile) return;
-    if (activeTile && activeTile !== tile) setStrength(activeTile, 0);
-    activeTile = tile;
-    setPosition(tile, event);
-  }
-
-  function deactivate(tile) {
-    if (!tile) return;
-    setStrength(tile, 0);
-    if (activeTile === tile) activeTile = null;
-  }
-
-  home.addEventListener("pointermove", (event) => {
-    const tile = getTile(event.target);
-    if (tile) activate(tile, event);
-    else if (activeTile) deactivate(activeTile);
-  }, { passive: true });
-
-  home.addEventListener("pointerover", (event) => {
-    const tile = getTile(event.target);
-    if (tile) activate(tile, event);
-  }, { passive: true });
-
-  home.addEventListener("pointerout", (event) => {
-    const tile = getTile(event.target);
-    if (!tile) return;
-    const nextTile = getTile(event.relatedTarget);
-    if (nextTile === tile) return;
-    if (nextTile) activate(nextTile, event);
-    else deactivate(tile);
-  }, { passive: true });
-
-  home.addEventListener("pointerleave", () => {
-    if (activeTile) deactivate(activeTile);
-  }, { passive: true });
-
-  home.addEventListener("pointercancel", (event) => {
-    const tile = getTile(event.target);
-    if (tile) deactivate(tile);
-    if (activeTile) deactivate(activeTile);
-  }, { passive: true });
-})();
-</script></body></html>
+</body></html>
