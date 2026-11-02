@@ -559,15 +559,6 @@
 #nx-message{position:fixed;inset:0;z-index:450;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}.nx-card{max-width:540px;background:#181818;border:1px solid #444;padding:30px;text-align:center;line-height:1.6}.nx-card a{color:var(--accent)}
 .nx-character{position:relative;background:var(--accent);border-radius:45%;width:85px;height:85px;line-height:85px;font-size:42px;margin:10px auto 20px;animation:nx-bob 1.5s ease-in-out infinite}.nx-character:after{content:'?';position:absolute;right:-20px;top:-20px;background:white;color:black;border-radius:50%;font-size:28px;width:40px;height:40px;line-height:40px}@keyframes nx-bob{50%{transform:translateY(-9px) rotate(4deg)}}
 .nova-project{width:100%;max-width:970px;margin:auto;background:#111;border:1px solid #ffffff26;box-shadow:0 12px 45px #0006;animation:nova-in .35s ease-out both}.nova-project iframe{display:block;width:100%;height:auto;aspect-ratio:485/402;border:0;background:#111}.nova-project p{padding:12px;color:#bbb}.nova-project a{color:var(--accent)}@keyframes nova-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.nova-project,.nx-character{animation:none}}
-</style><style id="metro-reveal-style">
-/* Metro UI Reveal Highlight */
-#home-view .tile{--reveal-x:50%;--reveal-y:50%;--reveal-strength:0;position:relative;isolation:isolate}
-#home-view .tile::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:var(--reveal-strength,0);background:radial-gradient(220px circle at var(--reveal-x) var(--reveal-y),rgba(255,255,255,.22),rgba(255,255,255,.07) 45%,transparent 70%);transition:opacity .18s ease-out;mix-blend-mode:screen}
-#home-view .tile::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:var(--reveal-strength,0);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 0 22px rgba(255,255,255,.08);transition:opacity .18s ease-out}
-#home-view .tile:hover::before,#home-view .tile:hover::after{opacity:1}
-#home-view .tile:active::before{opacity:.75}
-#home-view .tile>*{position:relative;z-index:5}
-@media(prefers-reduced-motion:reduce){#home-view .tile::before,#home-view .tile::after{transition:none}}
 </style>
 </head>
 <body>
@@ -592,7 +583,89 @@
             </div>
         </div>
 
-        <button class="settings-btn" id="open-settings" title="Paramètres">
+        <button class="setting<style id="metro-reveal-pro-style">
+/* === Metro UI Reveal Pro — halo fidèle et accentué === */
+#home-view .tile{
+  --reveal-x:50%;
+  --reveal-y:50%;
+  --reveal-strength:0;
+  --reveal-size:340px;
+  position:relative;
+  isolation:isolate;
+}
+#home-view .tile::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  z-index:30;
+  pointer-events:none;
+  opacity:var(--reveal-strength,0);
+  background:
+    radial-gradient(
+      var(--reveal-size) circle at var(--reveal-x) var(--reveal-y),
+      rgba(255,255,255,.42) 0%,
+      rgba(255,255,255,.20) 28%,
+      rgba(255,255,255,.07) 55%,
+      transparent 78%
+    );
+  mix-blend-mode:screen;
+  transition:opacity .16s cubic-bezier(.1,.9,.2,1);
+}
+#home-view .tile::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:31;
+  pointer-events:none;
+  opacity:var(--reveal-strength,0);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.22),
+    inset 0 0 34px rgba(255,255,255,.16),
+    0 0 22px rgba(255,255,255,.10);
+  transition:opacity .16s cubic-bezier(.1,.9,.2,1);
+}
+#home-view .tile:hover::before,
+#home-view .tile:hover::after{opacity:1}
+#home-view .tile:active::before{opacity:.85}
+#home-view .tile:active::after{
+  opacity:1;
+  border-color:rgba(255,255,255,.75);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.30),
+    inset 0 0 44px rgba(255,255,255,.20),
+    0 0 30px rgba(255,255,255,.14);
+}
+/* Rend le halo bien visible sur les tuiles accentuées et les faces arrière colorées. */
+#home-view .tile.accent::before,
+#home-view .tile .tile-face.back::before{mix-blend-mode:screen}
+#home-view .tile.accent::after{border-color:rgba(255,255,255,.70)}
+#home-view .tile .tile-face,
+#home-view .tile .live-tile-inner{position:relative}
+#home-view .tile .tile-face::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:20;
+  pointer-events:none;
+  opacity:var(--reveal-strength,0);
+  background:radial-gradient(
+    calc(var(--reveal-size) * .82) circle at var(--reveal-x) var(--reveal-y),
+    rgba(255,255,255,.30),
+    rgba(255,255,255,.08) 48%,
+    transparent 75%
+  );
+  mix-blend-mode:screen;
+  transition:opacity .16s cubic-bezier(.1,.9,.2,1);
+}
+#home-view .tile:hover .tile-face::after{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  #home-view .tile::before,
+  #home-view .tile::after,
+  #home-view .tile .tile-face::after{transition:none}
+}
+</style>
+s-btn" id="open-settings" title="Paramètres">
             <svg class="settings-icon-svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2"><path d="M2 8h11M12 17h10"/><circle cx="18" cy="8" r="3.5"/><circle cx="6.5" cy="17" r="3.5"/></g></svg>
         </button>
     </header>
@@ -2045,15 +2118,7 @@ html.no-anim body #settings-panel.open > *{
 <script id="nex-4-live-tiles-runtime">
 (()=>{'use strict';
 nsTile=function(r,tMax,dMax){tMax=tMax||80;dMax=dMax||120;const h=host(r.l),c=col(h);
-return `<a class="tile live" href="${safe(r.l)}" target="_blank" rel="noopener" style="background:${c};text-decoration:none"><div class="live-tile-inner"><div class="tile-face" style="background:${c}"><img class="fav" src="https://icons.duckduckgo.com/ip3/${esc(h)}.ico" alt=""><div class="tile-main" style="font-size:.95rem">${esc(cutWords(r.t,tMax))}</div><div class="tile-sub">${esc(h)}</div></div><div class="tile-face back" style="background:${c}"><div class="tile-sub">${esc(h)}</div><div class="tile-main" style="font-size:.8rem">${esc(cutWords(r.d||'',dMax))}</div><div class="tile-sub">Ouvrir le site ›<<script id="metro-reveal-runtime">
-(function(){
-"use strict";
-function init(){const home=document.getElementById("home-view");if(!home)return;function set(tile,e){const r=tile.getBoundingClientRect();tile.style.setProperty("--reveal-x",((e.clientX-r.left)/r.width*100).toFixed(2)+"%");tile.style.setProperty("--reveal-y",((e.clientY-r.top)/r.height*100).toFixed(2)+"%");tile.style.setProperty("--reveal-strength","1")}
-home.addEventListener("pointermove",function(e){const t=e.target.closest(".tile");if(t&&home.contains(t))set(t,e)},{passive:true});
-home.addEventListener("pointerout",function(e){const t=e.target.closest(".tile");if(t&&(!e.relatedTarget||!t.contains(e.relatedTarget)))t.style.setProperty("--reveal-strength","0")},{passive:true});
-home.addEventListener("pointerleave",function(e){const t=e.target.closest(".tile");if(t)t.style.setProperty("--reveal-strength","0")},{passive:true})}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init()})();
-</script>
+return `<a class="tile live" href="${safe(r.l)}" target="_blank" rel="noopener" style="background:${c};text-decoration:none"><div class="live-tile-inner"><div class="tile-face" style="background:${c}"><img class="fav" src="https://icons.duckduckgo.com/ip3/${esc(h)}.ico" alt=""><div class="tile-main" style="font-size:.95rem">${esc(cutWords(r.t,tMax))}</div><div class="tile-sub">${esc(h)}</div></div><div class="tile-face back" style="background:${c}"><div class="tile-sub">${esc(h)}</div><div class="tile-main" style="font-size:.8rem">${esc(cutWords(r.d||'',dMax))}</div><div class="tile-sub">Ouvrir le site ›<
 /div></div></div></a>`};
 nsMix=function(R,entry){const tiles=R.slice(0,4),list=R.slice(4);
 const t=tiles.map((r,i)=>nsTile(r,i===0?110:80,i===0?260:120)).join('');
@@ -2062,7 +2127,55 @@ const vp=document.getElementById('tab-viewport');if(!vp)return;
 const reduced=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 function live(inner){if(inner.dataset.nxLive)return;inner.dataset.nxLive='1';
 (function loop(){setTimeout(()=>{if(!inner.isConnected)return;
-if(!reduced()&&!document.documentElement.classList.contains('no-anim')&&!inner.parentElement.matches(':hover'))inner.classList.toggle('flipped');loop()},5000+Math.random()*6000)})()}
+if(!reduced()&&!document.document<script id="metro-reveal-pro-runtime">
+/* === Metro UI Reveal Pro — suivi précis du curseur === */
+(function(){
+"use strict";
+function init(){
+  const home=document.getElementById("home-view");
+  if(!home)return;
+
+  function update(tile,event){
+    const rect=tile.getBoundingClientRect();
+    const x=Math.min(Math.max(event.clientX-rect.left,0),rect.width);
+    const y=Math.min(Math.max(event.clientY-rect.top,0),rect.height);
+    tile.style.setProperty("--reveal-x",(x/rect.width*100).toFixed(2)+"%");
+    tile.style.setProperty("--reveal-y",(y/rect.height*100).toFixed(2)+"%");
+    tile.style.setProperty("--reveal-strength","1");
+  }
+
+  function clear(tile){
+    if(tile)tile.style.setProperty("--reveal-strength","0");
+  }
+
+  home.addEventListener("pointermove",function(event){
+    const tile=event.target.closest(".tile");
+    if(tile&&home.contains(tile))update(tile,event);
+  },{passive:true});
+
+  home.addEventListener("pointerover",function(event){
+    const tile=event.target.closest(".tile");
+    if(tile&&home.contains(tile))update(tile,event);
+  },{passive:true});
+
+  home.addEventListener("pointerout",function(event){
+    const tile=event.target.closest(".tile");
+    if(tile&&(!event.relatedTarget||!tile.contains(event.relatedTarget)))clear(tile);
+  },{passive:true});
+
+  home.addEventListener("pointerleave",function(event){
+    clear(event.target.closest(".tile"));
+  },{passive:true});
+
+  home.addEventListener("pointercancel",function(event){
+    clear(event.target.closest(".tile"));
+  },{passive:true});
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);
+else init();
+})();
+</script>
+Element.classList.contains('no-anim')&&!inner.parentElement.matches(':hover'))inner.classList.toggle('flipped');loop()},5000+Math.random()*6000)})()}
 const scan=()=>vp.querySelectorAll('.res-tiles.nx-t .live-tile-inner').forEach(live);
 new MutationObserver(scan).observe(vp,{childList:true,subtree:true});scan()})();
 </script>
