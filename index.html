@@ -559,7 +559,17 @@
 #nx-message{position:fixed;inset:0;z-index:450;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}.nx-card{max-width:540px;background:#181818;border:1px solid #444;padding:30px;text-align:center;line-height:1.6}.nx-card a{color:var(--accent)}
 .nx-character{position:relative;background:var(--accent);border-radius:45%;width:85px;height:85px;line-height:85px;font-size:42px;margin:10px auto 20px;animation:nx-bob 1.5s ease-in-out infinite}.nx-character:after{content:'?';position:absolute;right:-20px;top:-20px;background:white;color:black;border-radius:50%;font-size:28px;width:40px;height:40px;line-height:40px}@keyframes nx-bob{50%{transform:translateY(-9px) rotate(4deg)}}
 .nova-project{width:100%;max-width:970px;margin:auto;background:#111;border:1px solid #ffffff26;box-shadow:0 12px 45px #0006;animation:nova-in .35s ease-out both}.nova-project iframe{display:block;width:100%;height:auto;aspect-ratio:485/402;border:0;background:#111}.nova-project p{padding:12px;color:#bbb}.nova-project a{color:var(--accent)}@keyframes nova-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.nova-project,.nx-character{animation:none}}
-</style></head>
+</style><style id="metro-reveal-style">
+/* Metro UI Reveal Highlight */
+#home-view .tile{--reveal-x:50%;--reveal-y:50%;--reveal-strength:0;position:relative;isolation:isolate}
+#home-view .tile::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:var(--reveal-strength,0);background:radial-gradient(220px circle at var(--reveal-x) var(--reveal-y),rgba(255,255,255,.22),rgba(255,255,255,.07) 45%,transparent 70%);transition:opacity .18s ease-out;mix-blend-mode:screen}
+#home-view .tile::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:var(--reveal-strength,0);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 0 22px rgba(255,255,255,.08);transition:opacity .18s ease-out}
+#home-view .tile:hover::before,#home-view .tile:hover::after{opacity:1}
+#home-view .tile:active::before{opacity:.75}
+#home-view .tile>*{position:relative;z-index:5}
+@media(prefers-reduced-motion:reduce){#home-view .tile::before,#home-view .tile::after{transition:none}}
+</style>
+</head>
 <body>
 
     <div id="bg-overlay"></div>
@@ -2035,7 +2045,16 @@ html.no-anim body #settings-panel.open > *{
 <script id="nex-4-live-tiles-runtime">
 (()=>{'use strict';
 nsTile=function(r,tMax,dMax){tMax=tMax||80;dMax=dMax||120;const h=host(r.l),c=col(h);
-return `<a class="tile live" href="${safe(r.l)}" target="_blank" rel="noopener" style="background:${c};text-decoration:none"><div class="live-tile-inner"><div class="tile-face" style="background:${c}"><img class="fav" src="https://icons.duckduckgo.com/ip3/${esc(h)}.ico" alt=""><div class="tile-main" style="font-size:.95rem">${esc(cutWords(r.t,tMax))}</div><div class="tile-sub">${esc(h)}</div></div><div class="tile-face back" style="background:${c}"><div class="tile-sub">${esc(h)}</div><div class="tile-main" style="font-size:.8rem">${esc(cutWords(r.d||'',dMax))}</div><div class="tile-sub">Ouvrir le site ›</div></div></div></a>`};
+return `<a class="tile live" href="${safe(r.l)}" target="_blank" rel="noopener" style="background:${c};text-decoration:none"><div class="live-tile-inner"><div class="tile-face" style="background:${c}"><img class="fav" src="https://icons.duckduckgo.com/ip3/${esc(h)}.ico" alt=""><div class="tile-main" style="font-size:.95rem">${esc(cutWords(r.t,tMax))}</div><div class="tile-sub">${esc(h)}</div></div><div class="tile-face back" style="background:${c}"><div class="tile-sub">${esc(h)}</div><div class="tile-main" style="font-size:.8rem">${esc(cutWords(r.d||'',dMax))}</div><div class="tile-sub">Ouvrir le site ›<<script id="metro-reveal-runtime">
+(function(){
+"use strict";
+function init(){const home=document.getElementById("home-view");if(!home)return;function set(tile,e){const r=tile.getBoundingClientRect();tile.style.setProperty("--reveal-x",((e.clientX-r.left)/r.width*100).toFixed(2)+"%");tile.style.setProperty("--reveal-y",((e.clientY-r.top)/r.height*100).toFixed(2)+"%");tile.style.setProperty("--reveal-strength","1")}
+home.addEventListener("pointermove",function(e){const t=e.target.closest(".tile");if(t&&home.contains(t))set(t,e)},{passive:true});
+home.addEventListener("pointerout",function(e){const t=e.target.closest(".tile");if(t&&(!e.relatedTarget||!t.contains(e.relatedTarget)))t.style.setProperty("--reveal-strength","0")},{passive:true});
+home.addEventListener("pointerleave",function(e){const t=e.target.closest(".tile");if(t)t.style.setProperty("--reveal-strength","0")},{passive:true})}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init()})();
+</script>
+/div></div></div></a>`};
 nsMix=function(R,entry){const tiles=R.slice(0,4),list=R.slice(4);
 const t=tiles.map((r,i)=>nsTile(r,i===0?110:80,i===0?260:120)).join('');
 return (tiles.length?`<div class="res-tiles nx-t nx-t${tiles.length}">${t}</div>`:'')+'<div class="results-list" id="lst">'+list.map(entry).join('')+'</div>'};
