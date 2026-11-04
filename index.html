@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- NexSearch — fichier assemblé le 01/11/2026 18:26:07 (assembleur NexSearch) -->
+<!-- NexSearch — fichier assemblé le 04/11/2026 10:55:36 (assembleur NexSearch) -->
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -2048,5 +2048,48 @@ const scan=()=>vp.querySelectorAll('.res-tiles.nx-t .live-tile-inner').forEach(l
 new MutationObserver(scan).observe(vp,{childList:true,subtree:true});scan()})();
 </script>
 <!-- NEX-PATCH:TILES4:END -->
+<!-- NEX-REVEAL:BEGIN -->
+<style id="nex-reveal-style">
+#home-view .tile>.nxr-fill,#home-view .tile>.nxr-ring{position:absolute;inset:0;display:block;pointer-events:none;z-index:7;border-radius:inherit;opacity:0;transition:opacity .2s ease}
+#home-view .tile>.nxr-fill{background:radial-gradient(circle 120px at var(--mx,-999px) var(--my,-999px),rgba(255,255,255,.22),rgba(255,255,255,0));opacity:var(--rf,0)}
+#home-view .tile>.nxr-ring{padding:2px;background:radial-gradient(circle 150px at var(--mx,-999px) var(--my,-999px),rgba(255,255,255,.95),rgba(255,255,255,0));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;opacity:var(--rv,0)}
+</style>
+<script id="nex-reveal-runtime">(function nxReveal(){
+  'use strict';
+  if(window.__nexReveal)return;window.__nexReveal=true;
+  var home=document.getElementById('home-view');if(!home)return;
+  if(!window.matchMedia||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+  var R=170,tiles=[],px=-1e4,py=-1e4,raf=0;
+  function add(t){
+    if(t.__nxr)return;t.__nxr=1;
+    var f=document.createElement('i');f.className='nxr-fill';f.setAttribute('aria-hidden','true');
+    var r=document.createElement('i');r.className='nxr-ring';r.setAttribute('aria-hidden','true');
+    t.appendChild(f);t.appendChild(r);tiles.push(t);
+  }
+  function scan(n){
+    if(!n||n.nodeType!==1)return;
+    if(n.matches('.tile'))add(n);
+    n.querySelectorAll('.tile').forEach(add);
+  }
+  function update(){
+    raf=0;if(home.style.display==='none')return;
+    for(var i=0;i<tiles.length;i++){
+      var t=tiles[i];if(!t.isConnected)continue;
+      var b=t.getBoundingClientRect(),
+          dx=Math.max(b.left-px,0,px-b.right),dy=Math.max(b.top-py,0,py-b.bottom),d=Math.hypot(dx,dy);
+      if(d>R){if(t.__nxv){t.style.setProperty('--rv',0);t.style.setProperty('--rf',0);t.__nxv=0}continue}
+      t.__nxv=1;
+      t.style.setProperty('--mx',(px-b.left)+'px');t.style.setProperty('--my',(py-b.top)+'px');
+      t.style.setProperty('--rv',1-d/R);t.style.setProperty('--rf',d===0?1:0);
+    }
+  }
+  function ask(){if(!raf)raf=requestAnimationFrame(update)}
+  scan(home);
+  new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(scan)})}).observe(home,{childList:true,subtree:true});
+  document.addEventListener('mousemove',function(e){px=e.clientX;py=e.clientY;ask()},{passive:true});
+  document.addEventListener('mouseleave',function(){px=py=-1e4;ask()});
+  window.addEventListener('scroll',ask,{passive:true});
+})();</script>
+<!-- NEX-REVEAL:END -->
 </body>
 </html>
