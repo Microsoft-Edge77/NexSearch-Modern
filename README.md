@@ -10,3 +10,13 @@ NexSearch est un projet indépendant qui évolue continuellement, avec une ambit
 
 **NexSearch. Votre Web. Votre interface. Votre façon de chercher.**
 Accédez à NexSearch maintenant : [NexSearch — Le Web, autrement](https://Microsoft-Edge77.github.io/NexSearch-Modern/)
+
+## Copyright & Licensing
+
+Copyright © 2026 NexSearch. All rights reserved.
+
+This project is publicly available for viewing on GitHub, but it is not open source.
+
+No license is granted to copy, modify, redistribute, or commercially use this project's source code without prior written permission from the copyright holder.
+
+All rights reserved.
