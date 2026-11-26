@@ -2702,6 +2702,10 @@ TABS.web=async function(q,e,pg){
  const readJSON=(k,fb)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??fb}catch(_){return fb}};
  const writeJSON=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.warn('[NexAI] stockage local indisponible',e);return false}};
  const isTestDay=()=>localDay()===TEST_DAY;
+ // Le mode de test illimité est volontairement borné à la journée du 26/11/2026.
+ // Déclaré explicitement : son absence provoquait une ReferenceError dans refreshQuota(),
+ // ce qui interrompait sendMessage() avant même l'envoi du message.
+ const TEST_UNLIMITED_TODAY=isTestDay();
  let quota=readJSON(QUOTA,{day:localDay(),used:0});
  if(!quota||quota.day!==localDay())quota={day:localDay(),used:0};
  if(isTestDay())quota={day:localDay(),used:0};
@@ -2840,7 +2844,7 @@ TABS.web=async function(q,e,pg){
    try{return (await workerRequest('images',q)).map(r=>({title:r.title||'Image',image:r.image||r.thumbnail||'',thumbnail:r.thumbnail||r.image||'',page:r.page||r.url||r.image||''})).filter(x=>/^https?:\/\//i.test(x.thumbnail)).filter((x,i,a)=>a.findIndex(y=>y.thumbnail===x.thumbnail)===i).slice(0,4)}catch(e){console.warn('[NexAI] Recherche images indisponible',e);return[]}
  }
  async function callNexAI(question,history,sources,docs,documentKind=null){
-   const key=String((window.S&&S.key)||localStorage.getItem('nex_key')||'').trim();
+   const key=String((window.S&&window.S.key)||localStorage.getItem('nex_key')||'').trim();
    // Keep the request comfortably below provider context limits, even when three long pages were read.
    let sourceBudget=48000, sourceParts=[];
    for(let i=0;i<sources.length&&sourceBudget>0;i++){
@@ -2938,7 +2942,9 @@ TABS.web=async function(q,e,pg){
      c.messages.push({role:'assistant',content:answer,sources:citedSources,images,document:generatedDoc,created:Date.now(),workerCalls});c.updated=Date.now();save();renderAll();
    }catch(e){
      const thinking=document.getElementById('nx-thinking');if(thinking)thinking.remove();
-     c.messages.push({role:'assistant',content:'Je n’ai pas pu terminer cette réponse : '+(e.message||'erreur inconnue')+'. Tu peux réessayer.',created:Date.now()});c.updated=Date.now();save();renderAll();
+     // Le message utilisateur reste visible pour conserver le contexte, mais l'échec
+     // est explicitement signalé et ne consomme aucune unité du quota.
+     c.messages.push({role:'assistant',content:'Je n’ai pas pu terminer cette réponse : '+(e&&e.message?e.message:'erreur inconnue')+'. Aucun message quotidien n’a été décompté. Tu peux réessayer.',created:Date.now(),failed:true});c.updated=Date.now();save();renderAll();
    }finally{busy=false;refreshQuota();const b=document.getElementById('nx-send');if(b)b.disabled=getRemaining()===0}
  }
  /* Lecteur natif NexWork : conteneur ZIP, manifeste versionné, contenu JSON,
